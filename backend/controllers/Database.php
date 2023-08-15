@@ -14,6 +14,7 @@ class Database
             $host = 'localhost';
             $user = 'root';
             $port = '3006';
+
             $dbname = 'library';
             $pass = 'aoeu';
             $dsn = "mysql:host=$host;dbname=$dbname;";
@@ -21,10 +22,9 @@ class Database
             $this->connection = new \PDO($dsn, $user, $pass, [
                 \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
             ]);
-        } catch (\Throwable $e) {
-            echo "<pre>";
-            var_dump($e);
-            echo "</pre>";
+        } catch (\PDOException $e) {
+            echo 'Database could not connect' .
+                $e->getMessage();
         }
     }
 

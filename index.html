@@ -6,12 +6,13 @@
     <title>Challenge 2</title>
     <link rel="stylesheet" href="./style.css" />
   </head>
+  <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
   <body class="h-screen">
     <header
       class="flex justify-between bg-gradient-to-r from-slate-500 via-teal-400 to-slate-600 p-4"
     >
       <div class="text-xl text-neutral-400">
-        <a href="/2"
+        <a href="#/" id="homeBtn"
           ><span class="bg-teal-500 text-purple-400">Book</span>Library</a
         >
       </div>
@@ -21,7 +22,7 @@
             class="rounded-lg text-xl text-white ring-fuchsia-500 ring-offset-2 hover:bg-teal-500 hover:ring-2"
             id="loginBtn"
           >
-            Login
+            <a href="#login">Login</a>
           </li>
         </ul>
       </nav>
@@ -31,7 +32,7 @@
     </main>
     <footer class="sticky top-full bg-blue-400 p-4">
       <div class="h-full bg-teal-200 p-2">
-        <p>Created by &copy; Damjan Petrevski</p>
+        <p>Created by &copy; Damjan Petrevski | 2023</p>
       </div>
     </footer>
     <script type="module" src="./scripts/main.js"></script>
