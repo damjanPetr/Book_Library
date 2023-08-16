@@ -1,3 +1,4 @@
+import { Login } from "./Auth.js";
 import { Render } from "./main.js";
 
 const routes = {
@@ -21,6 +22,11 @@ const routes = {
     path: "views/register.html",
     title: "Register",
     discription: "Register Page",
+  },
+  dashboard: {
+    path: "views/dashboard.html",
+    title: "User Dashboard",
+    discription: "User Dashboard",
   },
 };
 
@@ -46,8 +52,7 @@ const urlLocationHandler = async (event) => {
   const response = await fetch(route.path);
   const html = await response.text();
   document.title = route.title;
-
-  console.log("🚀 ✔ file: router.js:47 ✔ urlLocationHandler ✔ html:", html);
+  Render.changeRouteDefault();
 
   switch (location) {
     case "login": {
@@ -63,7 +68,16 @@ const urlLocationHandler = async (event) => {
       Render.RegisterPage(html);
       return;
     }
+    case "dashboard": {
+      Render.DashboardPage(html);
 
+      console.log(
+        "🚀 ✔ file: router.js:74 ✔ urlLocationHandler ✔ html:",
+        html,
+      );
+
+      return;
+    }
     default:
       return;
   }
