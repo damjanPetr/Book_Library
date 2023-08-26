@@ -48,6 +48,7 @@ const urlLocationHandler = async (event) => {
     "🚀 ✔ file: router.js:34 ✔ urlLocationHandler ✔ location:",
     location,
   );
+
   const route = routes[location] || routes[404];
   const response = await fetch(route.path);
   const html = await response.text();
@@ -70,11 +71,6 @@ const urlLocationHandler = async (event) => {
     }
     case "dashboard": {
       Render.DashboardPage(html);
-
-      console.log(
-        "🚀 ✔ file: router.js:74 ✔ urlLocationHandler ✔ html:",
-        html,
-      );
 
       return;
     }

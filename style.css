@@ -552,12 +552,17 @@ body {
   top: 100%;
 }
 
-.mt-4{
-  margin-top: 1rem;
+.mx-auto{
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.block{
-  display: block;
+.ml-auto{
+  margin-left: auto;
+}
+
+.mt-4{
+  margin-top: 1rem;
 }
 
 .flex{
@@ -627,6 +632,15 @@ body {
 .rounded-t-lg{
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
+}
+
+.border-2{
+  border-width: 2px;
+}
+
+.border-red-400{
+  --tw-border-opacity: 1;
+  border-color: rgb(248 113 113 / var(--tw-border-opacity));
 }
 
 .bg-blue-400{

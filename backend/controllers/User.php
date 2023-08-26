@@ -53,7 +53,7 @@ class User
 
 
         // statement for checking the credentials
-        $sql =  'SELECT username, password FROM user WHERE username=:username;';
+        $sql =  'SELECT username, password FROM users WHERE username=:username;';
 
         $stm1 = $pdo->prepare($sql);
 
@@ -68,7 +68,7 @@ class User
                 setcookie("AUTH", "cookiethree", time() + 606024 * 30);
                 echo json_encode([
                     'auth' => 'true',
-                    'cookie' =>  'mehmeh'
+                    'user' =>  json_encode($results[0])
                 ]);
             } else {
                 echo json_encode([
@@ -96,7 +96,7 @@ class User
 
 
         // statement for checking the credential username is present
-        $sql =  'SELECT (username) FROM user WHERE username=:username';
+        $sql =  'SELECT (username) FROM users WHERE username=:username';
 
         $stm1 = $pdo->prepare($sql);
         $stm1->execute([
@@ -105,15 +105,18 @@ class User
 
         $results = $stm1->fetchAll();
         if ($results) {
-            $text = "The user is already registered";
-            echo json_encode(['message' => $text]);
+            $json = [
+                "error" =>  true,
+                "message" =>  "This username is already in use.",
+            ];
+            echo json_encode($json);
         } else {
 
             $date = date('Y-m-d');
 
             $hash_password = password_hash($password, PASSWORD_DEFAULT);
 
-            $sql =  'INSERT INTO  user (type,username,password,created_at)
+            $sql =  'INSERT INTO  users (type,username,password,created_at)
             VALUES(
                 :type,
                 :username,
@@ -129,13 +132,20 @@ class User
                 'password' => $hash_password,
                 'created_at' => $date,
             ]);
-
+            $lastID = $pdo->lastInsertId();
             $results = $stm1->fetchAll();
             # return response json that the user is not here  
             // header('Content-type:application/json');
+
+            //sql to get inserted user
+            $sql2 = "SELECT * from users WHERE id=:userid";
+            $stm2 = $pdo->prepare($sql2);
+            $stm2->execute(['userid' => $lastID]);
+            $user = $stm2->fetchAll();
+
             $json = [
                 'error' => false,
-                'message' => $results
+                'user' => $user[0]
             ];
             echo json_encode($json);
         }

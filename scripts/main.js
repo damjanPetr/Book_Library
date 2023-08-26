@@ -12,8 +12,21 @@ loginBtn.addEventListener("click", (e) => {
   window.route(e);
 });
 
+Login.checkAuth();
+
 class Render {
   static mainDiv = document.querySelector(".mainDiv");
+
+  static changeRouteDefault() {
+    const loginDiv = document.querySelector("header  #loginBtn");
+    const dashboardDiv = document.querySelector("header  #dashboardBtn");
+    if (Login.auth) {
+      loginDiv.classList.add("hidden");
+      dashboardDiv.classList.remove("hidden");
+    } else {
+      return;
+    }
+  }
 
   static RegisterPage(html) {
     const element = elementFromHTML(html);
@@ -39,6 +52,23 @@ class Render {
     if (form) {
       const validator = new Login(form, ["username", "password"], "login");
     }
+    this.mainDiv.innerHTML = "";
+    this.mainDiv.append(element);
+  }
+  static DashboardPage(html) {
+    console.log(
+      "🚀 ✔ file: main.js:60 ✔ Render ✔ DashboardPage ✔ html:",
+      html,
+    );
+
+    const element = elementFromHTML(html);
+
+    const logoutBtn = element.querySelector("button");
+
+    logoutBtn.addEventListener("click", () => {
+      Login.logout();
+      window.location.reload();
+    });
     this.mainDiv.innerHTML = "";
     this.mainDiv.append(element);
   }

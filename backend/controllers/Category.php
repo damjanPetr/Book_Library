@@ -6,21 +6,50 @@ require_once __DIR__ . '/../database.php';
 
 use Database\Database;
 
+$jsondata = file_get_contents('php://input');
+$data = json_decode($jsondata, true);
+
+
+if (isset($data)) {
+    $json = $data['json'];
+    switch ($data['action']) {
+        case 'createCategory': {
+                Category::addCategory('huetnao');
+            }
+            break;
+        case 'deleteCategory': {
+                Category::deleteCategory($data['id']);
+            }
+            break;
+        case 'editCategory': {
+                Category::editCategory($data['id'], 'uhoena');
+            }
+            break;
+        case 'getAll': {
+                Category::getAllCategories();
+            }
+            break;
+        default: {
+            }
+            break;
+    }
+}
+
 
 class Category
 {
 
-    public function addCategory(string $title, string $last_book_id)
+    static function addCategory(string $title)
     {
         $conn = new Database();
         $pdo =  $conn->getConnection();
-        $sql = "INSERT INTO category(title,book_id) 
-        VALUES(:title,:book_id)";
-        $result = $pdo->prepare($sql)->execute(['title' => $title, 'book_id' => $last_book_id]);
+        $sql = "INSERT INTO category(title) 
+        VALUES(:title)";
+        $result = $pdo->prepare($sql)->execute(['title' => $title,]);
         return $result;
     }
 
-    public function getAllCategories()
+    static function getAllCategories()
     {
         $conn = new Database();
         $pdo =  $conn->getConnection();
@@ -31,7 +60,7 @@ class Category
         return $result;
     }
 
-    public function deleteCategory(string  $date)
+    static function deleteCategory(string  $date)
 
     {
         $conn = new Database();
@@ -49,7 +78,7 @@ class Category
         return $result;
     }
 
-    public function editCategory(string $title, string $newtitle)
+    static function editCategory(string $title, string $newtitle)
     {
 
         $conn = new Database();

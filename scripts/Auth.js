@@ -4,6 +4,8 @@ class Login {
    * @param {HTMLFormElement} form
    * @param {Array<string>} fields
    */
+  static auth = false;
+  static authAdmin = false;
   constructor(form, fields, formName) {
     this.form = form;
     this.fields = fields;
@@ -11,12 +13,26 @@ class Login {
     this.formName = formName;
   }
 
-  login() {
+  static checkAuth(admin) {
+    admin = false;
+    if (window.localStorage.getItem("auth") === 1) {
+      Login.auth = true;
+      Login.authType = "user";
+    }
+  }
+  login(user) {
     window.localStorage.setItem("auth", 1);
+    window.localStorage.setItem("user", JSON.stringify(user));
+    Login.auth = true;
+
+    window.location.hash = "#/";
   }
 
-  logaut() {
-    window.localStorage.clear();
+  static logout() {
+    window.localStorage.removeItem("auth");
+    window.localStorage.removeItem("user");
+    Login.auth = false;
+    window.location.hash = "#/";
   }
 
   validateOnSubmit() {
@@ -34,6 +50,7 @@ class Login {
           error++;
         }
       });
+      console.count("uhu");
       if (error === 0) {
         self.ApiCall();
       }
@@ -57,29 +74,27 @@ class Login {
           });
 
           const data = await response.json();
+
           const popupdiv = document.querySelector(".backend-login-message");
+          console.log(
+            "🚀 ✔ file: Auth.js:67 ✔ Login ✔ ApiCall ✔ data:",
+            data,
+          );
 
           popupdiv.firstChild.innerHTML = ``;
 
           if (data.error) {
+            console.log(data.error);
             popupdiv.firstElementChild.innerHTML = `${data.message}`;
             popupdiv.classList.remove("hidden");
             this.form.parentElement.insertAdjacentElement("afterend", popupdiv);
+          } else {
+            this.login(data.user);
           }
-          this.login();
-          window.location.hash = "#/";
-
-          console.log(data);
         }
         return;
       case "login": {
         const formData = new FormData(this.form);
-
-        console.log(
-          "🚀 ✔ file: Auth.js:36 ✔ Login ✔ loginUserApiCall ✔ formData:",
-          Object.fromEntries(formData),
-        );
-
         console.log("success login");
         const response = await fetch("backend/controllers/User.php", {
           method: "post",
@@ -91,11 +106,11 @@ class Login {
         });
 
         const data = await response.json();
-        const popupdiv = document.querySelector(".backend-login-message");
 
+        const popupdiv = document.querySelector(".backend-login-message");
         console.log(
-          "🚀 ✔ file: Auth.js:42 ✔ Login ✔ self.fields.forEach ✔ popupdiv:",
-          popupdiv.firstElementChild,
+          "🚀 ✔ file: Auth.js:99 ✔ Login ✔ ApiCall ✔ data:",
+          data,
         );
 
         popupdiv.firstChild.innerHTML = ``;
@@ -104,6 +119,8 @@ class Login {
           popupdiv.firstElementChild.innerHTML = `${data.message}`;
           popupdiv.classList.remove("hidden");
           this.form.parentElement.insertAdjacentElement("afterend", popupdiv);
+        } else {
+          this.login(data.user);
         }
 
         return;
@@ -149,12 +166,6 @@ class Login {
       errorMessage.innerText = message;
       field.classList.add("input-error");
     }
-  }
-  get getLoginStatus() {
-    return login;
-  }
-  set Login(value) {
-    this.login = value;
   }
 
   async Login() {
