@@ -1,39 +1,47 @@
-<div class="">
+<div class="min-h-full">
   <div class="mx-auto flex p-4">
-    <div class="">Welocome User</div>
-    <button class="logoutBtn ml-auto">Logout</button>
+    <div class="border-b-2 border-blue-400 p-2">Welcome User anatoli120</div>
+    <button class="logoutBtn ml-auto rounded-sm bg-red-400 p-2 text-white">
+      Logout
+    </button>
   </div>
-  <div class="content w-full">
-    <div class="border-2 border-red-400">
-      <h2>Books</h2>
-      <button class="bg-red-500 p-2">Create New</button>
-      <button class="bg-red-500 p-2">Edit/Delete</button>
-
-      <div class="">
-        <form action="post">
-          <div class="">
-            <label for="createBook">Create New Book</label>
-            <input type="text" id="createBook" name="createBook" />
-          </div>
-        </form>
+  <div class="flex min-h-full">
+    <div
+      class="min-h-full basis-1/4 rounded-sm border-r-2 border-r-red-500 p-4"
+      id="tabBtnDiv"
+    >
+      <nav class="mx-auto flex flex-col gap-4">
+        <button
+          class="tabActive rounded-sm bg-slate-50 p-2 text-left text-lg hover:bg-gray-300 hover:underline hover:shadow-sm"
+          id="bookBtn"
+        >
+          Books
+        </button>
+        <button
+          class="rounded-sm bg-slate-50 p-2 text-left text-lg hover:bg-gray-300 hover:underline hover:shadow-sm"
+          id="categoryBtn"
+        >
+          Categories
+        </button>
+        <button
+          class="rounded-sm bg-slate-50 p-2 text-left text-lg hover:bg-gray-300 hover:underline hover:shadow-sm"
+          id="authorBtn"
+        >
+          Authors
+        </button>
+        <button
+          class="rounded-sm bg-slate-50 p-2 text-left text-lg hover:bg-gray-300 hover:underline hover:shadow-sm"
+          id="commentBtn"
+        >
+          Comments
+        </button>
+      </nav>
+    </div>
+    <div class="basis-3/4 p-4" id="targetDiv">
+      <div class="basis-auto border-2 border-red-400">
+        <button class="bg-red-500 p-2">Create New</button>
+        <button class="bg-red-500 p-2">Edit/Delete</button>
       </div>
-    </div>
-    <div class="border-2 border-red-400">
-      <h2>Categories</h2>
-      <button class="bg-red-500 p-2">Create New</button>
-      <button class="bg-red-500 p-2">Edit/Delete</button>
-    </div>
-    <div class="border-2 border-red-400">
-      <h2>Authors</h2>
-      <button class="bg-red-500 p-2">Create New</button>
-      <button class="bg-red-500 p-2">Edit/Delete</button>
-    </div>
-
-    <div class="border-2 border-red-400">
-      <h2>Comments</h2>
-    </div>
-    <div class="">
-      <button class="bg-red-500 p-2">Approve</button>
     </div>
   </div>
 </div>

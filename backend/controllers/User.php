@@ -16,10 +16,10 @@ if (isset($data)) {
         case 'registerUser': {
                 try {
                     User::createUser($json['username'], $json['password']);
-                } catch (\Throwable $e) {
+                } catch (\PDOException $e) {
                     echo json_encode(array(
                         'error' => true,
-                        'message' => $e
+                        'message' => $e->getMessage()
                     ));
                 }
             }

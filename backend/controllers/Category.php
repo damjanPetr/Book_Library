@@ -2,7 +2,8 @@
 
 namespace Category;
 
-require_once __DIR__ . '/../database.php';
+// require_once __DIR__ . '/../database.php';
+require_once __DIR__ . '/../autoloader.php';
 
 use Database\Database;
 
@@ -13,20 +14,51 @@ $data = json_decode($jsondata, true);
 if (isset($data)) {
     $json = $data['json'];
     switch ($data['action']) {
-        case 'createCategory': {
-                Category::addCategory('huetnao');
+        case 'addCategory': {
+                try {
+                    Category::addCategory($json);
+                } catch (\PDOException $e) {
+                    echo json_encode(array(
+                        'error' => true,
+                        'message' => $e->getMessage()
+                    ));
+                }
             }
             break;
+
         case 'deleteCategory': {
-                Category::deleteCategory($data['id']);
+                try {
+                    Category::deleteCategory($data['json']['title']);
+                } catch (\PDOException $e) {
+                    echo json_encode(array(
+                        'error' => true,
+                        'message' => $e->getMessage()
+                    ));
+                }
             }
             break;
         case 'editCategory': {
-                Category::editCategory($data['id'], 'uhoena');
+                try {
+                    Category::editCategory($json['title'], $json['newTitle']);
+                } catch (\PDOException $e) {
+                    echo json_encode(array(
+                        'error' => true,
+                        'message' => $e->getMessage()
+                    ));
+                }
             }
             break;
         case 'getAll': {
-                Category::getAllCategories();
+                try {
+                    Category::getAllCategories();
+                } catch (\PDOException $e) {
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
+                }
             }
             break;
         default: {
@@ -43,39 +75,76 @@ class Category
     {
         $conn = new Database();
         $pdo =  $conn->getConnection();
-        $sql = "INSERT INTO category(title) 
-        VALUES(:title)";
-        $result = $pdo->prepare($sql)->execute(['title' => $title,]);
-        return $result;
+
+        $sql = "SELECT * FROM categories where title=:title AND deleted_at IS NULL";
+
+        $stm = $pdo->prepare($sql);
+
+        $stm->execute(['title' => $title]);
+
+        $result = $stm->fetchAll();
+
+        if ($result) {
+            echo json_encode([
+                'error' => true,
+                'message' => 'Category Already Exits'
+            ]);
+        } else {
+
+            $sql2 = "INSERT INTO categories (title) 
+            VALUES(:title)";
+
+            $result2 = $pdo->prepare($sql2)->execute(['title' => $title]);
+            if ($result2) {
+                echo json_encode([
+                    'error' => false,
+                    "data" => $result2
+                ]);
+            }
+        }
     }
 
     static function getAllCategories()
     {
         $conn = new Database();
+
         $pdo =  $conn->getConnection();
-        $sql =   "SELECT * FROM category WHERE deleted_at IS NULL";
+
+        $sql =   "SELECT * FROM categories WHERE deleted_at IS NULL";
+
         $stm = $pdo->prepare($sql);
+
         $stm->execute();
+
         $result = $stm->fetchAll();
-        return $result;
+        echo json_encode($result);
     }
 
-    static function deleteCategory(string  $date)
+    static function deleteCategory(string  $title)
 
     {
+
+
+
         $conn = new Database();
 
         $pdo =  $conn->getConnection();
+        $date = date('Y-m-d');
 
-        $sql =   "UPDATE category SET deleted_at=:time";
+        $sql = "UPDATE categories SET deleted_at=:date WHERE title=:title";
+
 
         $stm = $pdo->prepare($sql);
 
-        $stm->execute(['time' => $date]);
+        $stm->execute(
+            [
+                'date' => $date,
+                'title' => $title
+            ]
+        );
 
         $result = $stm->fetchAll();
-
-        return $result;
+        echo json_encode($result);
     }
 
     static function editCategory(string $title, string $newtitle)
@@ -83,10 +152,16 @@ class Category
 
         $conn = new Database();
         $pdo =  $conn->getConnection();
-        $sql =   "UPDATE category SET title=:newtitle WHERE title=:title";
+        $sql =   "UPDATE categories SET title=:newtitle WHERE title=:title and deleted_at IS NULL";
         $stm = $pdo->prepare($sql);
-        $stm->execute(['title' => $title, 'newtitle' => $newtitle]);
+        $stm->execute(
+            [
+                'title' => $title,
+                'newtitle' => $newtitle
+            ]
+        );
+
         $result = $stm->fetchAll();
-        return $result;
+        echo json_encode(['error' => false]);
     }
 }
