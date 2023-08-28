@@ -9,7 +9,7 @@ module.exports = {
     extend: {
       fontFamily: {
         Inter: ["Inter", "sans-serif"],
-        Rubik: ["Inter", "sans-serif"],
+        Rubik: ["Rubik", "sans-serif"],
         "Source-Sans": ["Source Sans 3", "sans-serif"],
       },
     },

@@ -92,3 +92,6 @@
   @apply bg-teal-400;
   @apply rounded-sm;
 }
+.activeEditItem {
+  @apply bg-teal-200;
+}
