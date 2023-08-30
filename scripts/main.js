@@ -1,5 +1,5 @@
 import { Login } from "./Auth.js";
-import elementFromHTML from "./helper.js";
+import elementFromHTML, { changeDateFormat } from "./helper.js";
 import "./router.js";
 const loginBtn = document.querySelector("#loginBtn");
 const homeBtn = document.querySelector("#homeBtn");
@@ -77,7 +77,699 @@ class Render {
         switch (e.target.id) {
           case "bookBtn":
             {
+              const innerDiv = elementFromHTML(`
+              <div class="w-full relative">
+              <div class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black">
+                  <h1 class="text-xl ">Books</h1>
+                  <div class="flex items-center cursor-pointer rounded-md bg-blue-500 text-white p-2" id="createNewBtn" >
+                        <p class="">Create New</p>
+                        <iconify-icon icon="gridicons:create" class=" ml-1 self-center" ></iconify-icon>
+                  </div>
+              </div>
+
+                
+                <div class="relative">
+
+                <div class="flex addNew  -translate-x-1/2 top-2  w-full left-1/2  absolute   z-20" id="createNewBook">
+                    
+                <div class="items-center   mb-4 justify-between  w-full rounded-sm text-base ">
+                <form  id="createBookForm" class="border-red-500 border hidden bg-violet-50">
+                <div class="hidden w-full p-2 absolute top-4 bg-red-200 rounded-md" id="authorError"></div>
+                  <div class="border-2 border-teal-500">
+                    <div  id="createNewAuthor" class="relative tooltip-nohover p-4 space-y-4 [&_input[type='text']]:w-full" >
+                    <button class="absolute right-10 top-4 ">
+                    <iconify-icon icon="material-symbols:done" class="peer/edit bg-green-400 cursor-pointer relative tooltip rounded-md p-1" data-tooltip="Create New Book"></iconify-icon>
+                    </button>
+                        <div class="">
+                          <label for="title" class="text-gray-500 mb-2 underline underline-offset-1 " >Title: </label>
+                          <br>
+                          <input  type="text" name="title" id="title" class="relative  p-1 rounded-md tooltip-nohover fill-emerald-500" data-tooltip="">
+                        </div>
+
+                        <div class="">
+                              <label for="Author" class="text-gray-500 mb-2 underline underline-offset-1 " >Author: </label>
+                              <br>
+                                <div class="selection relative w-full">
+                                <input type="text" class="hidden" value="" name="authorId" id="authorTitle">
+                                <p  class="bg-white p-2 text-md rounded-md w-full" >&nbsp;</p>
+                                <div class="hidden options mt-2 absolute top-full left-1/2 -translate-x-1/2 w-full  z-10 bg-white rounded-md max-h-40 overflow-auto">
+                                    <ul class="p-2 text-left break-words space-y-1">
+                                      
+                                    </ul>
+                                
+                                
+                                </div>
+                                
+                                </div>
+                                
+                          </div>
+                        
+                          <div class="">
+                                
+                                <label for="Category" class="text-gray-500 mb-2 underline underline-offset-1 " >Category: </label>
+                                <br>
+                                      <div class="selectionCategory relative w-full">
+                                            <input type="text" class="hidden" value="" name="categoryId" id="categoryTitle">
+                                            <p  class="bg-white p-2 text-md rounded-md w-full" >&nbsp;</p>
+                                            <div class="hidden options mt-2 absolute top-full left-1/2 -translate-x-1/2 w-full  z-10 bg-white rounded-md max-h-40 overflow-auto">
+                                                <ul class="p-2 text-left break-words space-y-1">
+                                                  
+                                                </ul>
+                                            </div>
+                                      </div>
+
+                          </div>
+                          
+                          <div class="">
+                            <label for="releaseDate" class="text-gray-500 mb-2 underline underline-offset-1 " >Release Date: </label>
+                            <br>
+                            <input type="date" min="0" name="releaseDate" id="releaseDate" class="relative   p-1 rounded-md tooltip-nohover fill-emerald-500" data-tooltip="">
+                          </div>
+
+                          <div class="">
+                            <label for="numberOfPages" class="text-gray-500 mb-2 underline underline-offset-1 " >Number Of Pages: </label>
+                            <br>
+                            <input type="number" min="0" name="numberOfPages" id="numberOfPages" class="relative  w-20 p-1 rounded-md tooltip-nohover fill-emerald-500" data-tooltip="">
+                          </div>
+
+
+
+                          
+                          <div class="">
+                            <label for="pictureUrl" class="text-gray-500 mb-2 underline underline-offset-1 " >Picture Url: </label>
+                            <br>
+                            <input type="text"  name="pictureUrl" id="pictureUrl" class="relative  w-full p-1 rounded-md tooltip-nohover fill-emerald-500" data-tooltip="">
+                          </div>
+
+                        
+                        
+                    </div>
+                  </div>
+                </form>
+
+              </div>
+                </div>
+                  <div class=" grid grid-cols-2 justify-items-center pt-4 " id="BookDiv">
+                    
+            </div>
+                
+                  </div>     
+              </div>
+                `);
+
+              const createBookDiv = ({
+                Category,
+                author_id,
+                categories_id,
+                deleted_at,
+                first_name,
+                id,
+                img,
+                last_name,
+                number_of_pages,
+                release_date,
+                title,
+              }) => {
+                const ItemDiv = elementFromHTML(`
+                <div class="toppper mb-4 w-80  relative max-h-full">
+                <div class=" absolute top-0 z-10  right-0">
+                    <div class="buttons p-1.5 rounded-b-lg flex gap-4  text-white  ml-auto bg-black/40 z-20 items-center">                    
+                        <div id="editBtn">
+                          <iconify-icon icon="material-symbols:edit" class="peer/edit bg-yellow-500 cursor-pointer relative tooltip rounded-md p-1" data-tooltip="Edit Book"></iconify-icon>
+                        </div>
+    
+                        <div id="checkEditBtn" class="hidden">
+                          <iconify-icon icon="material-symbols:check" class="peer/edit bg-green-200 cursor-pointer relative tooltip rounded-md" data-tooltip="Confirm Edit"></iconify-icon>
+                        </div>
+    
+                        <div id="deleteBtn">
+                          <iconify-icon icon="ph:x" class="bg-red-500   cursor-pointer tooltip relative rounded-md p-1" data-tooltip="Delete Book"></iconify-icon>
+                        </div>
+    
+                    </div>
+                    </div>
+                
+                <form  id="editBookForm" class="border-red-500 border hidden bg-violet-50 h-full">
+
+                <div class="hidden w-full p-2 absolute top-4 bg-red-200 rounded-md" id="authorError"></div>
+
+                  <div class="border-2 border-teal-500 h-full flex items-center ">
+                    <div  id="createNewAuthor" class="relative tooltip-nohover p-4 space-y-4 [&_input[type='text']]:w-full w-full" >
+                    
+                        <div class="">
+                          <label for="title" class="text-gray-500 mb-2 underline underline-offset-1 " >Title: </label>
+                          <br>
+                          <input  type="text" name="title" id="title" class="relative  p-1 rounded-md tooltip-nohover fill-emerald-500" data-tooltip="">
+                        </div>
+
+                        <div class="">
+                              <label for="Author" class="text-gray-500 mb-2 underline underline-offset-1 " >Author: </label>
+                              <br>
+                                <div class="selection relative w-full">
+                                <input type="text" class="hidden" value="${author_id}" name="authorId" id="authorTitle">
+                                <p  class="bg-white p-2 text-md rounded-md w-full" >&nbsp;</p>
+                                <div class="hidden options mt-2 absolute top-full left-1/2 -translate-x-1/2 w-full  z-10 bg-white rounded-md max-h-40 overflow-auto">
+                                    <ul class="p-2 text-left break-words space-y-1">
+                                      
+                                    </ul>
+                                
+                                
+                                </div>
+                                
+                                </div>
+                                
+                          </div>
+                        
+                          <div class="">
+                                
+                                <label for="Category" class="text-gray-500 mb-2 underline underline-offset-1 " >Category: </label>
+                                <br>
+                                      <div class="selectionCategory relative w-full">
+                                            <input type="text" class="hidden" value="${categories_id}" name="categoryId" id="categoryTitle">
+                                            <p  class="bg-white p-2 text-md rounded-md w-full" >&nbsp;</p>
+                                            <div class="hidden options mt-2 absolute top-full left-1/2 -translate-x-1/2 w-full  z-10 bg-white rounded-md max-h-40 overflow-auto">
+                                                <ul class="p-2 text-left break-words space-y-1">
+                                                  
+                                                </ul>
+                                            </div>
+                                      </div>
+
+                          </div>
+                          
+                          <div class="">
+                            <label for="releaseDate" class="text-gray-500 mb-2 underline underline-offset-1 " >Release Date: </label>
+                            <br>
+                            <input type="date" min="0" name="releaseDate" id="releaseDate" class="relative   p-1 rounded-md tooltip-nohover fill-emerald-500" data-tooltip="">
+                          </div>
+
+                          <div class="">
+                            <label for="numberOfPages" class="text-gray-500 mb-2 underline underline-offset-1 " >Number Of Pages: </label>
+                            <br>
+                            <input type="number" min="0" name="numberOfPages" id="numberOfPages" class="relative  w-20 p-1 rounded-md tooltip-nohover fill-emerald-500" data-tooltip="">
+                          </div>
+
+
+
+                          
+                          <div class="">
+                            <label for="pictureUrl" class="text-gray-500 mb-2 underline underline-offset-1 " >Picture Url: </label>
+                            <br>
+                            <input type="text"  name="pictureUrl" id="pictureUrl" class="relative  w-full p-1 rounded-md tooltip-nohover fill-emerald-500" data-tooltip="">
+                          </div>
+
+                        
+                        
+                    </div>
+                  </div>
+                </form>
+                    <div class="content  bg-blue-100">
+                    
+                    <div class="  w-full relative rounded-t-xl">
+                    
+                    <div class="editPopup hidden ">
+                    
+                    </div>
+
+                    
+
+
+
+                        <img class="replace-img  content-inner w-full h-full rounded-t-lg" src=${img} alt="${title} image" >
+                        <div class="content-inner px-4 py-1.5 break-words absolute bottom-0 w-full bg-neutral-500 text-white rounded-t-lg text-lg">
+                          <p class="replace-title">${title}</p>
+                      </div>
+                    </div>  
+                  
+                    <div class="content-inner p-4 flex justify-between">
+                    
+                      
+                      <div class="">
+                      <div class="p-1">
+
+                      <p  class="text-sm underline text-gray-500">Author:</p>
+                      <p class="replace-author">${
+                        first_name + " "
+                      } ${last_name}</p>
+                    </div>
+                     
+                      <div class="p-1">
+                      <p class="text-sm underline text-gray-500">Category: </p>
+                        <p class="replace-category">${Category}</p>
+                      </div>
+                      </div>
+                      
+
+                <div class="">
+                    <div class="p-1">
+                        <p class="text-sm underline text-gray-500">Number Of Pages:</p>
+                        <p class="replace-number_of_pages">${number_of_pages}</p>
+                      </div>
+
+                      <div class="p-1">
+                        <p class="text-sm underline text-gray-500">Release Date:</p>
+                        <p class="replace-release_date">${release_date}</p>
+                      </div>
+                </div>
+                      
+                      
+                    </div>
+                </div>
+                `);
+
+                /* 
+                        Starting
+                        Card 
+                        Divs
+                      */
+                const replace_title = ItemDiv.querySelector(".replace-title");
+                const replace_author = ItemDiv.querySelector(".replace-author");
+                const replace_category =
+                  ItemDiv.querySelector(".replace-category");
+                console.log(replace_category);
+                const replace_number_of_pages = ItemDiv.querySelector(
+                  ".replace-number_of_pages",
+                );
+                const replace_release_date = ItemDiv.querySelector(
+                  ".replace-release_date",
+                );
+                const replace_img = ItemDiv.querySelector(".replace-img");
+
+                const bookTitle = ItemDiv.querySelector("#title");
+
+                const releaseDate = ItemDiv.querySelector("#releaseDate");
+
+                const numberOfPages = ItemDiv.querySelector("#numberOfPages");
+                const editBookForm = ItemDiv.querySelector("#editBookForm");
+                const pictureUrl = ItemDiv.querySelector("#pictureUrl");
+
+                /* BUTTONS 
+                    ON 
+                    BOOK 
+                    CARD 
+                    FOR 
+                    ACTIONS 
+                */
+                const editBtn = ItemDiv.querySelector("#editBtn");
+                const deleteBtn = ItemDiv.querySelector("#deleteBtn");
+                const checkEditBtn = ItemDiv.querySelector("#checkEditBtn");
+
+                /* 
+                  Create
+                  BOOK CARD 
+                  Section THAT POPS UP
+                 */
+
+                const createNewBtn = ItemDiv.querySelector("#createNewBtn");
+
+                const authorOptions = ItemDiv.querySelector(".options");
+                const authorOptionsUl = ItemDiv.querySelector(".options ul");
+                const authorSelection = ItemDiv.querySelector(".selection p");
+                const authorTitle = ItemDiv.querySelector("#authorTitle");
+
+                const categoryOptions = ItemDiv.querySelector(
+                  ".selectionCategory .options",
+                );
+                const categoryOptionsUl = ItemDiv.querySelector(
+                  ".selectionCategory .options ul",
+                );
+                const categorySelection = ItemDiv.querySelector(
+                  ".selectionCategory > p",
+                );
+                const categoryTitle = ItemDiv.querySelector("#categoryTitle");
+
+                const categoryId = ItemDiv.querySelector("#categoryId");
+
+                const authorId = ItemDiv.querySelector("#authorId");
+
+                /* 
+                Edit Form Author Dropdow
+                
+                */
+                authorSelection.addEventListener("click", async () => {
+                  authorOptionsUl.innerHTML = "";
+                  const response = await fetch(
+                    "backend/controllers/Authors.php",
+                    {
+                      method: "post",
+                      body: JSON.stringify({
+                        action: "getAllAuthors",
+                        json: "",
+                      }),
+                    },
+                  );
+
+                  const data = await response.json();
+
+                  data.forEach((item) => {
+                    const AuthorItem = elementFromHTML(`
+                    <li class="px-1 hover:bg-gray-200 w-full">
+                        ${item.first_name}
+                        ${item.last_name}
+                    <li/>
+                    `);
+
+                    authorOptionsUl.append(AuthorItem);
+
+                    AuthorItem.addEventListener("click", (e) => {
+                      authorSelection.textContent =
+                        item.first_name + " " + item.last_name;
+                      const input = ItemDiv.querySelector("#authorTitle");
+
+                      input.value = item.id;
+                      authorOptions.classList.toggle("hidden");
+                    });
+                  });
+
+                  authorOptions.classList.toggle("hidden");
+                });
+
+                /* 
+                  Edit
+                  Form
+                  Category 
+                  Dropdown
+                */
+
+                categorySelection.addEventListener("click", async () => {
+                  categoryOptionsUl.innerHTML = "";
+                  const response = await fetch(
+                    "backend/controllers/Category.php",
+                    {
+                      method: "post",
+                      body: JSON.stringify({
+                        action: "getAll",
+                        json: "",
+                      }),
+                    },
+                  );
+
+                  const data = await response.json();
+
+                  data.forEach((item) => {
+                    const categoryItem = elementFromHTML(`
+                    <li class="px-1 hover:bg-gray-200 w-full">
+                          ${item.title}
+                    <li/>
+                    `);
+                    categoryOptionsUl.append(categoryItem);
+
+                    categoryItem.addEventListener("click", (e) => {
+                      categorySelection.textContent = item.title;
+                      const input = ItemDiv.querySelector("#categoryTitle");
+                      input.value = item.id;
+                      categoryOptions.classList.toggle("hidden");
+                    });
+                  });
+
+                  categoryOptions.classList.toggle("hidden");
+                });
+
+                /* 
+                  edit
+                 form 
+                 for 
+                 submitting 
+                 edited 
+                 book 
+                  */
+
+                editBookForm.addEventListener("submit", async (e) => {
+                  e.preventDefault();
+                  const formData = Object.fromEntries(
+                    new FormData(editBookForm),
+                  );
+                  formData.bookId = id;
+                  const response = await fetch("backend/controllers/Book.php", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      action: "editBook",
+                      json: formData,
+                    }),
+                  });
+                  const data = await response.json();
+
+                  if (data.error === "false") {
+                    return;
+                  } else {
+                    console.log(data);
+
+                    // Works but replacing the element causes flicker
+
+                    // ItemDiv.parentElement.replaceChild(
+                    //   createBookDiv(data.data),
+                    //   ItemDiv,
+                    // );
+
+                    replace_title.textContent = data.data.title;
+                    replace_release_date.textContent = data.data.release_date;
+
+                    replace_category.textContent = data.data.Category;
+
+                    replace_author.textContent =
+                      data.data.first_name + " " + data.data.last_name;
+
+                    replace_number_of_pages.textContent =
+                      data.data.number_of_pages;
+                    replace_img.textContent = data.data.img;
+
+                    /* This is for replacing form values */
+                    categoryTitle.value = data.data.author_id;
+                    authorTitle.value = data.data.categories_id;
+
+                    numberOfPages.value = data.data.number_of_pages;
+                    pictureUrl.value = data.data.img;
+                  }
+                });
+
+                editBtn.addEventListener("click", () => {
+                  ItemDiv.querySelectorAll(".content-inner").forEach(
+                    (item) => item.classList.add("hidden"),
+                    // item.classList.add("invisible"),
+                  );
+                  const editPopup =
+                    ItemDiv.querySelector(".editPopup").classList.remove(
+                      "hidden",
+                    );
+
+                  editBookForm.classList.remove("hidden");
+
+                  /**
+                   * change buttons edit/check
+                   * */
+                  editBtn.classList.add("hidden");
+                  checkEditBtn.classList.remove("hidden");
+
+                  /* 
+                  place initial selection text 
+                  */
+                  const changedDate = changeDateFormat(
+                    replace_release_date.textContent,
+                  );
+
+                  releaseDate.value = changedDate;
+
+                  categorySelection.textContent = replace_category.textContent;
+                  authorSelection.textContent = replace_author.textContent;
+                  bookTitle.value = replace_title.textContent;
+                  numberOfPages.value = replace_number_of_pages.textContent;
+                  pictureUrl.value = replace_img.getAttribute("src");
+                });
+
+                /* checkbtn event listener */
+                checkEditBtn.addEventListener("click", (e) => {
+                  /* swap buttons */
+                  editBtn.classList.remove("hidden");
+                  checkEditBtn.classList.add("hidden");
+
+                  /* inverse edit button that return back the normal book card */
+                  ItemDiv.querySelectorAll(".content-inner").forEach((item) =>
+                    item.classList.remove("hidden"),
+                  );
+                  editBookForm.classList.add("hidden");
+                  const editPopup =
+                    ItemDiv.querySelector(".editPopup").classList.add("hidden");
+                  editBookForm.dispatchEvent(new Event("submit"));
+
+                  /* 
+
+*/
+                });
+
+                deleteBtn.addEventListener("click", async (e) => {
+                  const response = await fetch("backend/controllers/Book.php", {
+                    method: "post",
+                    body: JSON.stringify({
+                      action: "deleteBook",
+                      json: {
+                        id,
+                      },
+                    }),
+                  });
+                  const data = await response.json();
+                  console.log(data);
+                  if (data.error) {
+                  } else {
+                    ItemDiv.remove();
+                  }
+                });
+
+                return ItemDiv;
+              };
+
+              const createNewBtn = innerDiv.querySelector("#createNewBtn");
+
+              const authorOptions = innerDiv.querySelector(".options");
+              const authorOptionsUl = innerDiv.querySelector(".options ul");
+              const authorSelection = innerDiv.querySelector(".selection p");
+
+              const categoryOptions = innerDiv.querySelector(
+                ".selectionCategory .options",
+              );
+              const categoryOptionsUl = innerDiv.querySelector(
+                ".selectionCategory .options ul",
+              );
+              const categorySelection = innerDiv.querySelector(
+                ".selectionCategory > p",
+              );
+
+              const bookDiv = innerDiv.querySelector("#BookDiv");
+
+              const createNewBook = innerDiv.querySelector("#createNewBook");
+
+              const createBookForm = innerDiv.querySelector("#createBookForm");
+
+              const createBookFormBTN = innerDiv.querySelector(
+                "#createBookForm button",
+              );
+
+              createBookFormBTN.addEventListener("click", () => {
+                createBookForm.classList.toggle("hidden");
+              });
+
+              async function renderBookItems() {
+                const response = await fetch("backend/controllers/Book.php", {
+                  method: "post",
+                  body: JSON.stringify({
+                    action: "getAllBooks",
+                    json: "",
+                  }),
+                });
+                const data = await response.json();
+                if (data.error) {
+                  alert("error");
+                } else {
+                  data.data.forEach((item) => {
+                    const div = createBookDiv(item);
+
+                    bookDiv.append(div);
+                  });
+                }
+              }
+              renderBookItems();
+
+              createBookForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const formData = Object.fromEntries(
+                  new FormData(createBookForm),
+                );
+                const response = await fetch("backend/controllers/Book.php", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    action: "addBook",
+                    json: formData,
+                  }),
+                });
+                const data = await response.json();
+                if (data.error) {
+                } else {
+                  console.log(data);
+                  const newItem = createBookDiv(data);
+                  bookDiv.append(newItem);
+                }
+              });
+
+              authorSelection.addEventListener("click", async () => {
+                authorOptionsUl.innerHTML = "";
+                const response = await fetch(
+                  "backend/controllers/Authors.php",
+                  {
+                    method: "post",
+                    body: JSON.stringify({
+                      action: "getAllAuthors",
+                      json: "",
+                    }),
+                  },
+                );
+
+                const data = await response.json();
+
+                data.forEach((item) => {
+                  const AuthorItem = elementFromHTML(`
+                  <li class="px-1 hover:bg-gray-200 w-full">
+                      ${item.first_name}
+                      ${item.last_name}
+                  <li/>
+                  `);
+
+                  authorOptionsUl.append(AuthorItem);
+                  AuthorItem.addEventListener("click", (e) => {
+                    authorSelection.textContent =
+                      item.first_name + " " + item.last_name;
+                    const input = innerDiv.querySelector("#authorTitle");
+
+                    input.value = item.id;
+                    authorOptions.classList.toggle("hidden");
+                  });
+                });
+
+                authorOptions.classList.toggle("hidden");
+              });
+
+              categorySelection.addEventListener("click", async () => {
+                categoryOptionsUl.innerHTML = "";
+                const response = await fetch(
+                  "backend/controllers/Category.php",
+                  {
+                    method: "post",
+                    body: JSON.stringify({
+                      action: "getAll",
+                      json: "",
+                    }),
+                  },
+                );
+
+                const data = await response.json();
+
+                data.forEach((item) => {
+                  const categoryItem = elementFromHTML(`
+                  <li class="px-1 hover:bg-gray-200 w-full">
+                        ${item.title}
+                  <li/>
+                  `);
+                  categoryOptionsUl.append(categoryItem);
+
+                  categoryItem.addEventListener("click", (e) => {
+                    categorySelection.textContent = item.title;
+                    const input = innerDiv.querySelector("#categoryTitle");
+                    input.value = item.id;
+                    categoryOptions.classList.toggle("hidden");
+                  });
+                });
+
+                categoryOptions.classList.toggle("hidden");
+              });
+
+              createNewBtn.addEventListener("click", () => {
+                createBookForm.classList.toggle("hidden");
+              });
               targetDiv.classList.remove("loading");
+              targetDiv.append(innerDiv);
             }
             return;
 
@@ -612,12 +1304,6 @@ class Render {
                   );
 
                   const data = await response.json();
-
-                  console.log(
-                    "🚀 ✔ file: main.js:616 ✔ Render ✔ createAuthorForm.addEventListener ✔ data:",
-                    data,
-                  );
-
                   if (data.error) {
                     const errorMessage = innerDiv.querySelector("#authorError");
 

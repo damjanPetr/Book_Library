@@ -3,3 +3,9 @@ export default function elementFromHTML(html) {
   template.innerHTML = html.trim();
   return template.content.firstElementChild;
 }
+
+export function changeDateFormat(dateString) {
+  const date = new Date(dateString).toISOString().split("T")[0];
+
+  return date;
+}

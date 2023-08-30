@@ -3,7 +3,6 @@ import { Render } from "./main.js";
 
 const routes = {
   "/": {
-    // path: "../views/homepage.html",
     path: "views/homepage.html",
     title: "Library",
     discription: "",

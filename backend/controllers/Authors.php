@@ -2,7 +2,6 @@
 
 namespace Authors;
 
-// require_once __DIR__ . '/../database.php';
 require_once __DIR__ . '/../autoloader.php';
 
 use Database\Database;
