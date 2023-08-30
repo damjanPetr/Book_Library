@@ -568,6 +568,10 @@ body {
   bottom: 0px;
 }
 
+.bottom-\[80\%\]{
+  bottom: 80%;
+}
+
 .left-1\/2{
   left: 50%;
 }
@@ -609,6 +613,10 @@ body {
   margin-right: auto;
 }
 
+.-ml-2{
+  margin-left: -0.5rem;
+}
+
 .mb-1{
   margin-bottom: 0.25rem;
 }
@@ -631,6 +639,10 @@ body {
 
 .ml-auto{
   margin-left: auto;
+}
+
+.mr-4{
+  margin-right: 1rem;
 }
 
 .mt-2{
@@ -662,6 +674,10 @@ body {
 
 .h-20{
   height: 5rem;
+}
+
+.h-80{
+  height: 20rem;
 }
 
 .h-96{
@@ -710,6 +726,10 @@ body {
 
 .flex-1{
   flex: 1 1 0%;
+}
+
+.flex-auto{
+  flex: 1 1 auto;
 }
 
 .flex-initial{
@@ -1021,8 +1041,21 @@ body {
   fill: #10b981;
 }
 
+.fill-slate-600{
+  fill: #475569;
+}
+
+.object-contain{
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
 .p-1{
   padding: 0.25rem;
+}
+
+.p-1\.5{
+  padding: 0.375rem;
 }
 
 .p-2{
@@ -1031,10 +1064,6 @@ body {
 
 .p-4{
   padding: 1rem;
-}
-
-.p-1\.5{
-  padding: 0.375rem;
 }
 
 .px-1{
@@ -1070,6 +1099,10 @@ body {
 .py-2{
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+}
+
+.pr-4{
+  padding-right: 1rem;
 }
 
 .pt-4{
@@ -1195,12 +1228,15 @@ body {
 }
 
 .loading {
-  background-color: rgb(201, 241, 241)152, 203, 203);
+  /* color: violet; */
+  background-color: rgb(201, 241, 241);
   background-image: url('data:image/svg+xml,\ <svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 -20 40 40">\ <style> /* ...YO DAWG... */ circle { animation: 4s a infinite linear, 3s o infinite linear; }\ @keyframes a {from{stroke-dasharray:100 0}50%25{stroke-dasharray:0 100}to{stroke-dasharray:100 0}}\ @keyframes o {from{stroke-dashoffset:75}to{stroke-dashoffset:375}}\ <%2Fstyle><circle r="15.9154943092" stroke-width="7" fill="none" stroke="snow" />\ </svg>');
+  background-blend-mode: luminosity;
   background-position: center center;
   background-repeat: no-repeat;
-  background-size: 50vmin;
-  min-height: 100%;
+  background-size: contain;
+  min-height: -moz-max-content;
+  min-height: max-content;
 }
 
 .tooltip:hover {
@@ -1215,6 +1251,7 @@ body {
   left: 50%;
   transform: translateX(-50%) translateY(var(--translate-y)) scale(var(--scale));
   transition: transform 100ms;
+  z-index: 100;
 }
 
 .tooltip::before {
@@ -1241,38 +1278,7 @@ body {
 .tooltip:hover.tooltip::before,
 .tooltip:hover.tooltip::after {
   --scale: 1;
-}
-
-.tooltip-nohover::before,
-.tooltip-nohover::after {
-  --scale: 1;
-  position: absolute;
-  top: -0.25rem;
-  left: 50%;
-  transform: translateX(-50%) translateY(var(--translate-y, 0))
-    scale(var(--scale));
-  transition: transform 100ms;
-}
-
-.tooltip-nohover::before {
-  --translate-y: calc(-100% - 10px);
-  background-color: inherit;
-  content: attr(data-tooltip);
-  width: -moz-max-content;
-  width: max-content;
-  padding: 0.25rem;
-  border-radius: 5px;
-  transform-origin: bottom center;
-}
-
-.tooltip-nohover::after {
-  --translate-y: -10px;
-  content: "";
-  height: 10px;
-  width: 10px;
-  border: 10px solid transparent;
-  border-top-color: inherit;
-  transform-origin: top center;
+  z-index: 100;
 }
 
 .activeEditForm input{
@@ -1284,6 +1290,12 @@ body {
 .activeEditItem{
   --tw-bg-opacity: 1;
   background-color: rgb(153 246 228 / var(--tw-bg-opacity));
+}
+
+.error-img{
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity));
+  border-radius: 0.5rem;
 }
 
 .before\:mt-4::before{

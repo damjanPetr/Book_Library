@@ -1,6 +1,7 @@
 import { Login } from "./Auth.js";
 import elementFromHTML, { changeDateFormat } from "./helper.js";
 import "./router.js";
+import { Validation } from "./validation.js";
 const loginBtn = document.querySelector("#loginBtn");
 const homeBtn = document.querySelector("#homeBtn");
 
@@ -79,6 +80,7 @@ class Render {
             {
               const innerDiv = elementFromHTML(`
               <div class="w-full relative">
+              
               <div class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black">
                   <h1 class="text-xl ">Books</h1>
                   <div class="flex items-center cursor-pointer rounded-md bg-blue-500 text-white p-2" id="createNewBtn" >
@@ -96,22 +98,22 @@ class Render {
                 <form  id="createBookForm" class="border-red-500 border hidden bg-violet-50">
                 <div class="hidden w-full p-2 absolute top-4 bg-red-200 rounded-md" id="authorError"></div>
                   <div class="border-2 border-teal-500">
-                    <div  id="createNewAuthor" class="relative tooltip-nohover p-4 space-y-4 [&_input[type='text']]:w-full" >
+                    <div  id="createNewAuthor" class="relative  p-4 space-y-4 [&_input[type='text']]:w-full" >
                     <button class="absolute right-10 top-4 ">
                     <iconify-icon icon="material-symbols:done" class="peer/edit bg-green-400 cursor-pointer relative tooltip rounded-md p-1" data-tooltip="Create New Book"></iconify-icon>
                     </button>
                         <div class="">
                           <label for="title" class="text-gray-500 mb-2 underline underline-offset-1 " >Title: </label>
                           <br>
-                          <input  type="text" name="title" id="title" class="relative  p-1 rounded-md tooltip-nohover fill-emerald-500" data-tooltip="">
+                          <input  type="text" name="title" id="title" class="relative  p-1 rounded-md  fill-emerald-500 " data-tooltip="">
                         </div>
 
                         <div class="">
                               <label for="Author" class="text-gray-500 mb-2 underline underline-offset-1 " >Author: </label>
                               <br>
                                 <div class="selection relative w-full">
-                                <input type="text" class="hidden" value="" name="authorId" id="authorTitle">
-                                <p  class="bg-white p-2 text-md rounded-md w-full" >&nbsp;</p>
+                                <input type="text" class="hidden  " value="" name="authorId" id="authorTitle">
+                                <p  class="bg-white p-2 text-md rounded-md w-full " >&nbsp;</p>
                                 <div class="hidden options mt-2 absolute top-full left-1/2 -translate-x-1/2 w-full  z-10 bg-white rounded-md max-h-40 overflow-auto">
                                     <ul class="p-2 text-left break-words space-y-1">
                                       
@@ -143,13 +145,13 @@ class Render {
                           <div class="">
                             <label for="releaseDate" class="text-gray-500 mb-2 underline underline-offset-1 " >Release Date: </label>
                             <br>
-                            <input type="date" min="0" name="releaseDate" id="releaseDate" class="relative   p-1 rounded-md tooltip-nohover fill-emerald-500" data-tooltip="">
+                            <input type="date" min="0" name="releaseDate" id="releaseDate" class="relative   p-1 rounded-md  fill-emerald-500" data-tooltip="">
                           </div>
 
                           <div class="">
                             <label for="numberOfPages" class="text-gray-500 mb-2 underline underline-offset-1 " >Number Of Pages: </label>
                             <br>
-                            <input type="number" min="0" name="numberOfPages" id="numberOfPages" class="relative  w-20 p-1 rounded-md tooltip-nohover fill-emerald-500" data-tooltip="">
+                            <input type="number" min="0" name="numberOfPages" id="numberOfPages" class="relative  w-20 p-1 rounded-md  fill-emerald-500" data-tooltip="">
                           </div>
 
 
@@ -158,7 +160,7 @@ class Render {
                           <div class="">
                             <label for="pictureUrl" class="text-gray-500 mb-2 underline underline-offset-1 " >Picture Url: </label>
                             <br>
-                            <input type="text"  name="pictureUrl" id="pictureUrl" class="relative  w-full p-1 rounded-md tooltip-nohover fill-emerald-500" data-tooltip="">
+                            <input type="text"  name="pictureUrl" id="pictureUrl" class="relative  w-full p-1 rounded-md  fill-emerald-500" data-tooltip="">
                           </div>
 
                         
@@ -190,162 +192,255 @@ class Render {
                 release_date,
                 title,
               }) => {
-                const ItemDiv = elementFromHTML(`
-                <div class="toppper mb-4 w-80  relative max-h-full">
-                <div class=" absolute top-0 z-10  right-0">
-                    <div class="buttons p-1.5 rounded-b-lg flex gap-4  text-white  ml-auto bg-black/40 z-20 items-center">                    
-                        <div id="editBtn">
-                          <iconify-icon icon="material-symbols:edit" class="peer/edit bg-yellow-500 cursor-pointer relative tooltip rounded-md p-1" data-tooltip="Edit Book"></iconify-icon>
-                        </div>
-    
-                        <div id="checkEditBtn" class="hidden">
-                          <iconify-icon icon="material-symbols:check" class="peer/edit bg-green-200 cursor-pointer relative tooltip rounded-md" data-tooltip="Confirm Edit"></iconify-icon>
-                        </div>
-    
-                        <div id="deleteBtn">
-                          <iconify-icon icon="ph:x" class="bg-red-500   cursor-pointer tooltip relative rounded-md p-1" data-tooltip="Delete Book"></iconify-icon>
-                        </div>
-    
+                const changeDate = changeDateFormat(release_date);
+                const ItemDiv =
+                  elementFromHTML(`<div class="toppper mb-4 w-80 relative max-h-full">
+                <div class="absolute top-0 z-10 right-0">
+                  <div
+                    class="buttons p-1.5 rounded-b-lg flex gap-4 text-white ml-auto bg-black/40 z-20 items-center"
+                  >
+                    <div id="editBtn">
+                      <iconify-icon
+                        icon="material-symbols:edit"
+                        class="peer/edit bg-yellow-500 cursor-pointer relative tooltip rounded-md p-1"
+                        data-tooltip="Edit Book"
+                      ></iconify-icon>
                     </div>
+              
+                    <div id="checkEditBtn" class="hidden">
+                      <iconify-icon
+                        icon="material-symbols:check"
+                        class="peer/edit bg-green-200 cursor-pointer relative tooltip rounded-md"
+                        data-tooltip="Confirm Edit"
+                      ></iconify-icon>
                     </div>
-                
-                <form  id="editBookForm" class="border-red-500 border hidden bg-violet-50 h-full">
-
-                <div class="hidden w-full p-2 absolute top-4 bg-red-200 rounded-md" id="authorError"></div>
-
-                  <div class="border-2 border-teal-500 h-full flex items-center ">
-                    <div  id="createNewAuthor" class="relative tooltip-nohover p-4 space-y-4 [&_input[type='text']]:w-full w-full" >
-                    
-                        <div class="">
-                          <label for="title" class="text-gray-500 mb-2 underline underline-offset-1 " >Title: </label>
-                          <br>
-                          <input  type="text" name="title" id="title" class="relative  p-1 rounded-md tooltip-nohover fill-emerald-500" data-tooltip="">
-                        </div>
-
-                        <div class="">
-                              <label for="Author" class="text-gray-500 mb-2 underline underline-offset-1 " >Author: </label>
-                              <br>
-                                <div class="selection relative w-full">
-                                <input type="text" class="hidden" value="${author_id}" name="authorId" id="authorTitle">
-                                <p  class="bg-white p-2 text-md rounded-md w-full" >&nbsp;</p>
-                                <div class="hidden options mt-2 absolute top-full left-1/2 -translate-x-1/2 w-full  z-10 bg-white rounded-md max-h-40 overflow-auto">
-                                    <ul class="p-2 text-left break-words space-y-1">
-                                      
-                                    </ul>
-                                
-                                
-                                </div>
-                                
-                                </div>
-                                
+              
+                    <div id="deleteBtn">
+                      <iconify-icon
+                        icon="ph:x"
+                        class="bg-red-500 cursor-pointer tooltip relative rounded-md p-1"
+                        data-tooltip="Delete Book"
+                      ></iconify-icon>
+                    </div>
+                  </div>
+                </div>
+              
+                <form
+                  id="editBookForm"
+                  class="border-red-500 border hidden bg-violet-50 h-full"
+                >
+                  <div
+                    class="hidden w-full p-2 absolute top-4 bg-red-200 rounded-md"
+                    id="authorError"
+                  ></div>
+              
+                  <div class="border-2 border-teal-500 h-full flex items-center">
+                    <div
+                      id="createNewAuthor"
+                      class="relative p-4 space-y-4 [&_input[type='text']]:w-full w-full"
+                    >
+                      <div class="">
+                        <label
+                          for="title"
+                          class="text-gray-500 mb-2 underline underline-offset-1"
+                          >Title:
+                        </label>
+                        <br />
+                        <input
+                          type="text"
+                          name="title"
+                          id="title"
+                          class="relative p-1 rounded-md fill-emerald-500"
+                          data-tooltip=""
+                        />
+                      </div>
+              
+                      <div class="">
+                        <label
+                          for="Author"
+                          class="text-gray-500 mb-2 underline underline-offset-1"
+                          >Author:
+                        </label>
+                        <br />
+                        <div class="selection relative w-full">
+                          <input
+                            type="text"
+                            class="hidden"
+                            value="${author_id}"
+                            name="authorId"
+                            id="authorTitle"
+                          />
+                          <p class="bg-white p-2 text-md rounded-md w-full">&nbsp;</p>
+                          <div
+                            class="hidden options mt-2 absolute top-full left-1/2 -translate-x-1/2 w-full z-10 bg-white rounded-md max-h-40 overflow-auto"
+                          >
+                            <ul class="p-2 text-left break-words space-y-1"></ul>
                           </div>
-                        
-                          <div class="">
-                                
-                                <label for="Category" class="text-gray-500 mb-2 underline underline-offset-1 " >Category: </label>
-                                <br>
-                                      <div class="selectionCategory relative w-full">
-                                            <input type="text" class="hidden" value="${categories_id}" name="categoryId" id="categoryTitle">
-                                            <p  class="bg-white p-2 text-md rounded-md w-full" >&nbsp;</p>
-                                            <div class="hidden options mt-2 absolute top-full left-1/2 -translate-x-1/2 w-full  z-10 bg-white rounded-md max-h-40 overflow-auto">
-                                                <ul class="p-2 text-left break-words space-y-1">
-                                                  
-                                                </ul>
-                                            </div>
+                        </div>
+                      </div>
+              
+                      <div class="">
+                        <label
+                          for="Category"
+                          class="text-gray-500 mb-2 underline underline-offset-1"
+                          >Category:
+                        </label>
+                        <br />
+                        <div class="selectionCategory relative w-full">
+                                      <input type="text" class="hidden" value="${categories_id}" name="categoryId" id="categoryTitle" />
+                                      <p class="bg-white p-2 text-md rounded-md w-full"> &nbsp; </p>
+                                      <div class="hidden options mt-2 absolute top-full left-1/2 -translate-x-1/2 w-full z-10 bg-white rounded-md max-h-40 overflow-auto" >
+                                        <ul class="p-2 text-left break-words space-y-1">
+                                        </ul>
                                       </div>
-
-                          </div>
-                          
-                          <div class="">
-                            <label for="releaseDate" class="text-gray-500 mb-2 underline underline-offset-1 " >Release Date: </label>
-                            <br>
-                            <input type="date" min="0" name="releaseDate" id="releaseDate" class="relative   p-1 rounded-md tooltip-nohover fill-emerald-500" data-tooltip="">
-                          </div>
-
-                          <div class="">
-                            <label for="numberOfPages" class="text-gray-500 mb-2 underline underline-offset-1 " >Number Of Pages: </label>
-                            <br>
-                            <input type="number" min="0" name="numberOfPages" id="numberOfPages" class="relative  w-20 p-1 rounded-md tooltip-nohover fill-emerald-500" data-tooltip="">
-                          </div>
-
-
-
-                          
-                          <div class="">
-                            <label for="pictureUrl" class="text-gray-500 mb-2 underline underline-offset-1 " >Picture Url: </label>
-                            <br>
-                            <input type="text"  name="pictureUrl" id="pictureUrl" class="relative  w-full p-1 rounded-md tooltip-nohover fill-emerald-500" data-tooltip="">
-                          </div>
-
-                        
-                        
+                                    </div>
+                      </div>
+              
+                      <div class="">
+                        <label
+                          for="releaseDate"
+                          class="text-gray-500 mb-2 underline underline-offset-1"
+                          >Release Date:
+                        </label>
+                        <br />
+                        <input
+                          type="date"
+                          min="0"
+                          name="releaseDate"
+                          id="releaseDate"
+                          class="relative p-1 rounded-md fill-emerald-500"
+                          data-tooltip=""
+                        />
+                      </div>
+              
+                      <div class="">
+                        <label
+                          for="numberOfPages"
+                          class="text-gray-500 mb-2 underline underline-offset-1"
+                          >Number Of Pages:
+                        </label>
+                        <br />
+                        <input
+                          type="number"
+                          min="0"
+                          name="numberOfPages"
+                          id="numberOfPages"
+                          class="relative w-20 p-1 rounded-md fill-emerald-500"
+                          data-tooltip=""
+                        />
+                      </div>
+              
+                      <div class="">
+                        <label
+                          for="pictureUrl"
+                          class="text-gray-500 mb-2 underline underline-offset-1"
+                          >Picture Url:
+                        </label>
+                        <br />
+                        <input
+                          type="text"
+                          name="pictureUrl"
+                          id="pictureUrl"
+                          class="relative w-full p-1 rounded-md fill-emerald-500"
+                          data-tooltip=""
+                        />
+                      </div>
                     </div>
                   </div>
                 </form>
-                    <div class="content  bg-blue-100">
-                    
-                    <div class="  w-full relative rounded-t-xl">
-                    
-                    <div class="editPopup hidden ">
-                    
-                    </div>
 
-                    
-
-
-
-                        <img class="replace-img  content-inner w-full h-full rounded-t-lg" src=${img} alt="${title} image" >
-                        <div class="content-inner px-4 py-1.5 break-words absolute bottom-0 w-full bg-neutral-500 text-white rounded-t-lg text-lg">
-                          <p class="replace-title">${title}</p>
-                      </div>
-                    </div>  
-                  
-                    <div class="content-inner p-4 flex justify-between">
-                    
+                <div class="content bg-blue-100">
+                  <div class="w-full relative rounded-t-xl  h-96 ">
+                    <div class="editPopup hidden "></div>
+                    <img
+                      class="replace-img content-inner w-full h-full rounded-t-lg"
+                      src="${img}"
                       
-                      <div class="">
-                      <div class="p-1">
-
-                      <p  class="text-sm underline text-gray-500">Author:</p>
-                      <p class="replace-author">${
-                        first_name + " "
-                      } ${last_name}</p>
+                      alt="${title} image"
+                    />
+                    <div
+                      class="content-inner px-4 py-1.5 break-words absolute bottom-0 w-full bg-neutral-500 text-white rounded-t-lg text-lg"
+                    >
+                      <p class="replace-title">${title}</p>
                     </div>
-                     
+                  </div>
+              
+                  <div class="content-inner p-4 flex justify-between">
+                    <div class="">
                       <div class="p-1">
-                      <p class="text-sm underline text-gray-500">Category: </p>
+                        <p class="text-sm underline text-gray-500">Author:</p>
+                        <input
+                          class="replace-authorId hidden"
+                          type="button"
+                          value="${author_id}"
+                        />
+              
+                        <p class="replace-author">${
+                          first_name + " "
+                        } ${last_name}</p>
+                      </div>
+              
+                      <div class="p-1">
+                        <p class="text-sm underline text-gray-500">Category:</p>
+                        <input
+                          class="replace-categoryId hidden"
+                          type="button"
+                          value="${categories_id}"
+                        />
                         <p class="replace-category">${Category}</p>
                       </div>
-                      </div>
-                      
-
-                <div class="">
-                    <div class="p-1">
+                    </div>
+              
+                    <div class="">
+                      <div class="p-1">
                         <p class="text-sm underline text-gray-500">Number Of Pages:</p>
-                        <p class="replace-number_of_pages">${number_of_pages}</p>
+                        <p data-validation="" class="replace-number_of_pages">${number_of_pages}</p>
                       </div>
-
+              
                       <div class="p-1">
                         <p class="text-sm underline text-gray-500">Release Date:</p>
-                        <p class="replace-release_date">${release_date}</p>
+                        <p class="replace-release_date">${changeDate}</p>
                       </div>
-                </div>
-                      
-                      
                     </div>
+                  </div>
+                  
                 </div>
-                `);
+              </div>
+              `);
+                // const dataset = ItemDiv.querySelectorAll("[data-validation]");
+
+                // const play = new Validation(dataset, alert);
 
                 /* 
                         Starting
                         Card 
                         Divs
                       */
+
+                const bookImage = ItemDiv.querySelector(".replace-img");
+                const failbackImg = ItemDiv.querySelector(".failback-img");
+
+                bookImage.addEventListener("error", function (e) {
+                  this.error = null;
+                  // bookImage.style.display = "none";
+                  bookImage.src = "assets/book-sharp.svg";
+                  // failbackImg.src = "assets/book-sharp.svg";
+
+                  // failbackImg.classList.add("error-img");
+                  // failbackImg.classList.remove("hidden");
+                });
+
+                const replace_authorId =
+                  ItemDiv.querySelector(".replace-authorId");
+                const replace_categoryId = ItemDiv.querySelector(
+                  ".replace-categoryId",
+                );
+                console.log(replace_authorId, replace_categoryId);
+
                 const replace_title = ItemDiv.querySelector(".replace-title");
                 const replace_author = ItemDiv.querySelector(".replace-author");
                 const replace_category =
                   ItemDiv.querySelector(".replace-category");
-                console.log(replace_category);
                 const replace_number_of_pages = ItemDiv.querySelector(
                   ".replace-number_of_pages",
                 );
@@ -354,13 +449,16 @@ class Render {
                 );
                 const replace_img = ItemDiv.querySelector(".replace-img");
 
-                const bookTitle = ItemDiv.querySelector("#title");
+                /* EditFrom Selections */
+                const editFormBookTitle = ItemDiv.querySelector("#title");
+                const editFormreleaseDate =
+                  ItemDiv.querySelector("#releaseDate");
+                const editFormnumberOfPages =
+                  ItemDiv.querySelector("#numberOfPages");
 
-                const releaseDate = ItemDiv.querySelector("#releaseDate");
+                const editFormpictureUrl = ItemDiv.querySelector("#pictureUrl");
 
-                const numberOfPages = ItemDiv.querySelector("#numberOfPages");
                 const editBookForm = ItemDiv.querySelector("#editBookForm");
-                const pictureUrl = ItemDiv.querySelector("#pictureUrl");
 
                 /* BUTTONS 
                     ON 
@@ -396,10 +494,6 @@ class Render {
                   ".selectionCategory > p",
                 );
                 const categoryTitle = ItemDiv.querySelector("#categoryTitle");
-
-                const categoryId = ItemDiv.querySelector("#categoryId");
-
-                const authorId = ItemDiv.querySelector("#authorId");
 
                 /* 
                 Edit Form Author Dropdow
@@ -495,6 +589,7 @@ class Render {
 
                 editBookForm.addEventListener("submit", async (e) => {
                   e.preventDefault();
+                  console.log("EDITFORM ACTIVATED");
                   const formData = Object.fromEntries(
                     new FormData(editBookForm),
                   );
@@ -522,7 +617,11 @@ class Render {
                     //   createBookDiv(data.data),
                     //   ItemDiv,
                     // );
-
+                    /*
+                        Change The starting card author/Category Title to the changed ones
+                    */
+                    replace_authorId.value = authorTitle.value;
+                    replace_categoryId.value = categoryTitle.value;
                     replace_title.textContent = data.data.title;
                     replace_release_date.textContent = data.data.release_date;
 
@@ -539,8 +638,8 @@ class Render {
                     categoryTitle.value = data.data.author_id;
                     authorTitle.value = data.data.categories_id;
 
-                    numberOfPages.value = data.data.number_of_pages;
-                    pictureUrl.value = data.data.img;
+                    editFormnumberOfPages.value = data.data.number_of_pages;
+                    editFormpictureUrl.value = data.data.img;
                   }
                 });
 
@@ -565,17 +664,46 @@ class Render {
                   /* 
                   place initial selection text 
                   */
-                  const changedDate = changeDateFormat(
-                    replace_release_date.textContent,
-                  );
-
-                  releaseDate.value = changedDate;
+                  editFormreleaseDate.value = replace_release_date.textContent;
 
                   categorySelection.textContent = replace_category.textContent;
                   authorSelection.textContent = replace_author.textContent;
-                  bookTitle.value = replace_title.textContent;
-                  numberOfPages.value = replace_number_of_pages.textContent;
-                  pictureUrl.value = replace_img.getAttribute("src");
+                  editFormBookTitle.value = replace_title.textContent;
+                  editFormnumberOfPages.value =
+                    replace_number_of_pages.textContent;
+
+                  editFormpictureUrl.value = replace_img.getAttribute("src");
+
+                  authorTitle.value = replace_authorId.value;
+
+                  categoryTitle.value = replace_categoryId.value;
+
+                  console.group("variables");
+                  console.log(replace_author.textContent);
+                  console.log(replace_authorId.value);
+                  console.log(replace_categoryId.value);
+                  console.log(replace_category.textContent);
+                  console.log(replace_img.getAttribute("src"));
+                  console.log(replace_number_of_pages.textContent);
+                  console.log(replace_release_date.textContent);
+                  console.log(replace_title.textContent);
+
+                  console.groupEnd("variables");
+
+                  console.error(
+                    "authorTitle:",
+                    authorTitle.value,
+                    "replace author",
+
+                    replace_authorId.value,
+                  );
+
+                  console.error(
+                    "categoryTitle:",
+                    categoryTitle.value,
+                    "replace category",
+                    replace_categoryId.value,
+                  );
                 });
 
                 /* checkbtn event listener */
@@ -775,33 +903,83 @@ class Render {
 
           case "categoryBtn":
             {
-              const innerDiv = elementFromHTML(`
-            <div class="w-full ">
-              <h1 class="mb-4">Categories</h1>
-              <div class="categoryDiv pt-4">
-                  <div class="flex addNew">
-                  
-                    <div class="flex items-center  bg-stone-100 mb-4 p-2 justify-between w-80 rounded-sm text-base">
-                    <form >
-                    <div class="">
-                     
-                    <div class="relative tooltip-nohover hidden"></div>
-                    <input type="text" name="newtitle" id="newtitle" class="relative tooltip-nohover" data-tooltip="">
-                    </div>
+              const innerDiv = elementFromHTML(`<div class="w-full">
+              <div
+                class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black"
+              >
+                <h1 class="text-xl">Categories</h1>
+                <div
+                  class="flex items-center cursor-pointer rounded-md bg-blue-500 text-white p-2"
+                  id="createNewBtn"
+                >
+                  <p class="">Create New</p>
+                  <iconify-icon
+                    icon="gridicons:create"
+                    class="ml-1 self-center"
+                  ></iconify-icon>
+                </div>
+              </div>
+            
+                <div class="relative">
+              
+                <div
+                  class="flex addNew hidden -translate-x-1/2 top-2 w-80 left-1/2 absolute z-20 rounded-lg p-2 bg-stone-100  relative"
+                  id="createNewAuthorForm"
+                >
+                  <div
+                    class="items-center  mb-4 justify-between w-full rounded-sm text-base "
+                  >
+                    <form>
+                      
+                      <div class="">
+                        <div class="  hidden"></div>
+                       
+                        <div class="">
+                        <div class="flex items-center justify-between pr-4 mb-2">
+                        <label for="newtitle" class="text-gray-500 mb-2 underline underline-offset-1 mr-4" > Category Name: </label >
+                              <button class="z-10">
+                                  <iconify-icon icon="material-symbols:done" class="peer/edit bg-green-400 cursor-pointer relative tooltip rounded-md p-1" data-tooltip="Create New Category" ></iconify-icon>
+                              </button>
+                        </div>
+                              
+                        
+                        <div class="flex items-center justify-between flex-auto ">
+                          <div class=" w-full  -ml-2 bottom-[80%] text-white absolute bg-red-500" ></div>
+                          <input type="text" name="newtitle" id="newtitle" class="w-full " />
+                        </div>
+                       </div>
+                       
+                        
+                        
+                      </div>
                     </form>
-
-                  <div class="buttons ml-2 flex gap-4">
-                  <iconify-icon icon="gridicons:create"></iconify-icon>
-      
-
                   </div>
                 </div>
-                  </div>
-              </div>     
+
+                <div class="categoryDiv pt-4 ">
+                
+                </div>
+                
+                </div>
+
+
+                
+              
+              
             </div>
-              `);
+            `);
 
               const categoryDiv = innerDiv.querySelector(".categoryDiv");
+
+              const createNewBtn = innerDiv.querySelector("#createNewBtn");
+
+              const createNewForm = innerDiv.querySelector(
+                "#createNewAuthorForm",
+              );
+              createNewBtn.addEventListener("click", () => {
+                createNewForm.classList.toggle("hidden");
+                categoryDiv.classList.toggle("blur-lg");
+              });
 
               const addForm = innerDiv.querySelector("form");
               /**
@@ -871,37 +1049,41 @@ class Render {
                   itemTitle.classList.add("hidden");
                   editForm.classList.remove("hidden");
                   editForm.classList.add("activeEditForm");
+                });
 
-                  editForm.addEventListener("submit", async (e) => {
-                    e.preventDefault();
-                    console.log(142421421);
+                /* 
+                Create 
+                New Category Item Form
+                 */
+                editForm.addEventListener("submit", async (e) => {
+                  e.preventDefault();
+                  console.log(142421421);
 
-                    const response = await fetch(
-                      "backend/controllers/Category.php",
-                      {
-                        method: "post",
-                        body: JSON.stringify({
-                          action: "editCategory",
-                          json: {
-                            title: title,
-                            newTitle: newTitle.value,
-                          },
-                        }),
-                      },
-                    );
+                  const response = await fetch(
+                    "backend/controllers/Category.php",
+                    {
+                      method: "post",
+                      body: JSON.stringify({
+                        action: "editCategory",
+                        json: {
+                          title: title,
+                          newTitle: newTitle.value,
+                        },
+                      }),
+                    },
+                  );
 
-                    const data = await response.json();
-                    if (data.error) {
-                    } else {
-                      editForm.classList.add("hidden");
-                      itemTitle.firstElementChild.textContent = newTitle.value;
-                      itemTitle.classList.remove("hidden");
+                  const data = await response.json();
+                  if (data.error) {
+                  } else {
+                    editForm.classList.add("hidden");
+                    itemTitle.firstElementChild.textContent = newTitle.value;
+                    itemTitle.classList.remove("hidden");
 
-                      editBtn.classList.remove("hidden");
-                      checkEditBtn.classList.add("hidden");
-                      editForm.classList.remove("activeEditForm");
-                    }
-                  });
+                    editBtn.classList.remove("hidden");
+                    checkEditBtn.classList.add("hidden");
+                    editForm.classList.remove("activeEditForm");
+                  }
                 });
 
                 const deleteBtn = itemDiv.querySelector("#deleteBtn");
@@ -916,7 +1098,6 @@ class Render {
                         action: "deleteCategory",
                         json: {
                           title: title,
-                          newtitle: "arivegern",
                         },
                       }),
                     },
@@ -933,9 +1114,7 @@ class Render {
 
               addForm.addEventListener("submit", async (e) => {
                 e.preventDefault();
-
-                const input = addForm.querySelector("input");
-
+                const input = addForm.querySelector("#newtitle");
                 const response = await fetch(
                   "backend/controllers/Category.php",
                   {
@@ -948,16 +1127,21 @@ class Render {
                 );
 
                 const data = await response.json();
+                const errorMessage = input.previousElementSibling;
 
                 if (data.error) {
-                  const errorMessage = input.previousElementSibling;
                   errorMessage.dataset.tooltip = data.message;
                   errorMessage.classList.remove("hidden");
                 } else {
+                  errorMessage.classList.add("hidden");
+
                   const newItem = createcategoryItems(input.value.trim());
+                  createNewForm.classList.toggle("hidden");
+
+                  categoryDiv.classList.toggle("blur-lg");
+
                   categoryDiv.append(newItem);
                   input.value = "";
-                  console.log(data);
                 }
               });
 
@@ -993,13 +1177,14 @@ class Render {
               {
                 const innerDiv = elementFromHTML(`
               <div class="w-full relative ">
-              <div class="flex items-center justify-between px-8 border-b-2 border-b-black">
-                  <h1 class="mb-4 text-xl ">Book Categories</h1>
+              <div class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black">
+                  <h1 class="text-xl ">Authors</h1>
                   <div class="flex items-center cursor-pointer rounded-md bg-blue-500 text-white p-2" id="createAuthor" >
                         <p class="">Create New</p>
                         <iconify-icon icon="gridicons:create" class=" ml-1 self-center" ></iconify-icon>
                   </div>
               </div>
+            
 
                 
                 <div class="relative">
@@ -1010,7 +1195,7 @@ class Render {
                 <form class="border-red-500 border" id="createAuthorForm">
                 <div class="hidden w-full p-2 absolute top-4 bg-red-200 rounded-md" id="authorError"></div>
                   <div class="border-2 border-teal-500">
-                    <div  id="createNewAuthor" class="relative tooltip-nohover p-4 space-y-4 [&_input[type='text']]:w-11/12" >
+                    <div  id="createNewAuthor" class="relative  p-4 space-y-4 [&_input[type='text']]:w-11/12" >
                     <button>
                     <iconify-icon icon="material-symbols:done" class="peer/edit bg-green-400 cursor-pointer relative tooltip rounded-md p-1" data-tooltip="Create New Author"></iconify-icon>
                     </button>
@@ -1018,19 +1203,19 @@ class Render {
                         <div class="">
                           <label for="newFirstName" class="text-gray-500 mb-2 underline underline-offset-1 " >First Name: </label>
                           <br>
-                          <input type="text" name="newFirstName" id="newFirstName" class="relative  p-1 rounded-md tooltip-nohover fill-emerald-500" data-tooltip="">
+                          <input type="text" name="newFirstName" id="newFirstName" class="relative  p-1 rounded-md  fill-emerald-500" data-tooltip="">
                         </div>
 
                         <div class="">
                         <label for="newLastName" class="text-gray-500 mb-2 underline underline-offset-1 " >Last Name: </label>
                         <br>
-                          <input type="text" name="newLastName" id="newLastName" class="relative  p-1 rounded-md tooltip-nohover fill-emerald-500" data-tooltip="">
+                          <input type="text" name="newLastName" id="newLastName" class="relative  p-1 rounded-md  fill-emerald-500" data-tooltip="">
                         </div>
 
                         <div class="">
                             <label class="text-gray-500 mb-2 underline underline-offset-1 " for="newShortBio">Short Biography:</label>
                             <br>
-                            <textarea name="newShortBio" rows="3" id="newShortBio"  class="relative p-2  rounded-md tooltip-nohover fill-emerald-500 w-full" data-tooltip=""></textarea>
+                            <textarea name="newShortBio" rows="3" id="newShortBio"  class="relative p-2  rounded-md  fill-emerald-500 w-full" data-tooltip=""></textarea>
                         </div>
                     </div>
                   </div>
