@@ -60,19 +60,39 @@ class Render {
     const element = elementFromHTML(html);
     const targetDiv = element.querySelector("#targetDiv");
     const tabBtnDiv = element.querySelector("#tabBtnDiv");
+    const bookBtn = tabBtnDiv.querySelector("#bookBtn");
+
+    // let event = new Event("click");
+    let firstLoad = true;
+
     tabBtnDiv.addEventListener("click", async (e) => {
-      if (e.target.id === "") {
+      //    ! Use this logic to activate the bookBtn click event once per refresh
+      if (firstLoad) {
+        e.target.id = "bookBtn";
+        firstLoad = false;
+      }
+
+      if (
+        e.target.matches("button") === false &&
+        !firstLoad &&
+        e.target.id !== "bookBtn"
+        // toggle === true
+      ) {
         return;
       } else {
-        console.log(e.target.id);
         const tabs = tabBtnDiv.querySelectorAll("button").forEach((item) => {
           item.classList.remove("tabActive");
         });
-
+        if (e.target.id === "bookBtn") {
+          bookBtn.classList.add("tabActive");
+        }
+        console.log("play");
         if (e.target.matches("button")) {
           e.target.classList.add("tabActive");
         }
+
         targetDiv.innerHTML = "";
+
         targetDiv.classList.add("loading");
 
         switch (e.target.id) {
@@ -225,10 +245,7 @@ class Render {
                   </div>
                 </div>
               
-                <form
-                  id="editBookForm"
-                  class="border-red-500 border hidden bg-violet-50 h-full"
-                >
+                <form id="editBookForm" class="border-red-500 border hidden bg-violet-50 h-full" >
                   <div
                     class="hidden w-full p-2 absolute top-4 bg-red-200 rounded-md"
                     id="authorError"
@@ -247,6 +264,7 @@ class Render {
                         </label>
                         <br />
                         <input
+                        data-validation=""
                           type="text"
                           name="title"
                           id="title"
@@ -255,7 +273,7 @@ class Render {
                         />
                       </div>
               
-                      <div class="">
+                      <div  class="">
                         <label
                           for="Author"
                           class="text-gray-500 mb-2 underline underline-offset-1"
@@ -304,6 +322,7 @@ class Render {
                         </label>
                         <br />
                         <input
+                        required
                           type="date"
                           min="0"
                           name="releaseDate"
@@ -394,7 +413,7 @@ class Render {
                     <div class="">
                       <div class="p-1">
                         <p class="text-sm underline text-gray-500">Number Of Pages:</p>
-                        <p data-validation="" class="replace-number_of_pages">${number_of_pages}</p>
+                        <p  class="replace-number_of_pages">${number_of_pages}</p>
                       </div>
               
                       <div class="p-1">
@@ -407,9 +426,10 @@ class Render {
                 </div>
               </div>
               `);
-                // const dataset = ItemDiv.querySelectorAll("[data-validation]");
+                const validationElements =
+                  ItemDiv.querySelectorAll("[data-validation]");
 
-                // const play = new Validation(dataset, alert);
+                const validation = new Validation(validationElements, alert);
 
                 /* 
                         Starting
@@ -956,7 +976,7 @@ class Render {
                   </div>
                 </div>
 
-                <div class="categoryDiv pt-4 ">
+                <div class="categoryDiv p-4 gap-2 flex flex-wrap  border-2 border-gray-600  ">
                 
                 </div>
                 
@@ -989,7 +1009,7 @@ class Render {
                */
               const createcategoryItems = (title) => {
                 const itemDiv = elementFromHTML(`
-                <div class="flex items-center  bg-stone-100 mb-4 p-2 justify-between w-80 rounded-sm text-base">
+                <div class="flex  items-center  bg-stone-100 mb-2 p-2 justify-between w-60 rounded-sm text-base flex-auto">
 
                     <div id="name">
                       <p>${title}</p>
@@ -1273,10 +1293,8 @@ class Render {
                             <div class="max-w-[200px] break-all flex-initial">
                               <p class="mb-1 text-gray-500">Author:</p>
                               <div class="font-semibold  ">
-                                    <p id="FirstName">${
-                                      first_name + " "
-                                    }${last_name}</p>
-                                    <p id="LastName" class="ml-1"></p>
+                                    <span id="FirstName" class="ml-0.5">${first_name}</span>
+                                    <span id="LastName" class="ml-0.5">${last_name}</span>
                           <form  class="" id="editForm" >
                                     <input class="hidden" type="text" name="newTitle" id="newFirstName" data-edit="">
                                     <input class="hidden" type="text" name="newTitle" id="newLastName" data-edit="">
@@ -1300,12 +1318,14 @@ class Render {
                         </div>
                         <input type="checkbox" name="ch" id="ch${id}" class="peer hidden">
                         <p class="mb-2 text-gray-500">Short-Bio:</p>
-                        <p id="ShortBio"  class="text-sm line-clamp-6 rounded-md  break-all overflow-hidden h-20 peer-checked:h-max group overflow-ellipsis whitespace-pre-line">${short_bio}
-                        </p>
+                        <p id="ShortBio"  class="text-sm  rounded-md h-12 break-all overflow-hidden  peer-checked:h-max group overflow-ellipsis whitespace-pre-line">${short_bio}</p>
 
                         <textarea  class="hidden w-full" rows="5" type="text" name="newTitle" id="newShortBio"  data-edit=""></textarea>
-
-                            <label for="ch${id}" class="before:content-['Read_More'] peer-checked:before:content-['Read_Less']  before:mt-4 before:rounded-md before:bg-blue-400 before:p-2 before:text-white"></label>
+                        <div class="mt-4">
+                        <label for="ch${id}" class="before:content-['Read_More'] peer-checked:before:content-['Read_Less']  before:rounded-md before:bg-blue-400 before:p-2 before:text-white"></label>
+                          
+                        </div>
+                            
 
                         </div>
                        
@@ -1556,6 +1576,9 @@ class Render {
         }
       }
     });
+    let event = new Event("click");
+
+    tabBtnDiv.dispatchEvent(event);
 
     const logoutBtn = element.querySelector("button");
 

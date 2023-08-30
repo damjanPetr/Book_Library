@@ -92,6 +92,15 @@ class Setup
         ('Comedy'),
         ('Romance'),
         ('Fantasy')
+        ('Thriller')
+        ('Contemporary')
+        ('Classics')
+        ('Horror')
+        ('Biography')
+        ('Poetry')
+        ('History')
+        ('Crime')
+        ('Self-Help')
        ;";
 
         $inputSQLUsers = "INSERT INTO authors (first_name,last_name,short_bio)

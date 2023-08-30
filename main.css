@@ -81,3 +81,6 @@
   @apply bg-gray-200;
   @apply rounded-lg;
 }
+
+.validation-error {
+}
