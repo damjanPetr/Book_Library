@@ -90,7 +90,11 @@ class Comments
     {
         $conn = new Database();
         $pdo = $conn->getConnection();
-        $sql = 'SELECT * FROM comments';
+        $sql = 'SELECT c.*, u.username
+        FROM 
+        comments as c
+        INNER JOIN users as u ON c.users_id = u.id;  
+        ';
 
         $stm = $pdo->prepare($sql);
         $stm->execute();

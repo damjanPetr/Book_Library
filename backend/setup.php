@@ -240,12 +240,13 @@ class Setup
                     'user_id' => '2'
                 ],
                 [
-                    'body' => 'Comment 2 ',
+                    'body' => 'Comment 2 
+                    Comment 2 Comment 2 Comment 2 Comment 2 Comment 2 Comment 2 Comment 2 Comment 2 Comment 2 Comment 2 Comment 2 ',
                     'books_id' => '1',
                     'user_id' => '3'
                 ],
                 [
-                    'body' => 'Comment 3 ',
+                    'body' => 'Comment 3 Comment 3 Comment 3 Comment 3 Comment 3 Comment 3 Comment 3 Comment 3 Comment 3 Comment 3 Comment 3 ',
                     'books_id' => '1',
                     'user_id' => '2'
                 ],
