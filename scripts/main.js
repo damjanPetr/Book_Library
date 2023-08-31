@@ -1286,7 +1286,7 @@ class Render {
                 ) => {
                   const itemDiv = elementFromHTML(`
                   <article class="flex   items-start mb-4  justify-between w-80  text-base  shadow-inner rounded-md">
-                  <div class="p-4">
+                  <div class="p-4 ">
                     
                       <div id="name" class="">
                         <div class="flex items-center  justify-between mb-4">
@@ -1301,27 +1301,28 @@ class Render {
                             </form>
                     </div>
                             </div>
-                            <div class="buttons ml-2 rounded-sm  bg-gray-100">
-                            <div class="flex items-center gap-2 justify-around w-full p-1">
-                            
-                            <div id="editBtn">
-                              <iconify-icon icon="material-symbols:edit" class="peer/edit bg-red-200 cursor-pointer relative tooltip rounded-md p-1" data-tooltip="Edit Category"></iconify-icon>
-                            </div>
-                            <div id="checkEditBtn" class="hidden">
-                              <iconify-icon icon="material-symbols:check" class="peer/edit bg-green-200 cursor-pointer relative tooltip rounded-md p-1" data-tooltip="Confirm Edit"></iconify-icon>
-                            </div>
-                            <div id="deleteBtn">
-                              <iconify-icon icon="ph:x" class="bg-yellow-200 cursor-pointer tooltip relative p-1" data-tooltip="Delete Category"></iconify-icon>
-                            </div>
-                            
-                                  </div></div>
+                                        <div class="buttons ml-2 rounded-sm  bg-gray-100">
+                                        <div class="flex items-center gap-2 justify-around w-full p-1">
+                                        
+                                        <div id="editBtn">
+                                          <iconify-icon icon="material-symbols:edit" class="peer/edit bg-red-200 cursor-pointer relative tooltip rounded-md p-1" data-tooltip="Edit Category"></iconify-icon>
+                                        </div>
+                                        <div id="checkEditBtn" class="hidden">
+                                          <iconify-icon icon="material-symbols:check" class="peer/edit bg-green-200 cursor-pointer relative tooltip rounded-md p-1" data-tooltip="Confirm Edit"></iconify-icon>
+                                        </div>
+                                        <div id="deleteBtn">
+                                          <iconify-icon icon="ph:x" class="bg-yellow-200 cursor-pointer tooltip relative p-1" data-tooltip="Delete Category"></iconify-icon>
+                                        </div>
+                                        
+                                              </div></div>
                         </div>
+
                         <input type="checkbox" name="ch" id="ch${id}" class="peer hidden">
                         <p class="mb-2 text-gray-500">Short-Bio:</p>
-                        <p id="ShortBio"  class="text-sm  rounded-md h-12 break-all overflow-hidden  peer-checked:h-max group overflow-ellipsis whitespace-pre-line">${short_bio}</p>
+                        <p id="ShortBio"  class="text-sm  rounded-md   break-all line-clamp-2  peer-checked:h-max group  peer-checked:line-clamp-none whitespace-pre-line">${short_bio}</p>
 
                         <textarea  class="hidden w-full" rows="5" type="text" name="newTitle" id="newShortBio"  data-edit=""></textarea>
-                        <div class="mt-4">
+                        <div class="mt-4  ">
                         <label for="ch${id}" class="before:content-['Read_More'] peer-checked:before:content-['Read_Less']  before:rounded-md before:bg-blue-400 before:p-2 before:text-white"></label>
                           
                         </div>
@@ -1331,7 +1332,8 @@ class Render {
                        
                     
                     
-                  </div></article>`);
+                  </div>
+                  </article>`);
 
                   //Form that visible when you click edit BTN
                   const editForm = itemDiv.querySelector("#editForm");
