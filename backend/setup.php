@@ -91,15 +91,15 @@ class Setup
         ('Drama'),
         ('Comedy'),
         ('Romance'),
-        ('Fantasy')
-        ('Thriller')
-        ('Contemporary')
-        ('Classics')
-        ('Horror')
-        ('Biography')
-        ('Poetry')
-        ('History')
-        ('Crime')
+        ('Fantasy'),
+        ('Thriller'),
+        ('Contemporary'),
+        ('Classics'),
+        ('Horror'),
+        ('Biography'),
+        ('Poetry'),
+        ('History'),
+        ('Crime'),
         ('Self-Help')
        ;";
 
@@ -258,7 +258,22 @@ class Setup
                     'body' => 'Comment 5 ',
                     'books_id' => '1',
                     'user_id' => '4'
-                ]
+                ],
+                [
+                    'body' => 'Comment 6 ',
+                    'books_id' => '1',
+                    'user_id' => '4'
+                ],
+                [
+                    'body' => 'Comment 7 ',
+                    'books_id' => '1',
+                    'user_id' => '4'
+                ],
+                [
+                    'body' => 'Comment 8 ',
+                    'books_id' => '1',
+                    'user_id' => '4'
+                ],
             ];
 
         $inputCommentsSql = 'INSERT INTO comments (body,books_id,users_id) VALUES(:body,:books_id,:users_id)';

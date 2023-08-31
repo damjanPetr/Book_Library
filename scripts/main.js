@@ -2,8 +2,9 @@ import { Login } from "./Auth.js";
 import elementFromHTML, { changeDateFormat } from "./helper.js";
 import "./router.js";
 import { Validation } from "./validation.js";
-const loginBtn = document.querySelector("#loginBtn");
 const homeBtn = document.querySelector("#homeBtn");
+
+const loginBtn = document.querySelector("#loginBtn");
 
 homeBtn.addEventListener("click", (e) => {
   window.route(e);
@@ -86,7 +87,6 @@ class Render {
         if (e.target.id === "bookBtn") {
           bookBtn.classList.add("tabActive");
         }
-        console.log("play");
         if (e.target.matches("button")) {
           e.target.classList.add("tabActive");
         }
@@ -1569,6 +1569,189 @@ class Render {
             return;
           case "commentBtn":
             {
+              const innerDiv = elementFromHTML(`<div class="w-full">
+              <div
+                class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black"
+              >
+                <h1 class="text-xl">Comments</h1>
+                <div
+                  class="flex items-center cursor-pointer rounded-md bg-blue-500 text-white p-2"
+                  id="createNewBtn"
+                >
+                  <p class="">Create New</p>
+                  <iconify-icon
+                    icon="gridicons:create"
+                    class="ml-1 self-center"
+                  ></iconify-icon>
+                </div>
+              </div>
+            
+                <div class="relative">
+              
+                <div
+                  class="flex addNew hidden -translate-x-1/2 top-2 w-80 left-1/2 absolute z-20 rounded-lg p-2 bg-stone-100  relative"
+                  id="createNewAuthorForm"
+                >
+                  <div
+                    class="items-center  mb-4 justify-between w-full rounded-sm text-base "
+                  >
+                    <form>
+                      
+                      <div class="">
+                        <div class="  hidden"></div>
+                       
+                        <div class="">
+                        <div class="flex items-center justify-between pr-4 mb-2">
+                        <label for="newtitle" class="text-gray-500 mb-2 underline underline-offset-1 mr-4" > Category Name: </label >
+                              <button class="z-10">
+                                  <iconify-icon icon="material-symbols:done" class="peer/edit bg-green-400 cursor-pointer relative tooltip rounded-md p-1" data-tooltip="Create New Category" ></iconify-icon>
+                              </button>
+                        </div>
+                              
+                        
+                        <div class="flex items-center justify-between flex-auto ">
+                          <div class=" w-full  -ml-2 bottom-[80%] text-white absolute bg-red-500" ></div>
+                          <input type="text" name="newtitle" id="newtitle" class="w-full " />
+                        </div>
+                       </div>
+                       
+                        
+                        
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+                        <div class="commentsDiv p-4 gap-2 flex flex-wrap  border-2 border-gray-600  ">
+                        
+                                      <div class="pending border border-yellow-500  ">
+                                        <h1 class="text-xl ">Pending Comments</h1>
+                                      </div>
+
+                                      <div class="approved border border-green-500   ">
+                                          <h1 class="text-xl ">Approved Comments</h1>
+                                      </div>
+
+                                      <div class="declined border border-red-500  ">
+                                        <h1 class="text-xl ">Declined Comments</h1>
+                                      </div>
+                                      
+                        </div>
+                      
+                      </div>
+            </div>
+            `);
+
+              function createCommentDiv({
+                body,
+                id,
+                approved,
+                declined,
+                deleted_at,
+                users_id,
+              }) {
+                const itemDiv = elementFromHTML(`
+                <div class="flex  items-center  bg-stone-100 mb-2 p-2 justify-between w-60 rounded-sm text-base flex-auto">
+
+                    <div id="name">
+                      <p>${body}</p>
+                    </div> 
+
+                    <form  class="hidden" id="editForm" >
+                        <input type="text" name="newTitle" id="newTitle">
+                    </form>
+
+                  <div class="buttons ml-2 flex gap-4">
+
+                      <div id="editBtn">
+                        <iconify-icon icon="material-symbols:edit" class="peer/edit bg-red-200 cursor-pointer relative tooltip" data-tooltip="Edit Category"></iconify-icon>
+                      </div>
+                      <div id="checkEditBtn" class="hidden">
+                        <iconify-icon icon="material-symbols:check" class="peer/edit bg-green-200 cursor-pointer relative tooltip" data-tooltip="Confirm Edit"></iconify-icon>
+                      </div>
+
+
+                      <div id="deleteBtn">
+                        <iconify-icon icon="ph:x" class="bg-yellow-200 cursor-pointer tooltip relative" data-tooltip="Delete Category"></iconify-icon>
+                      </div>
+                  </div>
+                </div>`);
+                return itemDiv;
+              }
+              const createNewBtn = innerDiv.querySelector("#createNewBtn");
+
+              const commentsDiv = innerDiv.querySelector(".commentsDiv");
+
+              const approvedDiv = commentsDiv.querySelector(".approved");
+              const declinedDiv = commentsDiv.querySelector(" .declined");
+
+              const pendingfDiv = commentsDiv.querySelector(" .pending");
+              console.log(commentsDiv);
+              console.group("commentDevs");
+
+              console.log(approvedDiv);
+              console.log(declinedDiv);
+              console.log(pendingfDiv);
+
+              console.groupEnd("commentDevs");
+
+              async function renderComments() {
+                const response = await fetch(
+                  "backend/controllers/Comments.php",
+                  {
+                    method: "post",
+                    body: JSON.stringify({
+                      action: "getAll",
+                      json: {},
+                    }),
+                  },
+                );
+
+                const data = await response.json();
+                console.log(data);
+
+                if (data.error) {
+                  return alert("error with the database");
+                } else {
+                  data.data.forEach((item) => {
+                    switch (true) {
+                      case item.approved === null && item.declined === null:
+                        {
+                          console.log("pending");
+                          const element = createCommentDiv(item);
+                          pendingfDiv.append(element);
+                        }
+                        return;
+                      case item.approved != null:
+                        {
+                          console.log("approved");
+                          const item = createCommentDiv(item);
+                          approvedDiv.append(item);
+                        }
+                        return;
+                      case item.declined != null:
+                        {
+                          console.log("declined");
+                          const item = createCommentDiv(item);
+                          declinedDiv.append(item);
+                        }
+                        return;
+                      default:
+                        return;
+                    }
+                  });
+                }
+              }
+              renderComments();
+              const createNewForm = innerDiv.querySelector(
+                "#createNewAuthorForm",
+              );
+              createNewBtn.addEventListener("click", () => {
+                createNewForm.classList.toggle("hidden");
+                categoryDiv.classList.toggle("blur-lg");
+              });
+
+              targetDiv.append(innerDiv);
               targetDiv.classList.remove("loading");
             }
             return;
@@ -1595,3 +1778,4 @@ class Render {
 }
 
 export { Render };
+
