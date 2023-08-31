@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require("tailwindcss/plugin");
 module.exports = {
   content: [
     "./views/**/*.{html,js}",
@@ -14,5 +15,10 @@ module.exports = {
       },
     },
   },
-  plugins: ["prettier-plugin-tailwindcss"],
+  plugins: [
+    "prettier-plugin-tailwindcss",
+    plugin(function ({ addVariant }) {
+      addVariant("fcl", "& label");
+    }),
+  ],
 };

@@ -455,7 +455,6 @@ class Render {
                 const replace_categoryId = ItemDiv.querySelector(
                   ".replace-categoryId",
                 );
-                console.log(replace_authorId, replace_categoryId);
 
                 const replace_title = ItemDiv.querySelector(".replace-title");
                 const replace_author = ItemDiv.querySelector(".replace-author");
@@ -1322,9 +1321,10 @@ class Render {
                         <p id="ShortBio"  class="text-sm  rounded-md   break-all line-clamp-2  peer-checked:h-max group  peer-checked:line-clamp-none whitespace-pre-line">${short_bio}</p>
 
                         <textarea  class="hidden w-full" rows="5" type="text" name="newTitle" id="newShortBio"  data-edit=""></textarea>
-                        <div class="mt-4  ">
-                        <label for="ch${id}" class="before:content-['Read_More'] peer-checked:before:content-['Read_Less']  before:rounded-md before:bg-blue-400 before:p-2 before:text-white"></label>
-                          
+                        <div class="mt-4
+                        fcl:before:content-['Read_More']
+                         peer-checked:fcl:before:content-['Read_Less']">
+                            <label for="ch${id}" class="  before:rounded-md before:bg-blue-400 before:p-2 before:text-white"></label>
                         </div>
                             
 
@@ -1574,18 +1574,50 @@ class Render {
                 class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black"
               >
                 <h1 class="text-xl">Comments</h1>
+               
+
+              <div class=" flex items-center gap-3">
+
+
                 <div
-                  class="flex items-center cursor-pointer rounded-md bg-blue-500 text-white p-2"
-                  id="createNewBtn"
-                >
-                  <p class="">Create New</p>
-                  <iconify-icon
-                    icon="gridicons:create"
-                    class="ml-1 self-center"
-                  ></iconify-icon>
-                </div>
+                class="flex items-center cursor-pointer rounded-md bg-blue-500 text-white p-2"
+                id="renderPendingBtn"
+              >
+                <p class="">Show Pending</p>
+                <iconify-icon
+                  icon="gridicons:create"
+                  class="ml-1 self-center"
+                ></iconify-icon>
+              </div>
+              <div
+                class="flex items-center cursor-pointer rounded-md bg-green-500 text-white p-2"
+                id="renderApprovedBtn"
+              >
+                <p class="">Show Approved</p>
+                <iconify-icon
+                  icon="gridicons:create"
+                  class="ml-1 self-center"
+                ></iconify-icon>
+              </div>
+              
+              <div
+                class="flex items-center cursor-pointer rounded-md bg-red-500 text-white p-2"
+                id="renderDeclinedBtn"
+              >
+                <p class="">Show Declined</p>
+                <iconify-icon
+                  icon="gridicons:create"
+                  class="ml-1 self-center"
+                ></iconify-icon>
+              </div>
+
+            </div>
+
               </div>
             
+
+
+              
                 <div class="relative">
               
                 <div
@@ -1649,36 +1681,62 @@ class Render {
                 declined,
                 deleted_at,
                 users_id,
+                username,
               }) {
                 const itemDiv = elementFromHTML(`
-                <div class="flex  items-center  bg-stone-100 mb-2 p-2 justify-between w-60 rounded-sm text-base flex-auto">
+                <div class="h-30  items-center   mb-2 p-2 justify-between w-60 rounded-sm text-base flex-auto hover:ring-violet-200 hover:ring-2">
+                <div class="flex items-center justify-between">
+                    
+                
+                    <div class="flex items-center justify-between gap-2 p-1">
+                    <div class=" h-4 rounded-full">
+                      <iconify-icon class="text-xl bg-blue-500 " icon="codicon:account"></iconify-icon>
+                    </div>
+                      <p>By :  <span class="underline underline-offset-2 font-semibold">${username}</span> </p>  
+                    </div>
 
-                    <div id="name">
-                      <p>${body}</p>
-                    </div> 
-
-                    <form  class="hidden" id="editForm" >
-                        <input type="text" name="newTitle" id="newTitle">
-                    </form>
-
-                  <div class="buttons ml-2 flex gap-4">
-
-                      <div id="editBtn">
-                        <iconify-icon icon="material-symbols:edit" class="peer/edit bg-red-200 cursor-pointer relative tooltip" data-tooltip="Edit Category"></iconify-icon>
+                    
+                    <div class="buttons ml-2 flex gap-4">
+                      <div id="cardApproveBtn">
+                        <iconify-icon icon="material-symbols:edit" class="peer/edit bg-red-200 cursor-pointer relative tooltip" data-tooltip="Approve"></iconify-icon>
                       </div>
-                      <div id="checkEditBtn" class="hidden">
-                        <iconify-icon icon="material-symbols:check" class="peer/edit bg-green-200 cursor-pointer relative tooltip" data-tooltip="Confirm Edit"></iconify-icon>
+                      <div id="cardDeclineBtn" class="">
+                        <iconify-icon icon="material-symbols:check" class="peer/edit bg-green-200 cursor-pointer relative tooltip" data-tooltip="Decline"></iconify-icon>
                       </div>
+                      
+                  </div>
+                
+                </div>
+
+                        <form  class="hidden" id="editForm" >
+                            <input type="text" name="newTitle" id="newTitle">
+                        </form>
+
+                  
 
 
-                      <div id="deleteBtn">
-                        <iconify-icon icon="ph:x" class="bg-yellow-200 cursor-pointer tooltip relative" data-tooltip="Delete Category"></iconify-icon>
-                      </div>
+                  <div id="name" class="group">
+                  <input class="peer hidden" type="checkbox" name="ch" id="ch${id}">
+                  <p class="p-2 bg-stone-50 line-clamp-2 peer-checked:line-clamp-none font-Source-Sans text-small " id="body">${body}</p>
+
+                  <div class="mb-4
+                  fcl:before:content-['Read_More'] peer-checked:fcl:before:content-['Read_Less']">
+                        <label id="readBtn" for="ch${id}" class="before:bg-blue-500 before:px-2 before:py-1 text-white before:rounded-lg before:mb-4 "></label>
+                    </div>
                   </div>
                 </div>`);
+                const commentBody = itemDiv.querySelector("#body");
+
+                setTimeout(() => {
+                  if (commentBody.clientHeight === commentBody.scrollHeight) {
+                    const readMoreOrLessBtn = itemDiv
+                      .querySelector("#readBtn")
+                      .classList.add("hidden");
+                  }
+                }, 1);
+
                 return itemDiv;
               }
-              const createNewBtn = innerDiv.querySelector("#createNewBtn");
 
               const commentsDiv = innerDiv.querySelector(".commentsDiv");
 
@@ -1686,7 +1744,19 @@ class Render {
               const declinedDiv = commentsDiv.querySelector(" .declined");
 
               const pendingfDiv = commentsDiv.querySelector(" .pending");
-              console.log(commentsDiv);
+              const renderPendingBtn =
+                innerDiv.querySelector("#renderPendingBtn");
+              const renderApprovedBtn =
+                innerDiv.querySelector("#renderApprovedBtn");
+              const renderDeclinedBtn =
+                innerDiv.querySelector("#renderDeclinedBtn");
+
+              console.group("pendingBtns");
+              console.log(renderApprovedBtn);
+              console.log(renderPendingBtn);
+              console.log(renderDeclinedBtn);
+
+              console.groupEnd("pendingBtns");
               console.group("commentDevs");
 
               console.log(approvedDiv);
@@ -1710,6 +1780,10 @@ class Render {
                 const data = await response.json();
                 console.log(data);
 
+                /* 
+                * filter items to corresponding div
+                
+                */
                 if (data.error) {
                   return alert("error with the database");
                 } else {
@@ -1743,14 +1817,30 @@ class Render {
                 }
               }
               renderComments();
-              const createNewForm = innerDiv.querySelector(
-                "#createNewAuthorForm",
-              );
-              createNewBtn.addEventListener("click", () => {
-                createNewForm.classList.toggle("hidden");
-                categoryDiv.classList.toggle("blur-lg");
+
+              renderPendingBtn.addEventListener("click", () => {
+                [pendingfDiv, approvedDiv, declinedDiv].forEach((item) =>
+                  item.classList.add("invisible"),
+                );
+                // pendingfDiv.classList.toggle("blur-lg");
+                pendingfDiv.classList.remove("invisible");
               });
 
+              renderApprovedBtn.addEventListener("click", () => {
+                [pendingfDiv, approvedDiv, declinedDiv].forEach((item) =>
+                  item.classList.add("invisible"),
+                );
+                // pendingfDiv.classList.toggle("blur-lg");
+                approvedDiv.classList.remove("invisible");
+              });
+
+              renderDeclinedBtn.addEventListener("click", () => {
+                [pendingfDiv, approvedDiv, declinedDiv].forEach((item) =>
+                  item.classList.add("invisible"),
+                );
+                // pendingfDiv.classList.toggle("blur-lg");
+                declinedDiv.classList.remove("invisible");
+              });
               targetDiv.append(innerDiv);
               targetDiv.classList.remove("loading");
             }
@@ -1778,4 +1868,3 @@ class Render {
 }
 
 export { Render };
-
