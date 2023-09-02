@@ -2013,7 +2013,7 @@ class Render {
                         <input type="hidden" name="user" id="user" value="">
                         <p class="userTitle p-2 text-lg bg-neutral-300 rounded-md">&nbsp;</p>
                           <div class="absolute top-[calc(100% + 1rem)] w-full  bg-stone-50">
-                          <ul class="dropdown hidden space-y-1 hover:bg-slate-100  list-none h-80  overflow-auto">
+                          <ul class="dropdown hidden space-y-1  list-none h-80  overflow-auto">
 
                           </ul>
                           </div>
@@ -2084,13 +2084,8 @@ class Render {
                       });
 
                       //rename the title elemnt with the text of the next element
-                      console.log(
-                        userDropdown.querySelectorAll("li").firstElementChild,
-                      );
-                      if (
-                        userDropdown.querySelectorAll("li").firstElementChild !=
-                        undefined
-                      ) {
+                      console.log(userDropdown.firstElementChild != null);
+                      if (userDropdown.firstElementChild != null) {
                         useridInput.value =
                           userDropdown.firstElementChild.querySelector(
                             "input",
@@ -2101,9 +2096,10 @@ class Render {
                             "p",
                           ).textContent;
                       } else {
+                        console.log("BADDDDDDD");
                         makeAdminBtn.remove();
-                        userTitle.textContent = "&nbsp;";
-                        userid = "";
+                        userTitle.textContent = "All Users Are Admins";
+                        useridInput.value = "";
                       }
                       Swal.fire({
                         icon: "success",
