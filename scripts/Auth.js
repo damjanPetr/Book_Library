@@ -6,6 +6,8 @@ class Login {
    */
   static auth = false;
   static authAdmin = false;
+  static userName = "";
+
   constructor(form, fields, formName) {
     this.form = form;
     this.fields = fields;
@@ -13,26 +15,47 @@ class Login {
     this.formName = formName;
   }
 
-  static checkAuth(admin) {
-    admin = false;
-    if (window.localStorage.getItem("auth") === 1) {
+  static checkAuth() {
+    const user = JSON.parse(window.localStorage.getItem("user"));
+    console.log(user);
+
+    if (window.localStorage.getItem("auth") == 1 && user != null) {
       Login.auth = true;
-      Login.authType = "user";
+
+      if (user.type == "admin") {
+        Login.authAdmin = true;
+      } else {
+        Login.authAdmin = false;
+      }
+
+      Login.userName = user.username;
     }
   }
   login(user) {
     window.localStorage.setItem("auth", 1);
-    window.localStorage.setItem("user", JSON.stringify(user));
+
+    const parsedUser = JSON.parse(user);
+
+    if (parsedUser.type == "admin") {
+      Login.authAdmin = true;
+    }
+
+    window.localStorage.setItem("user", JSON.stringify(parsedUser));
+
     Login.auth = true;
 
-    window.location.hash = "#/";
+    window.location.hash = "/";
   }
 
   static logout() {
     window.localStorage.removeItem("auth");
     window.localStorage.removeItem("user");
+    window.localStorage.removeItem("authAdmin");
+
+    // window.location.href = "";
     Login.auth = false;
-    window.location.hash = "#/";
+    window.location.hash = "";
+    window.location.reload();
   }
 
   validateOnSubmit() {
@@ -76,20 +99,18 @@ class Login {
           const data = await response.json();
 
           const popupdiv = document.querySelector(".backend-login-message");
-          console.log(
-            "🚀 ✔ file: Auth.js:67 ✔ Login ✔ ApiCall ✔ data:",
-            data,
-          );
 
           popupdiv.firstChild.innerHTML = ``;
 
           if (data.error) {
-            console.log(data.error);
             popupdiv.firstElementChild.innerHTML = `${data.message}`;
             popupdiv.classList.remove("hidden");
             this.form.parentElement.insertAdjacentElement("afterend", popupdiv);
           } else {
-            this.login(data.user);
+            console.log("importtant", data);
+            // console.log(JSON.stringify(data.user));
+
+            this.login(JSON.stringify(data.user));
           }
         }
         return;
@@ -108,10 +129,6 @@ class Login {
         const data = await response.json();
 
         const popupdiv = document.querySelector(".backend-login-message");
-        console.log(
-          "🚀 ✔ file: Auth.js:99 ✔ Login ✔ ApiCall ✔ data:",
-          data,
-        );
 
         popupdiv.firstChild.innerHTML = ``;
 
@@ -120,7 +137,8 @@ class Login {
           popupdiv.classList.remove("hidden");
           this.form.parentElement.insertAdjacentElement("afterend", popupdiv);
         } else {
-          this.login(data.user);
+          console.log(data);
+          this.login(JSON.stringify(data.user));
         }
 
         return;

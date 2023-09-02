@@ -6,6 +6,7 @@
     <title>Challenge 2</title>
     <link rel="stylesheet" href="./style.css" />
   </head>
+
   <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
   <body class="min-h-screen">
     <header
@@ -17,18 +18,36 @@
         >
       </div>
       <nav class="">
-        <ul class="flex">
+        <ul class="flex items-center gap-2.5">
           <li
-            class="rounded-lg text-xl text-white ring-fuchsia-500 ring-offset-2 hover:bg-teal-500 hover:ring-2"
+            class="rounded-lg text-xl text-white ring-fuchsia-500 ring-offset-2"
             id="loginBtn"
           >
-            <a href="#login">Login</a>
+            <a
+              class="ml-auto rounded-sm bg-lime-400 p-2 text-white"
+              href="#login"
+              >Login</a
+            >
           </li>
           <li
-            class="hidden rounded-lg text-xl text-white ring-fuchsia-500 ring-offset-2 hover:bg-teal-500 hover:ring-2"
+            class="hidden rounded-lg text-xl text-white ring-fuchsia-500 ring-offset-2"
             id="dashboardBtn"
           >
-            <a href="#dashboard">Dashboard</a>
+            <a
+              class="ml-auto rounded-sm bg-lime-400 p-2 text-white"
+              href="#dashboard"
+              >Dashboard</a
+            >
+          </li>
+          <li
+            class="rounded-lg text-xl text-white ring-fuchsia-500 ring-offset-2"
+          >
+            <button
+              class="ml-auto hidden rounded-sm bg-pink-400 p-2 text-white"
+              id="logoutBtn"
+            >
+              Logout
+            </button>
           </li>
         </ul>
       </nav>
@@ -41,6 +60,8 @@
         <p>Created by &copy; Damjan Petrevski | 2023</p>
       </div>
     </footer>
+    <script src="./node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
+
     <script type="module" src="./scripts/main.js"></script>
   </body>
 </html>

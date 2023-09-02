@@ -82,8 +82,10 @@ if (isset($data)) {
                 }
             }
             break;
-        case 'acceptComment': {
+        case 'approveComment': {
+
                 try {
+                    Comments::approveComment($json['id']);
                 } catch (\PDOException $e) {
                     echo json_encode(
                         array(
@@ -95,6 +97,7 @@ if (isset($data)) {
             }
             break;
         case 'declineComment': {
+                Comments::declineComment($json['id']);
                 try {
                 } catch (\PDOException $e) {
                     echo json_encode(
@@ -119,6 +122,32 @@ if (isset($data)) {
 class Comments
 {
 
+    //static funciton to approve comment
+    static function approveComment($id)
+    {
+        $date = date('Y-m-d');
+        $conn = new Database();
+        $pdo = $conn->getConnection();
+        $sql = 'UPDATE comments
+        SET approved =:date ,declined = null  where id = :id';
+
+        $stm = $pdo->prepare($sql);
+
+
+        if (
+            $stm->execute(
+                [
+                    'date' => $date,
+                    'id' => $id,
+                ]
+            )
+        ) {
+            echo json_encode([
+                'error' => false,
+            ]);
+        }
+        ;
+    }
     static function getAllComments()
     {
         $conn = new Database();
@@ -233,32 +262,30 @@ class Comments
     }
 
 
+
     static function declineComment($id)
     {
-
         $date = date('Y-m-d');
-
         $conn = new Database();
-
         $pdo = $conn->getConnection();
-
-        $sql = "UPDATE comments SET declined = :date  WHERE id = :id;";
+        $sql = 'UPDATE comments
+        SET declined = :date,approved = null WHERE id = :id';
 
         $stm = $pdo->prepare($sql);
 
-        $stm->execute(
-            [
-                'date' => $date,
-                'id' => $id,
-            ]
-        );
 
-        $result = $stm->fetchAll();
-        if ($result) {
-
-            echo json_encode(
-                ['error' => false]
-            );
+        if (
+            $stm->execute(
+                [
+                    'date' => $date,
+                    'id' => $id,
+                ]
+            )
+        ) {
+            echo json_encode([
+                'error' => false,
+            ]);
         }
+        ;
     }
 }

@@ -1,9 +1,9 @@
 <div class="min-h-full">
   <div class="mx-auto flex p-4">
-    <div class="border-b-2 border-blue-400 p-2">Welcome User anatoli120</div>
-    <button class="logoutBtn ml-auto rounded-sm bg-red-400 p-2 text-white">
-      Logout
-    </button>
+    <div class="border-b-2 border-blue-400 p-2">
+      Welcome User :
+      <span id="userName" class="underline-offset-2 hover:underline"></span>
+    </div>
   </div>
   <div class="flex min-h-full">
     <div
@@ -29,11 +29,18 @@
         >
           Authors
         </button>
+
         <button
           class="rounded-sm bg-slate-50 p-2 text-left text-lg hover:bg-gray-300 hover:underline hover:shadow-sm"
           id="commentBtn"
         >
           Comments
+        </button>
+        <button
+          class="rounded-sm bg-slate-50 p-2 text-left text-lg hover:bg-gray-300 hover:underline hover:shadow-sm"
+          id="userBtn"
+        >
+          Users
         </button>
       </nav>
     </div>

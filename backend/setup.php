@@ -83,6 +83,7 @@ class Setup
         User::createUser('hans', 'hans');
         User::createUser('mans', 'mans');
         User::createUser('aoeu', 'aoeu');
+        User::createUserAdmin(1);
 
 
         $inputSQL = "INSERT INTO categories (title) 
@@ -116,7 +117,7 @@ class Setup
             [
                 'first_name' => 'Steven',
                 'last_name' => 'King',
-                'short_bio' =>  'Stephen Edwin King is an American author of horror, supernatural fiction, suspense, crime, science-fiction, and fantasy novels. Described as the "King of Horror", his books have sold more than 350 million copies as of 2006, and many have been adapted into films, television series, miniseries, and comic books.',
+                'short_bio' => 'Stephen Edwin King is an American author of horror, supernatural fiction, suspense, crime, science-fiction, and fantasy novels. Described as the "King of Horror", his books have sold more than 350 million copies as of 2006, and many have been adapted into films, television series, miniseries, and comic books.',
             ],
             [
                 'first_name' => 'Lewis',
@@ -181,7 +182,8 @@ class Setup
                     'img' => $item['img']
                 ]
             );
-        };
+        }
+        ;
 
 
         /* Notes */
@@ -227,7 +229,8 @@ class Setup
                     'users_id' => $item['user_id'],
                 ]
             );
-        };
+        }
+        ;
 
 
         /* Comments */
@@ -290,7 +293,8 @@ class Setup
                     'users_id' => $item['user_id'],
                 ]
             );
-        };
+        }
+        ;
 
 
 

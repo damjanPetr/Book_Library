@@ -1,4 +1,6 @@
+// import * as Swal from "../node_modules/sweetalert2/sweetalert2";
 import { Login } from "./Auth.js";
+
 import elementFromHTML, { changeDateFormat } from "./helper.js";
 import "./router.js";
 import { Validation } from "./validation.js";
@@ -15,16 +17,26 @@ loginBtn.addEventListener("click", (e) => {
 });
 
 Login.checkAuth();
-
 class Render {
   static mainDiv = document.querySelector(".mainDiv");
 
   static changeRouteDefault() {
     const loginDiv = document.querySelector("header  #loginBtn");
-    const dashboardDiv = document.querySelector("header  #dashboardBtn");
+    const logoutBtn = document.querySelector("header  #logoutBtn");
+    const dashboardDiv = document.querySelector("header  #dashboardBtn ");
+
+    //login btn
+
+    logoutBtn.addEventListener("click", () => {
+      Login.logout();
+    });
+
     if (Login.auth) {
       loginDiv.classList.add("hidden");
-      dashboardDiv.classList.remove("hidden");
+      logoutBtn.classList.remove("hidden");
+      if (Login.authAdmin) {
+        dashboardDiv.classList.remove("hidden");
+      }
     } else {
       return;
     }
@@ -57,59 +69,59 @@ class Render {
     this.mainDiv.innerHTML = "";
     this.mainDiv.append(element);
   }
+
   static DashboardPage(html) {
-    const element = elementFromHTML(html);
-    const targetDiv = element.querySelector("#targetDiv");
-    const tabBtnDiv = element.querySelector("#tabBtnDiv");
-    const bookBtn = tabBtnDiv.querySelector("#bookBtn");
+    if (Login.authAdmin == false) {
+      window.location.replace("./");
+    } else {
+      const element = elementFromHTML(html);
 
-    // let event = new Event("click");
-    let firstLoad = true;
+      const userName = element.querySelector("#userName");
+      userName.textContent = Login.userName;
+      const targetDiv = element.querySelector("#targetDiv");
+      const tabBtnDiv = element.querySelector("#tabBtnDiv");
+      const bookBtn = tabBtnDiv.querySelector("#bookBtn");
+      const userBtn = tabBtnDiv.querySelector("#userBtn");
 
-    tabBtnDiv.addEventListener("click", async (e) => {
-      //    ! Use this logic to activate the bookBtn click event once per refresh
-      if (firstLoad) {
-        e.target.id = "bookBtn";
-        firstLoad = false;
-      }
+      // let event = new Event("click");
+      let firstLoad = true;
 
-      if (
-        e.target.matches("button") === false &&
-        !firstLoad &&
-        e.target.id !== "bookBtn"
-        // toggle === true
-      ) {
-        return;
-      } else {
-        const tabs = tabBtnDiv.querySelectorAll("button").forEach((item) => {
-          item.classList.remove("tabActive");
-        });
-        if (e.target.id === "bookBtn") {
-          bookBtn.classList.add("tabActive");
-        }
-        if (e.target.matches("button")) {
-          e.target.classList.add("tabActive");
+      tabBtnDiv.addEventListener("click", async (e) => {
+        //    ! Use this logic to activate the bookBtn click event once per refresh
+        if (firstLoad) {
+          e.target.id = "bookBtn";
+          firstLoad = false;
         }
 
-        targetDiv.innerHTML = "";
+        if (
+          e.target.matches("button") === false &&
+          !firstLoad &&
+          e.target.id !== "bookBtn"
+          // toggle === true
+        ) {
+          return;
+        } else {
+          const tabs = tabBtnDiv.querySelectorAll("button").forEach((item) => {
+            item.classList.remove("tabActive");
+          });
+          if (e.target.id === "bookBtn") {
+            bookBtn.classList.add("tabActive");
+          }
+          if (e.target.matches("button")) {
+            e.target.classList.add("tabActive");
+          }
 
-        targetDiv.classList.add("loading");
+          targetDiv.innerHTML = "";
 
-        switch (e.target.id) {
-          // TODO: Make sweet alert work on delete of the books
-          // TODO: validaton on fields
-          /* 
-           Ако администраторот избере да избрише книга треба да му се појави
-popup (користете sweetalert библиотека), во кој ќе пишува дека со
-бришење на книгата се бришат сите коментари и забелешки на
-корисниците за истата. Доколку потврди, се брише книгата заедно со сите
-коментари и забелешки. Доколку ја откаже операцијата за бришење, не
-се случува ништо. */
-          case "bookBtn":
-            {
-              const innerDiv = elementFromHTML(`
+          targetDiv.classList.add("loading");
+
+          switch (e.target.id) {
+            // TODO: validaton on fields
+            case "bookBtn":
+              {
+                const innerDiv = elementFromHTML(`
               <div class="w-full relative">
-              
+
               <div class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black">
                   <h1 class="text-xl ">Books</h1>
                   <div class="flex items-center cursor-pointer rounded-md bg-blue-500 text-white p-2" id="createNewBtn" >
@@ -118,11 +130,11 @@ popup (користете sweetalert библиотека), во кој ќе п�
                   </div>
               </div>
 
-                
+
                 <div class="relative">
 
                 <div class="flex addNew  -translate-x-1/2 top-2  w-full left-1/2  absolute   z-20" id="createNewBook">
-                    
+
                 <div class="items-center   mb-4 justify-between  w-full rounded-sm text-base ">
                 <form  id="createBookForm" class="border-red-500 border hidden bg-violet-50">
                 <div class="hidden w-full p-2 absolute top-4 bg-red-200 rounded-md" id="authorError"></div>
@@ -145,18 +157,18 @@ popup (користете sweetalert библиотека), во кој ќе п�
                                 <p  class="bg-white p-2 text-md rounded-md w-full " >&nbsp;</p>
                                 <div class="hidden options mt-2 absolute top-full left-1/2 -translate-x-1/2 w-full  z-10 bg-white rounded-md max-h-40 overflow-auto">
                                     <ul class="p-2 text-left break-words space-y-1">
-                                      
+
                                     </ul>
-                                
-                                
+
+
                                 </div>
-                                
+
                                 </div>
-                                
+
                           </div>
-                        
+
                           <div class="">
-                                
+
                                 <label for="Category" class="text-gray-500 mb-2 underline underline-offset-1 " >Category: </label>
                                 <br>
                                       <div class="selectionCategory relative w-full">
@@ -164,13 +176,13 @@ popup (користете sweetalert библиотека), во кој ќе п�
                                             <p  class="bg-white p-2 text-md rounded-md w-full" >&nbsp;</p>
                                             <div class="hidden options mt-2 absolute top-full left-1/2 -translate-x-1/2 w-full  z-10 bg-white rounded-md max-h-40 overflow-auto">
                                                 <ul class="p-2 text-left break-words space-y-1">
-                                                  
+
                                                 </ul>
                                             </div>
                                       </div>
 
                           </div>
-                          
+
                           <div class="">
                             <label for="releaseDate" class="text-gray-500 mb-2 underline underline-offset-1 " >Release Date: </label>
                             <br>
@@ -185,15 +197,15 @@ popup (користете sweetalert библиотека), во кој ќе п�
 
 
 
-                          
+
                           <div class="">
                             <label for="pictureUrl" class="text-gray-500 mb-2 underline underline-offset-1 " >Picture Url: </label>
                             <br>
                             <input type="text"  name="pictureUrl" id="pictureUrl" class="relative  w-full p-1 rounded-md  fill-emerald-500" data-tooltip="">
                           </div>
 
-                        
-                        
+
+
                     </div>
                   </div>
                 </form>
@@ -201,29 +213,29 @@ popup (користете sweetalert библиотека), во кој ќе п�
               </div>
                 </div>
                   <div class=" grid grid-cols-2 justify-items-center pt-4 " id="BookDiv">
-                    
+
             </div>
-                
-                  </div>     
+
+                  </div>
               </div>
                 `);
 
-              const createBookDiv = ({
-                Category,
-                author_id,
-                categories_id,
-                deleted_at,
-                first_name,
-                id,
-                img,
-                last_name,
-                number_of_pages,
-                release_date,
-                title,
-              }) => {
-                const changeDate = changeDateFormat(release_date);
-                const ItemDiv =
-                  elementFromHTML(`<div class="toppper mb-4 w-80 relative max-h-full">
+                const createBookDiv = ({
+                  Category,
+                  author_id,
+                  categories_id,
+                  deleted_at,
+                  first_name,
+                  id,
+                  img,
+                  last_name,
+                  number_of_pages,
+                  release_date,
+                  title,
+                }) => {
+                  const changeDate = changeDateFormat(release_date);
+                  const ItemDiv =
+                    elementFromHTML(`<div class="toppper mb-4 w-80 relative max-h-full">
                 <div class="absolute top-0 z-10 right-0">
                   <div
                     class="buttons p-1.5 rounded-b-lg flex gap-4 text-white ml-auto bg-black/40 z-20 items-center"
@@ -235,7 +247,7 @@ popup (користете sweetalert библиотека), во кој ќе п�
                         data-tooltip="Edit Book"
                       ></iconify-icon>
                     </div>
-              
+
                     <div id="checkEditBtn" class="hidden">
                       <iconify-icon
                         icon="material-symbols:check"
@@ -243,7 +255,7 @@ popup (користете sweetalert библиотека), во кој ќе п�
                         data-tooltip="Confirm Edit"
                       ></iconify-icon>
                     </div>
-              
+
                     <div id="deleteBtn">
                       <iconify-icon
                         icon="ph:x"
@@ -253,13 +265,13 @@ popup (користете sweetalert библиотека), во кој ќе п�
                     </div>
                   </div>
                 </div>
-              
+
                 <form id="editBookForm" class="border-red-500 border hidden bg-violet-50 h-full" >
                   <div
                     class="hidden w-full p-2 absolute top-4 bg-red-200 rounded-md"
                     id="authorError"
                   ></div>
-              
+
                   <div class="border-2 border-teal-500 h-full flex items-center">
                     <div
                       id="createNewAuthor"
@@ -281,7 +293,7 @@ popup (користете sweetalert библиотека), во кој ќе п�
                           data-tooltip=""
                         />
                       </div>
-              
+
                       <div  class="">
                         <label
                           for="Author"
@@ -305,7 +317,7 @@ popup (користете sweetalert библиотека), во кој ќе п�
                           </div>
                         </div>
                       </div>
-              
+
                       <div class="">
                         <label
                           for="Category"
@@ -322,7 +334,7 @@ popup (користете sweetalert библиотека), во кој ќе п�
                                       </div>
                                     </div>
                       </div>
-              
+
                       <div class="">
                         <label
                           for="releaseDate"
@@ -340,7 +352,7 @@ popup (користете sweetalert библиотека), во кој ќе п�
                           data-tooltip=""
                         />
                       </div>
-              
+
                       <div class="">
                         <label
                           for="numberOfPages"
@@ -357,7 +369,7 @@ popup (користете sweetalert библиотека), во кој ќе п�
                           data-tooltip=""
                         />
                       </div>
-              
+
                       <div class="">
                         <label
                           for="pictureUrl"
@@ -383,7 +395,7 @@ popup (користете sweetalert библиотека), во кој ќе п�
                     <img
                       class="replace-img content-inner w-full h-full rounded-t-lg"
                       src="${img}"
-                      
+
                       alt="${title} image"
                     />
                     <div
@@ -392,7 +404,7 @@ popup (користете sweetalert библиотека), во кој ќе п�
                       <p class="replace-title">${title}</p>
                     </div>
                   </div>
-              
+
                   <div class="content-inner p-4 flex justify-between">
                     <div class="">
                       <div class="p-1">
@@ -402,12 +414,12 @@ popup (користете sweetalert библиотека), во кој ќе п�
                           type="button"
                           value="${author_id}"
                         />
-              
+
                         <p class="replace-author">${
                           first_name + " "
                         } ${last_name}</p>
                       </div>
-              
+
                       <div class="p-1">
                         <p class="text-sm underline text-gray-500">Category:</p>
                         <input
@@ -418,115 +430,475 @@ popup (користете sweetalert библиотека), во кој ќе п�
                         <p class="replace-category">${Category}</p>
                       </div>
                     </div>
-              
+
                     <div class="">
                       <div class="p-1">
                         <p class="text-sm underline text-gray-500">Number Of Pages:</p>
                         <p  class="replace-number_of_pages">${number_of_pages}</p>
                       </div>
-              
+
                       <div class="p-1">
                         <p class="text-sm underline text-gray-500">Release Date:</p>
                         <p class="replace-release_date">${changeDate}</p>
                       </div>
                     </div>
                   </div>
-                  
+
                 </div>
               </div>
               `);
-                const validationElements =
-                  ItemDiv.querySelectorAll("[data-validation]");
+                  const validationElements =
+                    ItemDiv.querySelectorAll("[data-validation]");
 
-                const validation = new Validation(validationElements, alert);
+                  const validation = new Validation(validationElements, alert);
 
-                /* 
+                  /*
                         Starting
-                        Card 
+                        Card
                         Divs
                       */
 
-                const bookImage = ItemDiv.querySelector(".replace-img");
-                const failbackImg = ItemDiv.querySelector(".failback-img");
+                  const bookImage = ItemDiv.querySelector(".replace-img");
+                  const failbackImg = ItemDiv.querySelector(".failback-img");
 
-                bookImage.addEventListener("error", function (e) {
-                  this.error = null;
-                  // bookImage.style.display = "none";
-                  bookImage.src = "assets/book-sharp.svg";
-                  // failbackImg.src = "assets/book-sharp.svg";
+                  bookImage.addEventListener("error", function (e) {
+                    this.error = null;
+                    // bookImage.style.display = "none";
+                    bookImage.src = "assets/book-sharp.svg";
+                    // failbackImg.src = "assets/book-sharp.svg";
 
-                  // failbackImg.classList.add("error-img");
-                  // failbackImg.classList.remove("hidden");
-                });
+                    // failbackImg.classList.add("error-img");
+                    // failbackImg.classList.remove("hidden");
+                  });
 
-                const replace_authorId =
-                  ItemDiv.querySelector(".replace-authorId");
-                const replace_categoryId = ItemDiv.querySelector(
-                  ".replace-categoryId",
-                );
+                  const replace_authorId =
+                    ItemDiv.querySelector(".replace-authorId");
+                  const replace_categoryId = ItemDiv.querySelector(
+                    ".replace-categoryId",
+                  );
 
-                const replace_title = ItemDiv.querySelector(".replace-title");
-                const replace_author = ItemDiv.querySelector(".replace-author");
-                const replace_category =
-                  ItemDiv.querySelector(".replace-category");
-                const replace_number_of_pages = ItemDiv.querySelector(
-                  ".replace-number_of_pages",
-                );
-                const replace_release_date = ItemDiv.querySelector(
-                  ".replace-release_date",
-                );
-                const replace_img = ItemDiv.querySelector(".replace-img");
+                  const replace_title = ItemDiv.querySelector(".replace-title");
+                  const replace_author =
+                    ItemDiv.querySelector(".replace-author");
+                  const replace_category =
+                    ItemDiv.querySelector(".replace-category");
+                  const replace_number_of_pages = ItemDiv.querySelector(
+                    ".replace-number_of_pages",
+                  );
+                  const replace_release_date = ItemDiv.querySelector(
+                    ".replace-release_date",
+                  );
+                  const replace_img = ItemDiv.querySelector(".replace-img");
 
-                /* EditFrom Selections */
-                const editFormBookTitle = ItemDiv.querySelector("#title");
-                const editFormreleaseDate =
-                  ItemDiv.querySelector("#releaseDate");
-                const editFormnumberOfPages =
-                  ItemDiv.querySelector("#numberOfPages");
+                  /* EditFrom Selections */
+                  const editFormBookTitle = ItemDiv.querySelector("#title");
+                  const editFormreleaseDate =
+                    ItemDiv.querySelector("#releaseDate");
+                  const editFormnumberOfPages =
+                    ItemDiv.querySelector("#numberOfPages");
 
-                const editFormpictureUrl = ItemDiv.querySelector("#pictureUrl");
+                  const editFormpictureUrl =
+                    ItemDiv.querySelector("#pictureUrl");
 
-                const editBookForm = ItemDiv.querySelector("#editBookForm");
+                  const editBookForm = ItemDiv.querySelector("#editBookForm");
 
-                /* BUTTONS 
-                    ON 
-                    BOOK 
-                    CARD 
-                    FOR 
-                    ACTIONS 
+                  /* BUTTONS
+                    ON
+                    BOOK
+                    CARD
+                    FOR
+                    ACTIONS
                 */
-                const editBtn = ItemDiv.querySelector("#editBtn");
-                const deleteBtn = ItemDiv.querySelector("#deleteBtn");
-                const checkEditBtn = ItemDiv.querySelector("#checkEditBtn");
+                  const editBtn = ItemDiv.querySelector("#editBtn");
+                  const deleteBtn = ItemDiv.querySelector("#deleteBtn");
+                  const checkEditBtn = ItemDiv.querySelector("#checkEditBtn");
 
-                /* 
+                  /*
                   Create
-                  BOOK CARD 
+                  BOOK CARD
                   Section THAT POPS UP
                  */
 
-                const createNewBtn = ItemDiv.querySelector("#createNewBtn");
+                  const createNewBtn = ItemDiv.querySelector("#createNewBtn");
 
-                const authorOptions = ItemDiv.querySelector(".options");
-                const authorOptionsUl = ItemDiv.querySelector(".options ul");
-                const authorSelection = ItemDiv.querySelector(".selection p");
-                const authorTitle = ItemDiv.querySelector("#authorTitle");
+                  const authorOptions = ItemDiv.querySelector(".options");
+                  const authorOptionsUl = ItemDiv.querySelector(".options ul");
+                  const authorSelection = ItemDiv.querySelector(".selection p");
+                  const authorTitle = ItemDiv.querySelector("#authorTitle");
 
-                const categoryOptions = ItemDiv.querySelector(
+                  const categoryOptions = ItemDiv.querySelector(
+                    ".selectionCategory .options",
+                  );
+                  const categoryOptionsUl = ItemDiv.querySelector(
+                    ".selectionCategory .options ul",
+                  );
+                  const categorySelection = ItemDiv.querySelector(
+                    ".selectionCategory > p",
+                  );
+                  const categoryTitle = ItemDiv.querySelector("#categoryTitle");
+
+                  /*
+                Edit Form Author Dropdow
+
+                */
+                  authorSelection.addEventListener("click", async () => {
+                    authorOptionsUl.innerHTML = "";
+                    const response = await fetch(
+                      "backend/controllers/Authors.php",
+                      {
+                        method: "post",
+                        body: JSON.stringify({
+                          action: "getAllAuthors",
+                          json: "",
+                        }),
+                      },
+                    );
+
+                    const data = await response.json();
+
+                    data.forEach((item) => {
+                      const AuthorItem = elementFromHTML(`
+                    <li class="px-1 hover:bg-gray-200 w-full">
+                        ${item.first_name}
+                        ${item.last_name}
+                    <li/>
+                    `);
+
+                      authorOptionsUl.append(AuthorItem);
+
+                      AuthorItem.addEventListener("click", (e) => {
+                        authorSelection.textContent =
+                          item.first_name + " " + item.last_name;
+                        const input = ItemDiv.querySelector("#authorTitle");
+
+                        input.value = item.id;
+                        authorOptions.classList.toggle("hidden");
+                      });
+                    });
+
+                    authorOptions.classList.toggle("hidden");
+                  });
+
+                  /*
+                  Edit
+                  Form
+                  Category
+                  Dropdown
+                */
+
+                  categorySelection.addEventListener("click", async () => {
+                    categoryOptionsUl.innerHTML = "";
+                    const response = await fetch(
+                      "backend/controllers/Category.php",
+                      {
+                        method: "post",
+                        body: JSON.stringify({
+                          action: "getAll",
+                          json: "",
+                        }),
+                      },
+                    );
+
+                    const data = await response.json();
+
+                    data.forEach((item) => {
+                      const categoryItem = elementFromHTML(`
+                    <li class="px-1 hover:bg-gray-200 w-full">
+                          ${item.title}
+                    <li/>
+                    `);
+                      categoryOptionsUl.append(categoryItem);
+
+                      categoryItem.addEventListener("click", (e) => {
+                        categorySelection.textContent = item.title;
+                        const input = ItemDiv.querySelector("#categoryTitle");
+                        input.value = item.id;
+                        categoryOptions.classList.toggle("hidden");
+                      });
+                    });
+
+                    categoryOptions.classList.toggle("hidden");
+                  });
+
+                  /*
+                  edit
+                 form
+                 for
+                 submitting
+                 edited
+                 book
+                  */
+
+                  editBookForm.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    console.log("EDITFORM ACTIVATED");
+                    const formData = Object.fromEntries(
+                      new FormData(editBookForm),
+                    );
+                    formData.bookId = id;
+                    const response = await fetch(
+                      "backend/controllers/Book.php",
+                      {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          action: "editBook",
+                          json: formData,
+                        }),
+                      },
+                    );
+                    const data = await response.json();
+
+                    if (data.error === "false") {
+                      return;
+                    } else {
+                      console.log(data);
+
+                      // Works but replacing the element causes flicker
+
+                      // ItemDiv.parentElement.replaceChild(
+                      //   createBookDiv(data.data),
+                      //   ItemDiv,
+                      // );
+                      /*
+                        Change The starting card author/Category Title to the changed ones
+                    */
+                      replace_authorId.value = authorTitle.value;
+                      replace_categoryId.value = categoryTitle.value;
+                      replace_title.textContent = data.data.title;
+                      replace_release_date.textContent = data.data.release_date;
+
+                      replace_category.textContent = data.data.Category;
+
+                      replace_author.textContent =
+                        data.data.first_name + " " + data.data.last_name;
+
+                      replace_number_of_pages.textContent =
+                        data.data.number_of_pages;
+                      replace_img.textContent = data.data.img;
+
+                      /* This is for replacing form values */
+                      categoryTitle.value = data.data.author_id;
+                      authorTitle.value = data.data.categories_id;
+
+                      editFormnumberOfPages.value = data.data.number_of_pages;
+                      editFormpictureUrl.value = data.data.img;
+                    }
+                  });
+
+                  editBtn.addEventListener("click", () => {
+                    ItemDiv.querySelectorAll(".content-inner").forEach(
+                      (item) => item.classList.add("hidden"),
+                      // item.classList.add("invisible"),
+                    );
+                    const editPopup =
+                      ItemDiv.querySelector(".editPopup").classList.remove(
+                        "hidden",
+                      );
+
+                    editBookForm.classList.remove("hidden");
+
+                    /**
+                     * change buttons edit/check
+                     * */
+                    editBtn.classList.add("hidden");
+                    checkEditBtn.classList.remove("hidden");
+
+                    /*
+                  place initial selection text
+                  */
+                    editFormreleaseDate.value =
+                      replace_release_date.textContent;
+
+                    categorySelection.textContent =
+                      replace_category.textContent;
+                    authorSelection.textContent = replace_author.textContent;
+                    editFormBookTitle.value = replace_title.textContent;
+                    editFormnumberOfPages.value =
+                      replace_number_of_pages.textContent;
+
+                    editFormpictureUrl.value = replace_img.getAttribute("src");
+
+                    authorTitle.value = replace_authorId.value;
+
+                    categoryTitle.value = replace_categoryId.value;
+
+                    console.group("variables");
+                    console.log(replace_author.textContent);
+                    console.log(replace_authorId.value);
+                    console.log(replace_categoryId.value);
+                    console.log(replace_category.textContent);
+                    console.log(replace_img.getAttribute("src"));
+                    console.log(replace_number_of_pages.textContent);
+                    console.log(replace_release_date.textContent);
+                    console.log(replace_title.textContent);
+
+                    console.groupEnd("variables");
+
+                    console.error(
+                      "authorTitle:",
+                      authorTitle.value,
+                      "replace author",
+
+                      replace_authorId.value,
+                    );
+
+                    console.error(
+                      "categoryTitle:",
+                      categoryTitle.value,
+                      "replace category",
+                      replace_categoryId.value,
+                    );
+                  });
+
+                  /* checkbtn event listener */
+                  checkEditBtn.addEventListener("click", (e) => {
+                    /* swap buttons */
+                    editBtn.classList.remove("hidden");
+                    checkEditBtn.classList.add("hidden");
+
+                    /* inverse 
+                edit button that return back the normal book card */
+                    ItemDiv.querySelectorAll(".content-inner").forEach((item) =>
+                      item.classList.remove("hidden"),
+                    );
+                    editBookForm.classList.add("hidden");
+                    const editPopup =
+                      ItemDiv.querySelector(".editPopup").classList.add(
+                        "hidden",
+                      );
+                    editBookForm.dispatchEvent(new Event("submit"));
+
+                    /*
+
+*/
+                  });
+
+                  deleteBtn.addEventListener("click", async (e) => {
+                    const willDelete = await Swal.fire({
+                      title: "Are you sure?",
+                      text: "This will delete all associated book comments and notes. Proceed?",
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonColor: "#3085d6",
+
+                      cancelButtonColor: "#d33",
+                      confirmButtonText: "Yes, Delete Book!",
+                      html: `<div class="text-lg">This will delete all associated book comments and notes. Proceed?</div>`,
+                    });
+
+                    if (willDelete.isConfirmed) {
+                      const response = await fetch(
+                        "backend/controllers/Book.php",
+                        {
+                          method: "post",
+                          body: JSON.stringify({
+                            action: "deleteBook",
+                            json: {
+                              id,
+                            },
+                          }),
+                        },
+                      );
+                      const data = await response.json();
+                      if (data.error) {
+                        Swal.fire({
+                          icon: "error",
+                          title: "Oops...",
+                          text: "Something went wrong!",
+                        });
+                      } else {
+                        ItemDiv.remove();
+                        Swal.fire(
+                          "Deleted!",
+                          "Your file has been deleted.",
+                          "success",
+                        );
+                      }
+                    }
+                  });
+
+                  return ItemDiv;
+                };
+
+                const createNewBtn = innerDiv.querySelector("#createNewBtn");
+
+                const authorOptions = innerDiv.querySelector(".options");
+                const authorOptionsUl = innerDiv.querySelector(".options ul");
+                const authorSelection = innerDiv.querySelector(".selection p");
+
+                const categoryOptions = innerDiv.querySelector(
                   ".selectionCategory .options",
                 );
-                const categoryOptionsUl = ItemDiv.querySelector(
+                const categoryOptionsUl = innerDiv.querySelector(
                   ".selectionCategory .options ul",
                 );
-                const categorySelection = ItemDiv.querySelector(
+                const categorySelection = innerDiv.querySelector(
                   ".selectionCategory > p",
                 );
-                const categoryTitle = ItemDiv.querySelector("#categoryTitle");
 
-                /* 
-                Edit Form Author Dropdow
-                
-                */
+                const bookDiv = innerDiv.querySelector("#BookDiv");
+
+                const createNewBook = innerDiv.querySelector("#createNewBook");
+
+                const createBookForm =
+                  innerDiv.querySelector("#createBookForm");
+
+                const createBookFormBTN = innerDiv.querySelector(
+                  "#createBookForm button",
+                );
+
+                createBookFormBTN.addEventListener("click", () => {
+                  createBookForm.classList.toggle("hidden");
+                });
+
+                async function renderBookItems() {
+                  const response = await fetch("backend/controllers/Book.php", {
+                    method: "post",
+                    body: JSON.stringify({
+                      action: "getAllBooks",
+                      json: "",
+                    }),
+                  });
+                  const data = await response.json();
+                  if (data.error) {
+                    alert("error");
+                  } else {
+                    data.data.forEach((item) => {
+                      const div = createBookDiv(item);
+
+                      bookDiv.append(div);
+                    });
+                  }
+                }
+                renderBookItems();
+
+                createBookForm.addEventListener("submit", async (e) => {
+                  e.preventDefault();
+                  const formData = Object.fromEntries(
+                    new FormData(createBookForm),
+                  );
+                  const response = await fetch("backend/controllers/Book.php", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      action: "addBook",
+                      json: formData,
+                    }),
+                  });
+                  const data = await response.json();
+                  if (data.error) {
+                  } else {
+                    console.log(data);
+                    const newItem = createBookDiv(data);
+                    bookDiv.append(newItem);
+                  }
+                });
+
                 authorSelection.addEventListener("click", async () => {
                   authorOptionsUl.innerHTML = "";
                   const response = await fetch(
@@ -544,18 +916,17 @@ popup (користете sweetalert библиотека), во кој ќе п�
 
                   data.forEach((item) => {
                     const AuthorItem = elementFromHTML(`
-                    <li class="px-1 hover:bg-gray-200 w-full">
-                        ${item.first_name}
-                        ${item.last_name}
-                    <li/>
-                    `);
+                  <li class="px-1 hover:bg-gray-200 w-full">
+                      ${item.first_name}
+                      ${item.last_name}
+                  <li/>
+                  `);
 
                     authorOptionsUl.append(AuthorItem);
-
                     AuthorItem.addEventListener("click", (e) => {
                       authorSelection.textContent =
                         item.first_name + " " + item.last_name;
-                      const input = ItemDiv.querySelector("#authorTitle");
+                      const input = innerDiv.querySelector("#authorTitle");
 
                       input.value = item.id;
                       authorOptions.classList.toggle("hidden");
@@ -564,13 +935,6 @@ popup (користете sweetalert библиотека), во кој ќе п�
 
                   authorOptions.classList.toggle("hidden");
                 });
-
-                /* 
-                  Edit
-                  Form
-                  Category 
-                  Dropdown
-                */
 
                 categorySelection.addEventListener("click", async () => {
                   categoryOptionsUl.innerHTML = "";
@@ -589,15 +953,15 @@ popup (користете sweetalert библиотека), во кој ќе п�
 
                   data.forEach((item) => {
                     const categoryItem = elementFromHTML(`
-                    <li class="px-1 hover:bg-gray-200 w-full">
-                          ${item.title}
-                    <li/>
-                    `);
+                  <li class="px-1 hover:bg-gray-200 w-full">
+                        ${item.title}
+                  <li/>
+                  `);
                     categoryOptionsUl.append(categoryItem);
 
                     categoryItem.addEventListener("click", (e) => {
                       categorySelection.textContent = item.title;
-                      const input = ItemDiv.querySelector("#categoryTitle");
+                      const input = innerDiv.querySelector("#categoryTitle");
                       input.value = item.id;
                       categoryOptions.classList.toggle("hidden");
                     });
@@ -606,332 +970,17 @@ popup (користете sweetalert библиотека), во кој ќе п�
                   categoryOptions.classList.toggle("hidden");
                 });
 
-                /* 
-                  edit
-                 form 
-                 for 
-                 submitting 
-                 edited 
-                 book 
-                  */
-
-                editBookForm.addEventListener("submit", async (e) => {
-                  e.preventDefault();
-                  console.log("EDITFORM ACTIVATED");
-                  const formData = Object.fromEntries(
-                    new FormData(editBookForm),
-                  );
-                  formData.bookId = id;
-                  const response = await fetch("backend/controllers/Book.php", {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      action: "editBook",
-                      json: formData,
-                    }),
-                  });
-                  const data = await response.json();
-
-                  if (data.error === "false") {
-                    return;
-                  } else {
-                    console.log(data);
-
-                    // Works but replacing the element causes flicker
-
-                    // ItemDiv.parentElement.replaceChild(
-                    //   createBookDiv(data.data),
-                    //   ItemDiv,
-                    // );
-                    /*
-                        Change The starting card author/Category Title to the changed ones
-                    */
-                    replace_authorId.value = authorTitle.value;
-                    replace_categoryId.value = categoryTitle.value;
-                    replace_title.textContent = data.data.title;
-                    replace_release_date.textContent = data.data.release_date;
-
-                    replace_category.textContent = data.data.Category;
-
-                    replace_author.textContent =
-                      data.data.first_name + " " + data.data.last_name;
-
-                    replace_number_of_pages.textContent =
-                      data.data.number_of_pages;
-                    replace_img.textContent = data.data.img;
-
-                    /* This is for replacing form values */
-                    categoryTitle.value = data.data.author_id;
-                    authorTitle.value = data.data.categories_id;
-
-                    editFormnumberOfPages.value = data.data.number_of_pages;
-                    editFormpictureUrl.value = data.data.img;
-                  }
+                createNewBtn.addEventListener("click", () => {
+                  createBookForm.classList.toggle("hidden");
                 });
-
-                editBtn.addEventListener("click", () => {
-                  ItemDiv.querySelectorAll(".content-inner").forEach(
-                    (item) => item.classList.add("hidden"),
-                    // item.classList.add("invisible"),
-                  );
-                  const editPopup =
-                    ItemDiv.querySelector(".editPopup").classList.remove(
-                      "hidden",
-                    );
-
-                  editBookForm.classList.remove("hidden");
-
-                  /**
-                   * change buttons edit/check
-                   * */
-                  editBtn.classList.add("hidden");
-                  checkEditBtn.classList.remove("hidden");
-
-                  /* 
-                  place initial selection text 
-                  */
-                  editFormreleaseDate.value = replace_release_date.textContent;
-
-                  categorySelection.textContent = replace_category.textContent;
-                  authorSelection.textContent = replace_author.textContent;
-                  editFormBookTitle.value = replace_title.textContent;
-                  editFormnumberOfPages.value =
-                    replace_number_of_pages.textContent;
-
-                  editFormpictureUrl.value = replace_img.getAttribute("src");
-
-                  authorTitle.value = replace_authorId.value;
-
-                  categoryTitle.value = replace_categoryId.value;
-
-                  console.group("variables");
-                  console.log(replace_author.textContent);
-                  console.log(replace_authorId.value);
-                  console.log(replace_categoryId.value);
-                  console.log(replace_category.textContent);
-                  console.log(replace_img.getAttribute("src"));
-                  console.log(replace_number_of_pages.textContent);
-                  console.log(replace_release_date.textContent);
-                  console.log(replace_title.textContent);
-
-                  console.groupEnd("variables");
-
-                  console.error(
-                    "authorTitle:",
-                    authorTitle.value,
-                    "replace author",
-
-                    replace_authorId.value,
-                  );
-
-                  console.error(
-                    "categoryTitle:",
-                    categoryTitle.value,
-                    "replace category",
-                    replace_categoryId.value,
-                  );
-                });
-
-                /* checkbtn event listener */
-                checkEditBtn.addEventListener("click", (e) => {
-                  /* swap buttons */
-                  editBtn.classList.remove("hidden");
-                  checkEditBtn.classList.add("hidden");
-
-                  /* inverse edit button that return back the normal book card */
-                  ItemDiv.querySelectorAll(".content-inner").forEach((item) =>
-                    item.classList.remove("hidden"),
-                  );
-                  editBookForm.classList.add("hidden");
-                  const editPopup =
-                    ItemDiv.querySelector(".editPopup").classList.add("hidden");
-                  editBookForm.dispatchEvent(new Event("submit"));
-
-                  /* 
-
-*/
-                });
-
-                deleteBtn.addEventListener("click", async (e) => {
-                  const response = await fetch("backend/controllers/Book.php", {
-                    method: "post",
-                    body: JSON.stringify({
-                      action: "deleteBook",
-                      json: {
-                        id,
-                      },
-                    }),
-                  });
-                  const data = await response.json();
-                  console.log(data);
-                  if (data.error) {
-                  } else {
-                    ItemDiv.remove();
-                  }
-                });
-
-                return ItemDiv;
-              };
-
-              const createNewBtn = innerDiv.querySelector("#createNewBtn");
-
-              const authorOptions = innerDiv.querySelector(".options");
-              const authorOptionsUl = innerDiv.querySelector(".options ul");
-              const authorSelection = innerDiv.querySelector(".selection p");
-
-              const categoryOptions = innerDiv.querySelector(
-                ".selectionCategory .options",
-              );
-              const categoryOptionsUl = innerDiv.querySelector(
-                ".selectionCategory .options ul",
-              );
-              const categorySelection = innerDiv.querySelector(
-                ".selectionCategory > p",
-              );
-
-              const bookDiv = innerDiv.querySelector("#BookDiv");
-
-              const createNewBook = innerDiv.querySelector("#createNewBook");
-
-              const createBookForm = innerDiv.querySelector("#createBookForm");
-
-              const createBookFormBTN = innerDiv.querySelector(
-                "#createBookForm button",
-              );
-
-              createBookFormBTN.addEventListener("click", () => {
-                createBookForm.classList.toggle("hidden");
-              });
-
-              async function renderBookItems() {
-                const response = await fetch("backend/controllers/Book.php", {
-                  method: "post",
-                  body: JSON.stringify({
-                    action: "getAllBooks",
-                    json: "",
-                  }),
-                });
-                const data = await response.json();
-                if (data.error) {
-                  alert("error");
-                } else {
-                  data.data.forEach((item) => {
-                    const div = createBookDiv(item);
-
-                    bookDiv.append(div);
-                  });
-                }
+                targetDiv.classList.remove("loading");
+                targetDiv.append(innerDiv);
               }
-              renderBookItems();
+              return;
 
-              createBookForm.addEventListener("submit", async (e) => {
-                e.preventDefault();
-                const formData = Object.fromEntries(
-                  new FormData(createBookForm),
-                );
-                const response = await fetch("backend/controllers/Book.php", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    action: "addBook",
-                    json: formData,
-                  }),
-                });
-                const data = await response.json();
-                if (data.error) {
-                } else {
-                  console.log(data);
-                  const newItem = createBookDiv(data);
-                  bookDiv.append(newItem);
-                }
-              });
-
-              authorSelection.addEventListener("click", async () => {
-                authorOptionsUl.innerHTML = "";
-                const response = await fetch(
-                  "backend/controllers/Authors.php",
-                  {
-                    method: "post",
-                    body: JSON.stringify({
-                      action: "getAllAuthors",
-                      json: "",
-                    }),
-                  },
-                );
-
-                const data = await response.json();
-
-                data.forEach((item) => {
-                  const AuthorItem = elementFromHTML(`
-                  <li class="px-1 hover:bg-gray-200 w-full">
-                      ${item.first_name}
-                      ${item.last_name}
-                  <li/>
-                  `);
-
-                  authorOptionsUl.append(AuthorItem);
-                  AuthorItem.addEventListener("click", (e) => {
-                    authorSelection.textContent =
-                      item.first_name + " " + item.last_name;
-                    const input = innerDiv.querySelector("#authorTitle");
-
-                    input.value = item.id;
-                    authorOptions.classList.toggle("hidden");
-                  });
-                });
-
-                authorOptions.classList.toggle("hidden");
-              });
-
-              categorySelection.addEventListener("click", async () => {
-                categoryOptionsUl.innerHTML = "";
-                const response = await fetch(
-                  "backend/controllers/Category.php",
-                  {
-                    method: "post",
-                    body: JSON.stringify({
-                      action: "getAll",
-                      json: "",
-                    }),
-                  },
-                );
-
-                const data = await response.json();
-
-                data.forEach((item) => {
-                  const categoryItem = elementFromHTML(`
-                  <li class="px-1 hover:bg-gray-200 w-full">
-                        ${item.title}
-                  <li/>
-                  `);
-                  categoryOptionsUl.append(categoryItem);
-
-                  categoryItem.addEventListener("click", (e) => {
-                    categorySelection.textContent = item.title;
-                    const input = innerDiv.querySelector("#categoryTitle");
-                    input.value = item.id;
-                    categoryOptions.classList.toggle("hidden");
-                  });
-                });
-
-                categoryOptions.classList.toggle("hidden");
-              });
-
-              createNewBtn.addEventListener("click", () => {
-                createBookForm.classList.toggle("hidden");
-              });
-              targetDiv.classList.remove("loading");
-              targetDiv.append(innerDiv);
-            }
-            return;
-
-          case "categoryBtn":
-            {
-              const innerDiv = elementFromHTML(`<div class="w-full">
+            case "categoryBtn":
+              {
+                const innerDiv = elementFromHTML(`<div class="w-full">
               <div
                 class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black"
               >
@@ -947,9 +996,9 @@ popup (користете sweetalert библиотека), во кој ќе п�
                   ></iconify-icon>
                 </div>
               </div>
-            
+
                 <div class="relative">
-              
+
                 <div
                   class="flex addNew hidden -translate-x-1/2 top-2 w-80 left-1/2 absolute z-20 rounded-lg p-2 bg-stone-100  relative"
                   id="createNewAuthorForm"
@@ -958,10 +1007,10 @@ popup (користете sweetalert библиотека), во кој ќе п�
                     class="items-center  mb-4 justify-between w-full rounded-sm text-base "
                   >
                     <form>
-                      
+
                       <div class="">
                         <div class="  hidden"></div>
-                       
+
                         <div class="">
                         <div class="flex items-center justify-between pr-4 mb-2">
                         <label for="newtitle" class="text-gray-500 mb-2 underline underline-offset-1 mr-4" > Category Name: </label >
@@ -969,59 +1018,59 @@ popup (користете sweetalert библиотека), во кој ќе п�
                                   <iconify-icon icon="material-symbols:done" class="peer/edit bg-green-400 cursor-pointer relative tooltip rounded-md p-1" data-tooltip="Create New Category" ></iconify-icon>
                               </button>
                         </div>
-                              
-                        
+
+
                         <div class="flex items-center justify-between flex-auto ">
                           <div class=" w-full  -ml-2 bottom-[80%] text-white absolute bg-red-500" ></div>
                           <input type="text" name="newtitle" id="newtitle" class="w-full " />
                         </div>
                        </div>
-                       
-                        
-                        
+
+
+
                       </div>
                     </form>
                   </div>
                 </div>
 
                 <div class="categoryDiv p-4 gap-2 flex flex-wrap  border-2 border-gray-600  ">
-                
+
                 </div>
-                
+
                 </div>
 
 
-                
-              
-              
+
+
+
             </div>
             `);
 
-              const categoryDiv = innerDiv.querySelector(".categoryDiv");
+                const categoryDiv = innerDiv.querySelector(".categoryDiv");
 
-              const createNewBtn = innerDiv.querySelector("#createNewBtn");
+                const createNewBtn = innerDiv.querySelector("#createNewBtn");
 
-              const createNewForm = innerDiv.querySelector(
-                "#createNewAuthorForm",
-              );
-              createNewBtn.addEventListener("click", () => {
-                createNewForm.classList.toggle("hidden");
-                categoryDiv.classList.toggle("blur-lg");
-              });
+                const createNewForm = innerDiv.querySelector(
+                  "#createNewAuthorForm",
+                );
+                createNewBtn.addEventListener("click", () => {
+                  createNewForm.classList.toggle("hidden");
+                  categoryDiv.classList.toggle("blur-lg");
+                });
 
-              const addForm = innerDiv.querySelector("form");
-              /**
-               *  Return a category element that can be deleted and edited
-               * @param {string} title the name of the category item that's also used to identify the db item
-               * @returns {Element} The element thats returned
-               */
-              const createcategoryItems = (title) => {
-                const itemDiv = elementFromHTML(`
+                const addForm = innerDiv.querySelector("form");
+                /**
+                 *  Return a category element that can be deleted and edited
+                 * @param {string} title the name of the category item that's also used to identify the db item
+                 * @returns {Element} The element thats returned
+                 */
+                const createcategoryItems = (title) => {
+                  const itemDiv = elementFromHTML(`
                 <div class="flex  items-center  bg-stone-100 mb-2 p-2 justify-between w-60 rounded-sm text-base flex-auto">
 
                     <div id="name">
                       <p>${title}</p>
-                    </div> 
+                    </div>
 
                     <form  class="hidden" id="editForm" >
                         <input type="text" name="newTitle" id="newTitle">
@@ -1043,167 +1092,170 @@ popup (користете sweetalert библиотека), во кој ќе п�
                   </div>
                 </div>`);
 
-                //Form that visible when you click edit BTN
-                const editForm = itemDiv.querySelector("#editForm");
+                  //Form that visible when you click edit BTN
+                  const editForm = itemDiv.querySelector("#editForm");
 
-                //div that holds the item title
-                const itemTitle = itemDiv.querySelector("#name");
+                  //div that holds the item title
+                  const itemTitle = itemDiv.querySelector("#name");
 
-                const newTitle = itemDiv.querySelector("#newTitle");
+                  const newTitle = itemDiv.querySelector("#newTitle");
 
-                //input in editForm (form that shows up when you click EDIT BTN)
-                const editInput = itemDiv.querySelector("input");
+                  //input in editForm (form that shows up when you click EDIT BTN)
+                  const editInput = itemDiv.querySelector("input");
 
-                //Toggle edit Form
-                const editBtn = itemDiv.querySelector("#editBtn");
+                  //Toggle edit Form
+                  const editBtn = itemDiv.querySelector("#editBtn");
 
-                //Btn that is visible when the editForm in showing
-                const checkEditBtn = itemDiv.querySelector("#checkEditBtn");
+                  //Btn that is visible when the editForm in showing
+                  const checkEditBtn = itemDiv.querySelector("#checkEditBtn");
 
-                checkEditBtn.addEventListener("click", (e) => {
-                  e.preventDefault();
-                  editForm.submit();
-                });
+                  checkEditBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    editForm.submit();
+                  });
 
-                editBtn.addEventListener("click", async (e) => {
-                  console.log(itemTitle.firstElementChild.textContent);
+                  editBtn.addEventListener("click", async (e) => {
+                    console.log(itemTitle.firstElementChild.textContent);
 
-                  //text content in p tag (Category Names)
-                  editInput.value = itemTitle.firstElementChild.textContent;
+                    //text content in p tag (Category Names)
+                    editInput.value = itemTitle.firstElementChild.textContent;
 
-                  editBtn.classList.add("hidden");
-                  checkEditBtn.classList.remove("hidden");
+                    editBtn.classList.add("hidden");
+                    checkEditBtn.classList.remove("hidden");
 
-                  itemTitle.classList.add("hidden");
-                  editForm.classList.remove("hidden");
-                  editForm.classList.add("activeEditForm");
-                });
+                    itemTitle.classList.add("hidden");
+                    editForm.classList.remove("hidden");
+                    editForm.classList.add("activeEditForm");
+                  });
 
-                /* 
-                Create 
+                  /*
+                Create
                 New Category Item Form
                  */
-                editForm.addEventListener("submit", async (e) => {
-                  e.preventDefault();
-                  console.log(142421421);
+                  editForm.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    console.log(142421421);
 
+                    const response = await fetch(
+                      "backend/controllers/Category.php",
+                      {
+                        method: "post",
+                        body: JSON.stringify({
+                          action: "editCategory",
+                          json: {
+                            title: title,
+                            newTitle: newTitle.value,
+                          },
+                        }),
+                      },
+                    );
+
+                    const data = await response.json();
+                    if (data.error) {
+                    } else {
+                      editForm.classList.add("hidden");
+                      itemTitle.firstElementChild.textContent = newTitle.value;
+                      itemTitle.classList.remove("hidden");
+
+                      editBtn.classList.remove("hidden");
+                      checkEditBtn.classList.add("hidden");
+                      editForm.classList.remove("activeEditForm");
+                    }
+                  });
+
+                  const deleteBtn = itemDiv.querySelector("#deleteBtn");
+
+                  deleteBtn.addEventListener("click", async (e) => {
+                    const response = await fetch(
+                      "backend/controllers/Category.php",
+
+                      {
+                        method: "post",
+                        body: JSON.stringify({
+                          action: "deleteCategory",
+                          json: {
+                            title: title,
+                          },
+                        }),
+                      },
+                    );
+
+                    itemDiv.remove();
+                    const data = await response.json();
+                    console.log(data);
+                  });
+                  return itemDiv;
+                };
+
+                /* Create new form item */
+
+                addForm.addEventListener("submit", async (e) => {
+                  e.preventDefault();
+                  const input = addForm.querySelector("#newtitle");
                   const response = await fetch(
                     "backend/controllers/Category.php",
                     {
                       method: "post",
                       body: JSON.stringify({
-                        action: "editCategory",
-                        json: {
-                          title: title,
-                          newTitle: newTitle.value,
-                        },
+                        action: "addCategory",
+                        json: input.value.trim(),
                       }),
                     },
                   );
 
                   const data = await response.json();
-                  if (data.error) {
-                  } else {
-                    editForm.classList.add("hidden");
-                    itemTitle.firstElementChild.textContent = newTitle.value;
-                    itemTitle.classList.remove("hidden");
+                  const errorMessage = input.previousElementSibling;
 
-                    editBtn.classList.remove("hidden");
-                    checkEditBtn.classList.add("hidden");
-                    editForm.classList.remove("activeEditForm");
+                  if (data.error) {
+                    errorMessage.dataset.tooltip = data.message;
+                    errorMessage.classList.remove("hidden");
+                  } else {
+                    errorMessage.classList.add("hidden");
+
+                    const newItem = createcategoryItems(input.value.trim());
+                    createNewForm.classList.toggle("hidden");
+
+                    categoryDiv.classList.toggle("blur-lg");
+
+                    categoryDiv.append(newItem);
+                    input.value = "";
                   }
                 });
 
-                const deleteBtn = itemDiv.querySelector("#deleteBtn");
-
-                deleteBtn.addEventListener("click", async (e) => {
-                  const response = await fetch(
-                    "backend/controllers/Category.php",
-
-                    {
-                      method: "post",
-                      body: JSON.stringify({
-                        action: "deleteCategory",
-                        json: {
-                          title: title,
-                        },
-                      }),
-                    },
-                  );
-
-                  itemDiv.remove();
-                  const data = await response.json();
-                  console.log(data);
-                });
-                return itemDiv;
-              };
-
-              /* Create new form item */
-
-              addForm.addEventListener("submit", async (e) => {
-                e.preventDefault();
-                const input = addForm.querySelector("#newtitle");
+                /* render all category items */
                 const response = await fetch(
                   "backend/controllers/Category.php",
                   {
                     method: "post",
+                    headers: {
+                      "Content-Type": "application/json;charset=utf-8",
+                    },
                     body: JSON.stringify({
-                      action: "addCategory",
-                      json: input.value.trim(),
+                      action: "getAll",
+                      json: "",
                     }),
                   },
                 );
 
-                const data = await response.json();
-                const errorMessage = input.previousElementSibling;
+                const result = await response.json();
 
-                if (data.error) {
-                  errorMessage.dataset.tooltip = data.message;
-                  errorMessage.classList.remove("hidden");
-                } else {
-                  errorMessage.classList.add("hidden");
+                if (!result["error"]) {
+                  result.forEach((item) => {
+                    const itemDiv = createcategoryItems(item.title);
+                    categoryDiv.append(itemDiv);
+                  });
 
-                  const newItem = createcategoryItems(input.value.trim());
-                  createNewForm.classList.toggle("hidden");
+                  targetDiv.append(innerDiv);
 
-                  categoryDiv.classList.toggle("blur-lg");
-
-                  categoryDiv.append(newItem);
-                  input.value = "";
+                  targetDiv.classList.remove("loading");
                 }
-              });
-
-              /* render all category items */
-              const response = await fetch("backend/controllers/Category.php", {
-                method: "post",
-                headers: {
-                  "Content-Type": "application/json;charset=utf-8",
-                },
-                body: JSON.stringify({
-                  action: "getAll",
-                  json: "",
-                }),
-              });
-
-              const result = await response.json();
-
-              if (!result["error"]) {
-                result.forEach((item) => {
-                  const itemDiv = createcategoryItems(item.title);
-                  categoryDiv.append(itemDiv);
-                });
-
-                targetDiv.append(innerDiv);
-
-                targetDiv.classList.remove("loading");
               }
-            }
-            return;
-          case "authorBtn":
-            {
-              targetDiv.classList.remove("loading");
+              return;
+            case "authorBtn":
               {
-                const innerDiv = elementFromHTML(`
+                targetDiv.classList.remove("loading");
+                {
+                  const innerDiv = elementFromHTML(`
               <div class="w-full relative ">
               <div class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black">
                   <h1 class="text-xl ">Authors</h1>
@@ -1212,13 +1264,13 @@ popup (користете sweetalert библиотека), во кој ќе п�
                         <iconify-icon icon="gridicons:create" class=" ml-1 self-center" ></iconify-icon>
                   </div>
               </div>
-            
 
-                
+
+
                 <div class="relative">
 
                 <div class="flex addNew hidden -translate-x-1/2 top-2  w-full left-1/2  absolute   z-10" id="createNewAuthorForm">
-                    
+
                 <div class="items-center  bg-stone-100 mb-4 p-2 justify-between  w-full rounded-sm text-base">
                 <form class="border-red-500 border" id="createAuthorForm">
                 <div class="hidden w-full p-2 absolute top-4 bg-red-200 rounded-md" id="authorError"></div>
@@ -1249,53 +1301,53 @@ popup (користете sweetalert библиотека), во кој ќе п�
                   </div>
                 </form>
 
-                
+
 
               </div>
                 </div>
                   <div class="categoryDiv grid grid-cols-2 justify-items-center pt-4 ">
-                  
-                    
+
+
             </div>
-                
-                  </div>     
+
+                  </div>
               </div>
                 `);
 
-                const categoryDiv = innerDiv.querySelector(".categoryDiv");
+                  const categoryDiv = innerDiv.querySelector(".categoryDiv");
 
-                const createNewAuthorForm = innerDiv.querySelector(
-                  "#createNewAuthorForm",
-                );
+                  const createNewAuthorForm = innerDiv.querySelector(
+                    "#createNewAuthorForm",
+                  );
 
-                const createNewAuthorBtn =
-                  innerDiv.querySelector("#createAuthor");
+                  const createNewAuthorBtn =
+                    innerDiv.querySelector("#createAuthor");
 
-                //popup form that is used to create a new author
+                  //popup form that is used to create a new author
 
-                const createAuthorForm =
-                  innerDiv.querySelector("#createAuthorForm");
+                  const createAuthorForm =
+                    innerDiv.querySelector("#createAuthorForm");
 
-                createNewAuthorBtn.addEventListener("click", (e) => {
-                  createNewAuthorForm.classList.toggle("hidden");
-                  categoryDiv.classList.toggle("blur-lg");
-                });
+                  createNewAuthorBtn.addEventListener("click", (e) => {
+                    createNewAuthorForm.classList.toggle("hidden");
+                    categoryDiv.classList.toggle("blur-lg");
+                  });
 
-                /**
-                 *  Return a category element that can be deleted and edited
-                 * @param {string} title the name of the category item that's also used to identify the db item
-                 * @returns {Element} The element thats returned
-                 */
-                const createAuthorItems = (
-                  id,
-                  first_name,
-                  last_name,
-                  short_bio,
-                ) => {
-                  const itemDiv = elementFromHTML(`
+                  /**
+                   *  Return a category element that can be deleted and edited
+                   * @param {string} title the name of the category item that's also used to identify the db item
+                   * @returns {Element} The element thats returned
+                   */
+                  const createAuthorItems = (
+                    id,
+                    first_name,
+                    last_name,
+                    short_bio,
+                  ) => {
+                    const itemDiv = elementFromHTML(`
                   <article class="flex   items-start mb-4  justify-between w-80  text-base  shadow-inner rounded-md">
                   <div class="p-4 min-w-full ">
-                    
+
                       <div id="name" class="">
                         <div class="flex  items-center  justify-between mb-4">
                             <div class="max-w-[200px] break-all flex-initial">
@@ -1311,7 +1363,7 @@ popup (користете sweetalert библиотека), во кој ќе п�
                             </div>
                                         <div class="buttons ml-2 rounded-sm  bg-gray-100">
                                         <div class="flex items-center gap-2 justify-around w-full p-1">
-                                        
+
                                         <div id="editBtn">
                                           <iconify-icon icon="material-symbols:edit" class="peer/edit bg-red-200 cursor-pointer relative tooltip rounded-md p-1" data-tooltip="Edit Category"></iconify-icon>
                                         </div>
@@ -1321,7 +1373,7 @@ popup (користете sweetalert библиотека), во кој ќе п�
                                         <div id="deleteBtn">
                                           <iconify-icon icon="ph:x" class="bg-yellow-200 cursor-pointer tooltip relative p-1" data-tooltip="Delete Category"></iconify-icon>
                                         </div>
-                                        
+
                                               </div></div>
                         </div>
 
@@ -1335,131 +1387,32 @@ popup (користете sweetalert библиотека), во кој ќе п�
                          peer-checked:fcl:before:content-['Read_Less']">
                             <label for="ch${id}" class="  before:rounded-md before:bg-blue-400 before:p-2 before:text-white"></label>
                         </div>
-                            
+
 
                         </div>
-                       
-                    
-                    
+
+
+
                   </div>
                   </article>`);
 
-                  //Form that visible when you click edit BTN
-                  const editForm = itemDiv.querySelector("#editForm");
+                    //Form that visible when you click edit BTN
+                    const editForm = itemDiv.querySelector("#editForm");
 
-                  //div that holds the item title
-                  const renderItem = itemDiv.querySelector("#name");
+                    //div that holds the item title
+                    const renderItem = itemDiv.querySelector("#name");
 
-                  const newFirstName = itemDiv.querySelector("#newFirstName");
-                  const newLastName = itemDiv.querySelector("#newLastName");
-                  const newShortBio = itemDiv.querySelector("#newShortBio");
+                    const newFirstName = itemDiv.querySelector("#newFirstName");
+                    const newLastName = itemDiv.querySelector("#newLastName");
+                    const newShortBio = itemDiv.querySelector("#newShortBio");
 
-                  const FirstName = itemDiv.querySelector("#FirstName");
-                  const LastName = itemDiv.querySelector("#LastName");
-                  const ShortBio = itemDiv.querySelector("#ShortBio");
+                    const FirstName = itemDiv.querySelector("#FirstName");
+                    const LastName = itemDiv.querySelector("#LastName");
+                    const ShortBio = itemDiv.querySelector("#ShortBio");
 
-                  const readMoreBtn =
-                    renderItem.querySelector("label[for*='ch']");
-                  readMoreBtn.clientHeight;
-
-                  // async function checkItemPoz() {
-                  setTimeout(() => {
-                    if (ShortBio.clientHeight === ShortBio.scrollHeight) {
-                      console.log(true);
-                      readMoreBtn.classList.add("hidden");
-                    }
-                  }, 1);
-                  // }
-                  // checkItemPoz();
-
-                  //Toggle edit Form
-                  const editBtn = itemDiv.querySelector("#editBtn");
-
-                  //Btn that is visible when the editForm in showing
-                  const checkEditBtn = itemDiv.querySelector("#checkEditBtn");
-
-                  editBtn.addEventListener("click", async (e) => {
-                    //hidden inputs that shoud popup on edit btn
-                    const newInputs = [newFirstName, newLastName, newShortBio];
-
-                    const oldInputs = [FirstName, LastName, ShortBio];
-
-                    //text content in p tag (Category Names)
-                    const parameters = [first_name, last_name, short_bio];
-
-                    for (let i = 0; i < newInputs.length; i++) {
-                      const oldElement = oldInputs[i].textContent;
-                      //new edit inputs
-                      const replaceElement = newInputs[i];
-
-                      replaceElement.value = oldElement;
-
-                      oldInputs[i].classList.add("hidden");
-
-                      replaceElement.classList.remove("hidden");
-                      replaceElement.classList.add("activeEditItem");
-                    }
-
-                    renderItem
-                      .querySelector("label[for*='ch']")
-                      .classList.add("hidden");
-
-                    editBtn.classList.add("hidden");
-
-                    checkEditBtn.classList.remove("hidden");
-
-                    editForm.addEventListener("submit", async (e) => {});
-                  });
-
-                  checkEditBtn.addEventListener("click", async (e) => {
-                    const response = await fetch(
-                      "backend/controllers/Authors.php",
-                      {
-                        method: "post",
-                        body: JSON.stringify({
-                          action: "editAuthor",
-                          json: {
-                            id: id,
-                            first_name: newFirstName.value,
-                            last_name: newLastName.value,
-                            short_bio: newShortBio.value,
-                          },
-                        }),
-                      },
-                    );
-
-                    const data = await response.json();
-                    if (data.error) {
-                    } else {
-                      // renderItem.classList.remove("hidden");
-
-                      editBtn.classList.remove("hidden");
-                      checkEditBtn.classList.add("hidden");
-
-                      const newInputs = [
-                        newFirstName,
-                        newLastName,
-                        newShortBio,
-                      ];
-
-                      const oldInputs = [FirstName, LastName, ShortBio];
-
-                      renderItem
-                        .querySelector("label[for*='ch']")
-                        .classList.remove("hidden");
-                      for (let i = 0; i < newInputs.length; i++) {
-                        //new edit inputs
-                        const replaceElement = newInputs[i];
-
-                        oldInputs[i].textContent = replaceElement.value;
-
-                        oldInputs[i].classList.remove("hidden");
-
-                        replaceElement.classList.add("hidden");
-
-                        replaceElement.classList.remove("activeEditItem");
-                      }
-                    }
+                    const readMoreBtn =
+                      renderItem.querySelector("label[for*='ch']");
+                    readMoreBtn.clientHeight;
 
                     // async function checkItemPoz() {
                     setTimeout(() => {
@@ -1470,120 +1423,258 @@ popup (користете sweetalert библиотека), во кој ќе п�
                     }, 1);
                     // }
                     // checkItemPoz();
-                  });
 
-                  const deleteBtn = itemDiv.querySelector("#deleteBtn");
+                    //Toggle edit Form
+                    const editBtn = itemDiv.querySelector("#editBtn");
 
-                  deleteBtn.addEventListener("click", async (e) => {
+                    //Btn that is visible when the editForm in showing
+                    const checkEditBtn = itemDiv.querySelector("#checkEditBtn");
+
+                    editBtn.addEventListener("click", async (e) => {
+                      //hidden inputs that shoud popup on edit btn
+                      const newInputs = [
+                        newFirstName,
+                        newLastName,
+                        newShortBio,
+                      ];
+
+                      const oldInputs = [FirstName, LastName, ShortBio];
+
+                      //text content in p tag (Category Names)
+                      const parameters = [first_name, last_name, short_bio];
+
+                      for (let i = 0; i < newInputs.length; i++) {
+                        const oldElement = oldInputs[i].textContent;
+                        //new edit inputs
+                        const replaceElement = newInputs[i];
+
+                        replaceElement.value = oldElement;
+
+                        oldInputs[i].classList.add("hidden");
+
+                        replaceElement.classList.remove("hidden");
+                        replaceElement.classList.add("activeEditItem");
+                      }
+
+                      renderItem
+                        .querySelector("label[for*='ch']")
+                        .classList.add("hidden");
+
+                      editBtn.classList.add("hidden");
+
+                      checkEditBtn.classList.remove("hidden");
+
+                      editForm.addEventListener("submit", async (e) => {});
+                    });
+
+                    checkEditBtn.addEventListener("click", async (e) => {
+                      const response = await fetch(
+                        "backend/controllers/Authors.php",
+                        {
+                          method: "post",
+                          body: JSON.stringify({
+                            action: "editAuthor",
+                            json: {
+                              id: id,
+                              first_name: newFirstName.value,
+                              last_name: newLastName.value,
+                              short_bio: newShortBio.value,
+                            },
+                          }),
+                        },
+                      );
+
+                      const data = await response.json();
+                      if (data.error) {
+                      } else {
+                        // renderItem.classList.remove("hidden");
+
+                        editBtn.classList.remove("hidden");
+                        checkEditBtn.classList.add("hidden");
+
+                        const newInputs = [
+                          newFirstName,
+                          newLastName,
+                          newShortBio,
+                        ];
+
+                        const oldInputs = [FirstName, LastName, ShortBio];
+
+                        renderItem
+                          .querySelector("label[for*='ch']")
+                          .classList.remove("hidden");
+                        for (let i = 0; i < newInputs.length; i++) {
+                          //new edit inputs
+                          const replaceElement = newInputs[i];
+
+                          oldInputs[i].textContent = replaceElement.value;
+
+                          oldInputs[i].classList.remove("hidden");
+
+                          replaceElement.classList.add("hidden");
+
+                          replaceElement.classList.remove("activeEditItem");
+                        }
+                      }
+
+                      // async function checkItemPoz() {
+                      setTimeout(() => {
+                        if (ShortBio.clientHeight === ShortBio.scrollHeight) {
+                          console.log(true);
+                          readMoreBtn.classList.add("hidden");
+                        }
+                      }, 1);
+                      // }
+                      // checkItemPoz();
+                    });
+
+                    const deleteBtn = itemDiv.querySelector("#deleteBtn");
+
+                    deleteBtn.addEventListener("click", async (e) => {
+                      const willDelete = await Swal.fire({
+                        title: "Are you sure?",
+                        text: "This will delete all associated book comments and notes. Proceed?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: `Yes, Delete Author!`,
+                        html: `<div class="text-lg">${
+                          newFirstName.textContent +
+                          " " +
+                          newLastName.textContent
+                        }</div>`,
+                      });
+
+                      willDelete;
+                      if (willDelete.isConfirmed) {
+                        const response = await fetch(
+                          "backend/controllers/Authors.php",
+
+                          {
+                            method: "post",
+                            body: JSON.stringify({
+                              action: "deleteAuthor",
+                              json: {
+                                id: id,
+                              },
+                            }),
+                          },
+                        );
+
+                        const data = await response.json();
+                        if (data.error) {
+                          Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "Something went wrong!",
+                          });
+                        } else {
+                          itemDiv.remove();
+
+                          Swal.fire(
+                            "Deleted!",
+                            "Your file has been deleted.",
+                            "success",
+                          );
+                        }
+                      }
+                    });
+
+                    return itemDiv;
+                  };
+
+                  /* Create new form item */
+
+                  createAuthorForm.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    const dataForm = new FormData(createAuthorForm);
+
+                    const result = Object.fromEntries(dataForm);
+
+                    Object.keys(result).forEach((item) => {
+                      result[item] = result[item].trim();
+                    });
+
                     const response = await fetch(
                       "backend/controllers/Authors.php",
-
                       {
                         method: "post",
                         body: JSON.stringify({
-                          action: "deleteAuthor",
-                          json: {
-                            id: id,
-                          },
+                          action: "addAuthor",
+                          json: result,
                         }),
                       },
                     );
 
-                    itemDiv.remove();
                     const data = await response.json();
-                    console.log(data);
+                    if (data.error) {
+                      const errorMessage =
+                        innerDiv.querySelector("#authorError");
+
+                      errorMessage.textContent = data.message;
+                      errorMessage.classList.remove("hidden");
+                    } else {
+                      const { id, first_name, last_name, short_bio } =
+                        data.data;
+                      const newItem = createAuthorItems(
+                        id,
+                        first_name,
+                        last_name,
+                        short_bio,
+                      );
+                      categoryDiv.append(newItem);
+
+                      createAuthorForm.reset();
+
+                      createNewAuthorForm.classList.toggle("hidden");
+                      categoryDiv.classList.toggle("blur-lg");
+                    }
                   });
-                  return itemDiv;
-                };
 
-                /* Create new form item */
-
-                createAuthorForm.addEventListener("submit", async (e) => {
-                  e.preventDefault();
-                  const dataForm = new FormData(createAuthorForm);
-
-                  const result = Object.fromEntries(dataForm);
-
-                  Object.keys(result).forEach((item) => {
-                    result[item] = result[item].trim();
-                  });
-
+                  /* render all authors items */
                   const response = await fetch(
                     "backend/controllers/Authors.php",
                     {
                       method: "post",
+                      headers: {
+                        "Content-Type": "application/json;charset=utf-8",
+                      },
                       body: JSON.stringify({
-                        action: "addAuthor",
-                        json: result,
+                        action: "getAllAuthors",
+                        json: "",
                       }),
                     },
                   );
 
-                  const data = await response.json();
-                  if (data.error) {
-                    const errorMessage = innerDiv.querySelector("#authorError");
+                  const result = await response.json();
+                  if (!result.error) {
+                    result.forEach((item) => {
+                      const itemDiv = createAuthorItems(
+                        item.id,
+                        item.first_name,
+                        item.last_name,
+                        item.short_bio,
+                      );
+                      categoryDiv.append(itemDiv);
+                    });
 
-                    errorMessage.textContent = data.message;
-                    errorMessage.classList.remove("hidden");
-                  } else {
-                    const { id, first_name, last_name, short_bio } = data.data;
-                    const newItem = createAuthorItems(
-                      id,
-                      first_name,
-                      last_name,
-                      short_bio,
-                    );
-                    categoryDiv.append(newItem);
+                    targetDiv.append(innerDiv);
 
-                    createAuthorForm.reset();
-
-                    createNewAuthorForm.classList.toggle("hidden");
-                    categoryDiv.classList.toggle("blur-lg");
+                    targetDiv.classList.remove("loading");
                   }
-                });
-
-                /* render all authors items */
-                const response = await fetch(
-                  "backend/controllers/Authors.php",
-                  {
-                    method: "post",
-                    headers: {
-                      "Content-Type": "application/json;charset=utf-8",
-                    },
-                    body: JSON.stringify({
-                      action: "getAllAuthors",
-                      json: "",
-                    }),
-                  },
-                );
-
-                const result = await response.json();
-                if (!result.error) {
-                  result.forEach((item) => {
-                    const itemDiv = createAuthorItems(
-                      item.id,
-                      item.first_name,
-                      item.last_name,
-                      item.short_bio,
-                    );
-                    categoryDiv.append(itemDiv);
-                  });
-
-                  targetDiv.append(innerDiv);
-
-                  targetDiv.classList.remove("loading");
                 }
               }
-            }
-            return;
-          case "commentBtn":
-            {
-              const innerDiv = elementFromHTML(`<div class="w-full">
+              return;
+            case "commentBtn":
+              {
+                const innerDiv = elementFromHTML(`<div class="w-full">
               <div
                 class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black"
               >
                 <h1 class="text-xl">Comments</h1>
-               
+
 
               <div class=" flex items-center gap-3">
 
@@ -1608,7 +1699,7 @@ popup (користете sweetalert библиотека), во кој ќе п�
                   class="ml-1 self-center"
                 ></iconify-icon>
               </div>
-              
+
               <div
                 class="flex items-center cursor-pointer rounded-md bg-red-500 text-white p-2"
                 id="renderDeclinedBtn"
@@ -1623,12 +1714,12 @@ popup (користете sweetalert библиотека), во кој ќе п�
             </div>
 
               </div>
-            
 
 
-              
+
+
                 <div class="relative">
-              
+
                 <div
                   class="flex addNew hidden -translate-x-1/2 top-2 w-80 left-1/2 absolute z-20 rounded-lg p-2 bg-stone-100  relative"
                   id="createNewAuthorForm"
@@ -1637,10 +1728,10 @@ popup (користете sweetalert библиотека), во кој ќе п�
                     class="items-center  mb-4 justify-between w-full rounded-sm text-base "
                   >
                     <form>
-                      
+
                       <div class="">
                         <div class="  hidden"></div>
-                       
+
                         <div class="">
                         <div class="flex items-center justify-between pr-4 mb-2">
                         <label for="newtitle" class="text-gray-500 mb-2 underline underline-offset-1 mr-4" > Category Name: </label >
@@ -1648,23 +1739,23 @@ popup (користете sweetalert библиотека), во кој ќе п�
                                   <iconify-icon icon="material-symbols:done" class="peer/edit bg-green-400 cursor-pointer relative tooltip rounded-md p-1" data-tooltip="Create New Category" ></iconify-icon>
                               </button>
                         </div>
-                              
-                        
+
+
                         <div class="flex items-center justify-between flex-auto ">
                           <div class=" w-full  -ml-2 bottom-[80%] text-white absolute bg-red-500" ></div>
                           <input type="text" name="newtitle" id="newtitle" class="w-full " />
                         </div>
                        </div>
-                       
-                        
-                        
+
+
+
                       </div>
                     </form>
                   </div>
                 </div>
 
                         <div class="commentsDiv p-4 gap-2 flex justify-center [&_div]:w-11/12    border-2 border-gray-600  ">
-                        
+
                                       <div class="pending border border-yellow-500    flex flex-wrap  justify-start  ">
                                       </div>
 
@@ -1673,35 +1764,35 @@ popup (користете sweetalert библиотека), во кој ќе п�
 
                                       <div class="declined border border-red-500    flex flex-wrap  justify-start  ">
                                       </div>
-                                      
+
                         </div>
-                      
+
                       </div>
             </div>
             `);
 
-              function createCommentDiv({
-                body,
-                id,
-                approved,
-                declined,
-                deleted_at,
-                users_id,
-                username,
-              }) {
-                const itemDiv = elementFromHTML(`
+                function createCommentDiv({
+                  body,
+                  id,
+                  approved,
+                  declined,
+                  deleted_at,
+                  users_id,
+                  username,
+                }) {
+                  const itemDiv = elementFromHTML(`
                 <div class="h-30  w-10 flex-[0_0_33%] items-center  mb-2 p-2 justify-between  rounded-sm text-base  hover:ring-violet-200 hover:ring-2">
                 <div class="flex items-center justify-between">
-                    
-                
+
+
                     <div class="flex items-center justify-between gap-2 p-1">
                     <div class=" h-4 rounded-full">
                       <iconify-icon class="text-xl bg-blue-500 " icon="codicon:account"></iconify-icon>
                     </div>
-                      <p>By :  <span class="underline underline-offset-2 font-semibold">${username}</span> </p>  
+                      <p>By :  <span class="underline underline-offset-2 font-semibold">${username}</span> </p>
                     </div>
 
-                    
+
                     <div class="buttons ml-2 flex gap-4">
                       <div id="cardApproveBtn">
                         <iconify-icon icon="material-symbols:edit" class="peer/edit bg-red-200 cursor-pointer relative tooltip" data-tooltip="Approve"></iconify-icon>
@@ -1709,16 +1800,16 @@ popup (користете sweetalert библиотека), во кој ќе п�
                       <div id="cardDeclineBtn" class="">
                         <iconify-icon icon="material-symbols:check" class="peer/edit bg-green-200 cursor-pointer relative tooltip" data-tooltip="Decline">eoahutneoahuntoauhtneoau uheotnuhoa uoethanuteoha ueothnautnaoe  uthoeanuhoaent hueotanuhaoe</iconify-icon>
                       </div>
-                      
+
                   </div>
-                
+
                 </div>
 
                         <form  class="hidden" id="editForm" >
                             <input type="text" name="newTitle" id="newTitle">
                         </form>
 
-                  
+
 
 
                   <div id="name" class="group">
@@ -1731,177 +1822,229 @@ popup (користете sweetalert библиотека), во кој ќе п�
                     </div>
                   </div>
                 </div>`);
-                const commentBody = itemDiv.querySelector("#body");
+                  const commentBody = itemDiv.querySelector("#body");
 
-                const cardDeclineBtn = itemDiv.querySelector("#cardDeclineBtn");
+                  const cardDeclineBtn =
+                    itemDiv.querySelector("#cardDeclineBtn");
+                  const cardApproveBtn =
+                    itemDiv.querySelector("#cardApproveBtn");
 
-                /* Post decline Comment  */
-                cardDeclineBtn.addEventListener("click", async (e) => {
-                  e.preventDefault();
-                  const response = await fetch(
-                    "/backend/controllers/Comments.php",
-                    {
-                      method: "post",
-                      body: JSON.stringify({
-                        action: "declineComment",
-                        json: "",
-                      }),
-                    },
-                  );
-                  const data = await response.json();
-                  console.log(data);
-
-                  data.error
-                    ? null
-                    : data.data.forEach((item) => {
-                        declinedDiv.prepend(itemDiv);
-                      });
-                });
-
-                /* Post accept Comment  */
-                const cardAcceptedBtn =
-                  itemDiv.querySelector("#cardAcceptedBtn");
-
-                cardAcceptedBtn.addEventListener("click", async (e) => {
-                  e.preventDefault();
-                  const response = await fetch(
-                    "/backend/controllers/Comments.php",
-                    {
-                      method: "post",
-                      body: JSON.stringify({
-                        action: "acceptComment",
-                        json: "",
-                      }),
-                    },
-                  );
-                  const data = await response.json();
-                  console.log(data);
-                });
-
-                setTimeout(() => {
-                  if (commentBody.clientHeight === commentBody.scrollHeight) {
-                    const readMoreOrLessBtn = itemDiv
-                      .querySelector("#readBtn")
-                      .classList.add("invisible");
+                  if (declined != null) {
+                    cardDeclineBtn.classList.add("hidden");
                   }
-                }, 1);
+                  if (approved != null) {
+                    cardApproveBtn.classList.add("hidden");
+                  }
+                  /* Post decline Comment  */
+                  cardDeclineBtn.addEventListener("click", async (e) => {
+                    e.preventDefault();
+                    const response = await fetch(
+                      "backend/controllers/Comments.php",
+                      {
+                        method: "post",
+                        body: JSON.stringify({
+                          action: "declineComment",
+                          json: {
+                            id: id,
+                          },
+                        }),
+                      },
+                    );
+                    const data = await response.json();
+                    console.log(data);
 
-                return itemDiv;
-              }
+                    data.error ? null : itemDiv.remove();
+                    cardApproveBtn.classList.remove("hidden");
+                    cardDeclineBtn.classList.add("hidden");
 
-              const commentsDiv = innerDiv.querySelector(".commentsDiv");
+                    declinedDiv.prepend(itemDiv);
+                  });
 
-              const approvedDiv = commentsDiv.querySelector(".approved");
-              const declinedDiv = commentsDiv.querySelector(" .declined");
+                  /* Post accept Comment  */
 
-              const pendingfDiv = commentsDiv.querySelector(" .pending");
-              const renderPendingBtn =
-                innerDiv.querySelector("#renderPendingBtn");
-              const renderApprovedBtn =
-                innerDiv.querySelector("#renderApprovedBtn");
-              const renderDeclinedBtn =
-                innerDiv.querySelector("#renderDeclinedBtn");
+                  cardApproveBtn.addEventListener("click", async (e) => {
+                    e.preventDefault();
+                    const response = await fetch(
+                      "backend/controllers/Comments.php",
+                      {
+                        method: "post",
+                        body: JSON.stringify({
+                          action: "approveComment",
+                          json: {
+                            id: id,
+                          },
+                        }),
+                      },
+                    );
+                    const data = await response.json();
 
-              async function renderComments() {
-                const response = await fetch(
-                  "backend/controllers/Comments.php",
-                  {
-                    method: "post",
-                    body: JSON.stringify({
-                      action: "getAll",
-                      json: {},
-                    }),
-                  },
-                );
-
-                const data = await response.json();
-                console.log(data);
-
-                /* 
-                * filter items to corresponding div
-                
-                */
-                if (data.error) {
-                  return alert("error with the database");
-                } else {
-                  data.data.forEach((item) => {
-                    switch (true) {
-                      case item.approved === null && item.declined === null:
-                        {
-                          console.log("pending");
-                          const element = createCommentDiv(item);
-                          pendingfDiv.append(element);
-                        }
-                        return;
-                      case item.approved != null:
-                        {
-                          console.log("approved");
-                          const item = createCommentDiv(item);
-                          approvedDiv.append(item);
-                        }
-                        return;
-                      case item.declined != null:
-                        {
-                          console.log("declined");
-                          const item = createCommentDiv(item);
-                          declinedDiv.append(item);
-                        }
-                        return;
-                      default:
-                        return;
+                    console.log(data);
+                    if (data.error) {
+                    } else {
+                      itemDiv.remove();
+                      cardApproveBtn.classList.add("hidden");
+                      cardDeclineBtn.classList.remove("hidden");
+                      approvedDiv.prepend(itemDiv);
                     }
                   });
+
+                  setTimeout(() => {
+                    if (commentBody.clientHeight === commentBody.scrollHeight) {
+                      const readMoreOrLessBtn = itemDiv
+                        .querySelector("#readBtn")
+                        .classList.add("invisible");
+                    }
+                  }, 1);
+
+                  return itemDiv;
                 }
+
+                const commentsDiv = innerDiv.querySelector(".commentsDiv");
+
+                const approvedDiv = commentsDiv.querySelector(".approved");
+                const declinedDiv = commentsDiv.querySelector(" .declined");
+
+                const pendingfDiv = commentsDiv.querySelector(" .pending");
+                const renderPendingBtn =
+                  innerDiv.querySelector("#renderPendingBtn");
+                const renderApprovedBtn =
+                  innerDiv.querySelector("#renderApprovedBtn");
+                const renderDeclinedBtn =
+                  innerDiv.querySelector("#renderDeclinedBtn");
+
+                async function renderComments() {
+                  const response = await fetch(
+                    "backend/controllers/Comments.php",
+                    {
+                      method: "post",
+                      body: JSON.stringify({
+                        action: "getAll",
+                        json: {},
+                      }),
+                    },
+                  );
+
+                  const data = await response.json();
+                  console.log(data);
+
+                  /*
+                * filter items to corresponding div
+
+                */
+                  if (data.error) {
+                    return alert("error with the database");
+                  } else {
+                    data.data.forEach((item) => {
+                      switch (true) {
+                        case item.approved === null &&
+                          item.declined === null &&
+                          item.deleted_at == null:
+                          {
+                            console.log("pending");
+                            const element = createCommentDiv(item);
+                            pendingfDiv.append(element);
+                          }
+                          return;
+                        case item.approved !== null && item.deleted_at == null:
+                          {
+                            console.log("approved");
+                            const element = createCommentDiv(item);
+                            approvedDiv.append(element);
+                          }
+                          return;
+                        case item.declined !== null && item.deleted_at == null:
+                          {
+                            console.log("declined");
+                            const element = createCommentDiv(item);
+                            declinedDiv.append(element);
+                          }
+                          return;
+                        default:
+                          return;
+                      }
+                    });
+                  }
+                }
+                renderComments();
+
+                renderPendingBtn.addEventListener("click", () => {
+                  [pendingfDiv, approvedDiv, declinedDiv].forEach((item) =>
+                    item.classList.add("hidden"),
+                  );
+                  // pendingfDiv.classList.toggle("blur-lg");
+                  pendingfDiv.classList.remove("hidden");
+                });
+
+                renderApprovedBtn.addEventListener("click", () => {
+                  [pendingfDiv, approvedDiv, declinedDiv].forEach((item) =>
+                    item.classList.add("hidden"),
+                  );
+                  // pendingfDiv.classList.toggle("blur-lg");
+                  approvedDiv.classList.remove("hidden");
+                });
+
+                renderDeclinedBtn.addEventListener("click", () => {
+                  [pendingfDiv, approvedDiv, declinedDiv].forEach((item) =>
+                    item.classList.add("hidden"),
+                  );
+                  // pendingfDiv.classList.toggle("blur-lg");
+                  declinedDiv.classList.remove("hidden");
+                });
+                targetDiv.append(innerDiv);
+                renderPendingBtn.dispatchEvent(new Event("click"));
+                targetDiv.classList.remove("loading");
               }
-              renderComments();
+              return;
 
-              renderPendingBtn.addEventListener("click", () => {
-                [pendingfDiv, approvedDiv, declinedDiv].forEach((item) =>
-                  item.classList.add("hidden"),
-                );
-                // pendingfDiv.classList.toggle("blur-lg");
-                pendingfDiv.classList.remove("hidden");
-              });
+            case "userBtn":
+              {
+                const innerDiv = elementFromHTML(`<div class="w-full">
+              <div
+                class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black"
+              >
+                <h1 class="text-xl">Users:</h1>
 
-              renderApprovedBtn.addEventListener("click", () => {
-                [pendingfDiv, approvedDiv, declinedDiv].forEach((item) =>
-                  item.classList.add("hidden"),
-                );
-                // pendingfDiv.classList.toggle("blur-lg");
-                approvedDiv.classList.remove("hidden");
-              });
+              </div>
 
-              renderDeclinedBtn.addEventListener("click", () => {
-                [pendingfDiv, approvedDiv, declinedDiv].forEach((item) =>
-                  item.classList.add("hidden"),
-                );
-                // pendingfDiv.classList.toggle("blur-lg");
-                declinedDiv.classList.remove("hidden");
-              });
-              targetDiv.append(innerDiv);
-              renderPendingBtn.dispatchEvent(new Event("click"));
-              targetDiv.classList.remove("loading");
-            }
-            return;
 
-          default:
-            return;
+
+
+                <div class="relative">
+
+                
+
+                        <div class="commentsDiv p-4 gap-2 flex justify-center [&_div]:w-11/12    border-2 border-gray-600  ">
+
+                                      <div class="pending border border-yellow-500    flex flex-wrap  justify-start  ">
+                                      </div>
+
+                                      <div class="approved border border-green-500    flex flex-wrap  justify-start   ">
+                                      </div>
+
+                                      <div class="declined border border-red-500    flex flex-wrap  justify-start  ">
+                                      </div>
+
+                        </div>
+
+                      </div>
+            </div>
+            `);
+                targetDiv.classList.remove("loading");
+                targetDiv.append(innerDiv);
+              }
+              break;
+            default:
+              return;
+          }
         }
-      }
-    });
-    let event = new Event("click");
+      });
+      let event = new Event("click");
 
-    tabBtnDiv.dispatchEvent(event);
+      tabBtnDiv.dispatchEvent(event);
 
-    const logoutBtn = element.querySelector("button");
-
-    logoutBtn.addEventListener("click", () => {
-      Login.logout();
-      window.location.reload();
-    });
-
-    this.mainDiv.innerHTML = "";
-    this.mainDiv.append(element);
+      this.mainDiv.innerHTML = "";
+      this.mainDiv.append(element);
+    }
   }
 }
 

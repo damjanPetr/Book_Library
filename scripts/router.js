@@ -52,6 +52,7 @@ const urlLocationHandler = async (event) => {
   const response = await fetch(route.path);
   const html = await response.text();
   document.title = route.title;
+
   Render.changeRouteDefault();
 
   switch (location) {

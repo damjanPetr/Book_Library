@@ -17,10 +17,12 @@ if (isset($data)) {
                 try {
                     User::createUser($json['username'], $json['password']);
                 } catch (\PDOException $e) {
-                    echo json_encode(array(
-                        'error' => true,
-                        'message' => $e->getMessage()
-                    ));
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
                 }
             }
             break;
@@ -29,10 +31,12 @@ if (isset($data)) {
                 try {
                     User::authUser($json['username'], $json['password']);
                 } catch (\Throwable $e) {
-                    echo json_encode(array(
-                        'error' => true,
-                        'message' => $e->getMessage()
-                    ));
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
                 }
                 break;
             }
@@ -53,7 +57,7 @@ class User
 
 
         // statement for checking the credentials
-        $sql =  'SELECT username, password FROM users WHERE username=:username;';
+        $sql = 'SELECT username, password,id,type FROM users WHERE username=:username;';
 
         $stm1 = $pdo->prepare($sql);
 
@@ -68,7 +72,7 @@ class User
                 setcookie("AUTH", "cookiethree", time() + 606024 * 30);
                 echo json_encode([
                     'auth' => 'true',
-                    'user' =>  json_encode($results[0])
+                    'user' => $results[0]
                 ]);
             } else {
                 echo json_encode([
@@ -96,7 +100,7 @@ class User
 
 
         // statement for checking the credential username is present
-        $sql =  'SELECT (username) FROM users WHERE username=:username';
+        $sql = 'SELECT (username) FROM users WHERE username=:username';
 
         $stm1 = $pdo->prepare($sql);
         $stm1->execute([
@@ -106,8 +110,8 @@ class User
         $results = $stm1->fetchAll();
         if ($results) {
             $json = [
-                "error" =>  true,
-                "message" =>  "This username is already in use.",
+                "error" => true,
+                "message" => "This username is already in use.",
             ];
             echo json_encode($json);
         } else {
@@ -116,7 +120,7 @@ class User
 
             $hash_password = password_hash($password, PASSWORD_DEFAULT);
 
-            $sql =  'INSERT INTO  users (type,username,password,created_at)
+            $sql = 'INSERT INTO  users (type,username,password,created_at)
             VALUES(
                 :type,
                 :username,
@@ -135,7 +139,6 @@ class User
             $lastID = $pdo->lastInsertId();
             $results = $stm1->fetchAll();
             # return response json that the user is not here  
-            // header('Content-type:application/json');
 
             //sql to get inserted user
             $sql2 = "SELECT * from users WHERE id=:userid";
@@ -152,5 +155,30 @@ class User
     }
     static function deleteUser(): void
     {
+    }
+    //set user as admin 
+    static function createUserAdmin($id): void
+    {
+
+        $date = date('Y-m-d');
+        $conn = new Database();
+        $pdo = $conn->getConnection();
+        $sql = "UPDATE users
+        SET type = 'admin' WHERE id = :id";
+
+        $stm = $pdo->prepare($sql);
+
+        if (
+            $stm->execute(
+                [
+                    'id' => $id,
+                ]
+            )
+        ) {
+            echo json_encode([
+                'error' => false,
+            ]);
+        }
+        ;
     }
 }
