@@ -1,4 +1,3 @@
-// import * as Swal from "../node_modules/sweetalert2/sweetalert2";
 import { Login } from "./Auth.js";
 
 import elementFromHTML, { changeDateFormat } from "./helper.js";
@@ -2008,27 +2007,174 @@ class Render {
 
 
 
-
                 <div class="relative">
+                        <div class="usersDiv p-4 gap-2 flex items-center     ">
+                        <div class=" relative w-80 p-2 " id="userItemsDiv">
+                        <input type="hidden" name="user" id="user" value="">
+                        <p class="userTitle p-2 text-lg bg-neutral-300 rounded-md">&nbsp;</p>
+                          <div class="absolute top-[calc(100% + 1rem)] w-full  bg-stone-50">
+                          <ul class="dropdown hidden space-y-1 hover:bg-slate-100  list-none h-80  overflow-auto">
 
-                
-
-                        <div class="commentsDiv p-4 gap-2 flex justify-center [&_div]:w-11/12    border-2 border-gray-600  ">
-
-                                      <div class="pending border border-yellow-500    flex flex-wrap  justify-start  ">
-                                      </div>
-
-                                      <div class="approved border border-green-500    flex flex-wrap  justify-start   ">
-                                      </div>
-
-                                      <div class="declined border border-red-500    flex flex-wrap  justify-start  ">
-                                      </div>
-
+                          </ul>
+                          </div>
+                        </div>
+                        <div class="flex justify-between items-center cursor-pointer rounded-md bg-emerald-400 text-white p-2" id="makeAdmin">
+                <p class="">Make Admin</p>
+                <iconify-icon icon=pajamas:admin " class="ml-1 self-center"></iconify-icon>
+              </div>
                         </div>
 
                       </div>
             </div>
             `);
+                const userDropdown = innerDiv.querySelector(
+                  ".usersDiv .dropdown",
+                );
+
+                const userTitle = innerDiv.querySelector(
+                  ".usersDiv  .userTitle",
+                );
+                const userItemsDiv = innerDiv.querySelector("#userItemsDiv");
+                const makeAdminBtn = innerDiv.querySelector("#makeAdmin");
+                const useridInput = innerDiv.querySelector(".usersDiv #user");
+
+                makeAdminBtn.addEventListener("click", async () => {
+                  const id = useridInput.value;
+
+                  e.preventDefault();
+
+                  const makeAdminPopup = await Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, make it!",
+                  });
+
+                  if (makeAdminPopup.isConfirmed) {
+                    const response = await fetch(
+                      "backend/controllers/User.php",
+                      {
+                        method: "post",
+                        body: JSON.stringify({
+                          action: "makeAdmin",
+                          json: {
+                            id: id,
+                          },
+                        }),
+                      },
+                    );
+                    const data = await response.json();
+                    console.log(data);
+
+                    if (data.error) {
+                      Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Something went wrong!",
+                      });
+                    } else {
+                      //loop through all users in the dropdown and remove the item
+                      userDropdown.querySelectorAll("li").forEach((item) => {
+                        if (item.querySelector("input").value === id) {
+                          item.remove();
+                        }
+                      });
+
+                      //rename the title elemnt with the text of the next element
+                      console.log(
+                        userDropdown.querySelectorAll("li").firstElementChild,
+                      );
+                      if (
+                        userDropdown.querySelectorAll("li").firstElementChild !=
+                        undefined
+                      ) {
+                        useridInput.value =
+                          userDropdown.firstElementChild.querySelector(
+                            "input",
+                          ).value;
+                        console.log(useridInput.value);
+                        userTitle.textContent =
+                          userDropdown.firstElementChild.querySelector(
+                            "p",
+                          ).textContent;
+                      } else {
+                        makeAdminBtn.remove();
+                        userTitle.textContent = "&nbsp;";
+                        userid = "";
+                      }
+                      Swal.fire({
+                        icon: "success",
+                        title: "Success!",
+                        text: `User ${userTitle.textContent} has been made admin!`,
+                      });
+                    }
+                  }
+                });
+
+                userTitle.addEventListener("click", () => {
+                  userDropdown.classList.toggle("hidden");
+                });
+
+                function createUsersDiv({ username, id }) {
+                  const itemDiv = elementFromHTML(`
+                  <li class=" w-full items-center  mb-2 p-2 justify-between  rounded-sm text-base  hover:ring-violet-200 hover:ring-2 hover:bg-slate-200">
+                  <div class="">
+                        <input type="hidden" name="${id}" value="${id}"> 
+                      <p>${username}</p>
+                      </div></li>
+                      `);
+
+                  itemDiv.addEventListener("click", () => {
+                    userTitle.textContent = username;
+                    useridInput.value = id;
+                    userDropdown.classList.toggle("hidden");
+                    console.log(useridInput.value);
+                  });
+
+                  return itemDiv;
+                }
+
+                async function renderUsers() {
+                  const response = await fetch("backend/controllers/User.php", {
+                    method: "post",
+                    body: JSON.stringify({
+                      action: "getAll",
+                      json: {},
+                    }),
+                  });
+
+                  const data = await response.json();
+
+                  console.log(data);
+                  if (data.error) {
+                    return;
+                  } else {
+                    const userArray = data.data.filter(
+                      (item) => item.type === "user",
+                    );
+                    if (userArray.length === 0) {
+                      makeAdminBtn.remove();
+                      userTitle.textContent = "All Users Are Admins";
+                      userDropdown.remove();
+                    } else {
+                    }
+
+                    userArray.forEach((item, index) => {
+                      index === 0
+                        ? ((userTitle.textContent = item.username),
+                          (useridInput.value = item.id))
+                        : null;
+
+                      const itemDiv = createUsersDiv(item);
+                      userDropdown.append(itemDiv);
+                    });
+                  }
+                }
+                renderUsers();
+
                 targetDiv.classList.remove("loading");
                 targetDiv.append(innerDiv);
               }

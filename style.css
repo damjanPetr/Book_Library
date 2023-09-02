@@ -692,12 +692,32 @@ body {
   height: 100%;
 }
 
+.h-80{
+  height: 20rem;
+}
+
+.h-60{
+  height: 15rem;
+}
+
+.h-40{
+  height: 10rem;
+}
+
+.h-20{
+  height: 5rem;
+}
+
 .max-h-40{
   max-height: 10rem;
 }
 
 .max-h-full{
   max-height: 100%;
+}
+
+.max-h-20{
+  max-height: 5rem;
 }
 
 .min-h-full{
@@ -726,6 +746,10 @@ body {
 
 .w-full{
   width: 100%;
+}
+
+.w-40{
+  width: 10rem;
 }
 
 .min-w-full{
@@ -775,6 +799,10 @@ body {
 
 .cursor-pointer{
   cursor: pointer;
+}
+
+.list-none{
+  list-style-type: none;
 }
 
 .grid-cols-2{
@@ -851,6 +879,12 @@ body {
   --tw-space-y-reverse: 0;
   margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+}
+
+.space-y-2 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
 }
 
 .self-center{
@@ -1096,6 +1130,21 @@ body {
 .bg-pink-400{
   --tw-bg-opacity: 1;
   background-color: rgb(244 114 182 / var(--tw-bg-opacity));
+}
+
+.bg-teal-400{
+  --tw-bg-opacity: 1;
+  background-color: rgb(45 212 191 / var(--tw-bg-opacity));
+}
+
+.bg-emerald-400{
+  --tw-bg-opacity: 1;
+  background-color: rgb(52 211 153 / var(--tw-bg-opacity));
+}
+
+.bg-neutral-300{
+  --tw-bg-opacity: 1;
+  background-color: rgb(212 212 212 / var(--tw-bg-opacity));
 }
 
 .bg-gradient-to-r{
@@ -1463,6 +1512,16 @@ body {
 .hover\:bg-violet-600:hover{
   --tw-bg-opacity: 1;
   background-color: rgb(124 58 237 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-slate-200:hover{
+  --tw-bg-opacity: 1;
+  background-color: rgb(226 232 240 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-slate-100:hover{
+  --tw-bg-opacity: 1;
+  background-color: rgb(241 245 249 / var(--tw-bg-opacity));
 }
 
 .hover\:underline:hover{

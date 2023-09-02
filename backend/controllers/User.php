@@ -2,17 +2,48 @@
 
 namespace User;
 
+function dd($arg)
+{
+    echo "<pre>";
+    var_dump($arg);
+    echo "</pre>";
+    die();
+}
+;
+function d($arg)
+{
+    echo "<pre>";
+    var_dump($arg);
+    echo "</pre>";
+}
+;
+
 use Database\Database;
+use Throwable;
 
 require_once __DIR__ . '/./Database.php';
 $jsondata = file_get_contents('php://input');
 $data = json_decode($jsondata, true);
+
 
 if (isset($data)) {
 
     $json = $data['json'];
 
     switch ($data['action']) {
+        case 'getAll': {
+                try {
+                    User::getAllUsers();
+                } catch (\PDOException $e) {
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
+                }
+            }
+            break;
         case 'registerUser': {
                 try {
                     User::createUser($json['username'], $json['password']);
@@ -27,10 +58,22 @@ if (isset($data)) {
             }
             break;
         case 'authUser': {
-
                 try {
                     User::authUser($json['username'], $json['password']);
                 } catch (\Throwable $e) {
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
+                }
+                break;
+            }
+        case 'makeAdmin': {
+                try {
+                    User::createUserAdmin($json['id']);
+                } catch (\PDOException $e) {
                     echo json_encode(
                         array(
                             'error' => true,
@@ -157,26 +200,42 @@ class User
     {
     }
     //set user as admin 
-    static function createUserAdmin($id): void
+    static function createUserAdmin($id)
     {
-
-        $date = date('Y-m-d');
         $conn = new Database();
         $pdo = $conn->getConnection();
         $sql = "UPDATE users
-        SET type = 'admin' WHERE id = :id";
+        SET type = 'admin' 
+        WHERE id = :id";
 
         $stm = $pdo->prepare($sql);
-
         if (
             $stm->execute(
-                [
-                    'id' => $id,
-                ]
+                ['id' => $id]
             )
         ) {
             echo json_encode([
                 'error' => false,
+            ]);
+        }
+        ;
+    }
+    static function getAllUsers(): void
+    {
+
+        $conn = new Database();
+        $pdo = $conn->getConnection();
+        $sql = 'SELECT * FROM users';
+
+        $stm = $pdo->prepare($sql);
+        $stm->execute();
+
+        $result = $stm->fetchAll();
+
+        if ($result) {
+            echo json_encode([
+                'error' => false,
+                'data' => $result,
             ]);
         }
         ;
