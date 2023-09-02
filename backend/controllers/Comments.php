@@ -13,16 +13,22 @@ $jsondata = file_get_contents('php://input');
 $data = json_decode($jsondata, true);
 
 
+
+
+
 if (isset($data)) {
+
     $json = $data['json'];
     switch ($data['action']) {
         case 'addComment': {
                 try {
                 } catch (\PDOException $e) {
-                    echo json_encode(array(
-                        'error' => true,
-                        'message' => $e->getMessage()
-                    ));
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
                 }
             }
             break;
@@ -30,20 +36,24 @@ if (isset($data)) {
         case 'deleteComment': {
                 try {
                 } catch (\PDOException $e) {
-                    echo json_encode(array(
-                        'error' => true,
-                        'message' => $e->getMessage()
-                    ));
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
                 }
             }
             break;
         case 'editComment': {
                 try {
                 } catch (\PDOException $e) {
-                    echo json_encode(array(
-                        'error' => true,
-                        'message' => $e->getMessage()
-                    ));
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
                 }
             }
             break;
@@ -72,6 +82,30 @@ if (isset($data)) {
                 }
             }
             break;
+        case 'acceptComment': {
+                try {
+                } catch (\PDOException $e) {
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
+                }
+            }
+            break;
+        case 'declineComment': {
+                try {
+                } catch (\PDOException $e) {
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
+                }
+            }
+            break;
         default: {
             }
             break;
@@ -86,7 +120,6 @@ class Comments
 {
 
     static function getAllComments()
-
     {
         $conn = new Database();
         $pdo = $conn->getConnection();
@@ -105,7 +138,8 @@ class Comments
                 'error' => false,
                 "data" => $result
             ]);
-        };
+        }
+        ;
     }
 
 
@@ -125,7 +159,7 @@ class Comments
     static function addComment(string $title)
     {
         $conn = new Database();
-        $pdo =  $conn->getConnection();
+        $pdo = $conn->getConnection();
 
         $sql = "SELECT * FROM categories where title=:title AND deleted_at IS NULL";
 
@@ -156,15 +190,12 @@ class Comments
     }
 
 
-
-    static function deleteComment(string  $title)
+    static function deleteComment(string $title)
     {
-
-
 
         $conn = new Database();
 
-        $pdo =  $conn->getConnection();
+        $pdo = $conn->getConnection();
         $date = date('Y-m-d');
 
         $sql = "UPDATE categories SET deleted_at=:date WHERE title=:title";
@@ -187,8 +218,8 @@ class Comments
     {
 
         $conn = new Database();
-        $pdo =  $conn->getConnection();
-        $sql =   "UPDATE categories SET title=:newtitle WHERE title=:title and deleted_at IS NULL";
+        $pdo = $conn->getConnection();
+        $sql = "UPDATE categories SET title=:newtitle WHERE title=:title and deleted_at IS NULL";
         $stm = $pdo->prepare($sql);
         $stm->execute(
             [
@@ -199,5 +230,35 @@ class Comments
 
         $result = $stm->fetchAll();
         echo json_encode(['error' => false]);
+    }
+
+
+    static function declineComment($id)
+    {
+
+        $date = date('Y-m-d');
+
+        $conn = new Database();
+
+        $pdo = $conn->getConnection();
+
+        $sql = "UPDATE comments SET declined = :date  WHERE id = :id;";
+
+        $stm = $pdo->prepare($sql);
+
+        $stm->execute(
+            [
+                'date' => $date,
+                'id' => $id,
+            ]
+        );
+
+        $result = $stm->fetchAll();
+        if ($result) {
+
+            echo json_encode(
+                ['error' => false]
+            );
+        }
     }
 }

@@ -661,10 +661,6 @@ body {
   margin-top: 1rem;
 }
 
-.mb-8{
-  margin-bottom: 2rem;
-}
-
 .line-clamp-2{
   overflow: hidden;
   display: -webkit-box;
@@ -684,10 +680,6 @@ body {
   display: none;
 }
 
-.h-20{
-  height: 5rem;
-}
-
 .h-4{
   height: 1rem;
 }
@@ -698,14 +690,6 @@ body {
 
 .h-full{
   height: 100%;
-}
-
-.h-10{
-  height: 2.5rem;
-}
-
-.h-40{
-  height: 10rem;
 }
 
 .max-h-40{
@@ -724,6 +708,10 @@ body {
   min-height: 100vh;
 }
 
+.w-10{
+  width: 2.5rem;
+}
+
 .w-20{
   width: 5rem;
 }
@@ -740,6 +728,10 @@ body {
   width: 100%;
 }
 
+.min-w-full{
+  min-width: 100%;
+}
+
 .max-w-\[200px\]{
   max-width: 200px;
 }
@@ -750,6 +742,10 @@ body {
 
 .flex-1{
   flex: 1 1 0%;
+}
+
+.flex-\[0_0_33\%\]{
+  flex: 0 0 33%;
 }
 
 .flex-auto{
@@ -799,6 +795,10 @@ body {
 
 .items-center{
   align-items: center;
+}
+
+.justify-start{
+  justify-content: flex-start;
 }
 
 .justify-center{
@@ -1031,6 +1031,11 @@ body {
   background-color: rgb(245 245 244 / var(--tw-bg-opacity));
 }
 
+.bg-stone-50{
+  --tw-bg-opacity: 1;
+  background-color: rgb(250 250 249 / var(--tw-bg-opacity));
+}
+
 .bg-teal-200{
   --tw-bg-opacity: 1;
   background-color: rgb(153 246 228 / var(--tw-bg-opacity));
@@ -1064,16 +1069,6 @@ body {
 .bg-yellow-500{
   --tw-bg-opacity: 1;
   background-color: rgb(234 179 8 / var(--tw-bg-opacity));
-}
-
-.bg-stone-50{
-  --tw-bg-opacity: 1;
-  background-color: rgb(250 250 249 / var(--tw-bg-opacity));
-}
-
-.bg-blue-50{
-  --tw-bg-opacity: 1;
-  background-color: rgb(239 246 255 / var(--tw-bg-opacity));
 }
 
 .bg-gradient-to-r{
@@ -1158,18 +1153,6 @@ body {
   padding-top: 1rem;
 }
 
-.pb-2{
-  padding-bottom: 0.5rem;
-}
-
-.pb-8{
-  padding-bottom: 2rem;
-}
-
-.pb-4{
-  padding-bottom: 1rem;
-}
-
 .text-left{
   text-align: left;
 }
@@ -1238,12 +1221,12 @@ body {
   text-underline-offset: 1px;
 }
 
-.underline-offset-4{
-  text-underline-offset: 4px;
-}
-
 .underline-offset-2{
   text-underline-offset: 2px;
+}
+
+.underline-offset-4{
+  text-underline-offset: 4px;
 }
 
 .shadow-inner{
@@ -1261,18 +1244,6 @@ body {
 .outline-none{
   outline: 2px solid transparent;
   outline-offset: 2px;
-}
-
-.ring{
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
-}
-
-.ring-2{
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
 }
 
 .ring-fuchsia-500{
@@ -1430,20 +1401,10 @@ body {
   padding-bottom: 0.25rem;
 }
 
-.before\:pb-8::before{
-  content: var(--tw-content);
-  padding-bottom: 2rem;
-}
-
 .before\:text-white::before{
   content: var(--tw-content);
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
-}
-
-.before\:content-\[\'Read_More\'\]::before{
-  --tw-content: 'Read More';
-  content: var(--tw-content);
 }
 
 .focus-within\:ring-2:focus-within{
@@ -1493,11 +1454,6 @@ body {
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
 }
 
-.hover\:ring-violet-400:hover{
-  --tw-ring-opacity: 1;
-  --tw-ring-color: rgb(167 139 250 / var(--tw-ring-opacity));
-}
-
 .hover\:ring-violet-200:hover{
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(221 214 254 / var(--tw-ring-opacity));
@@ -1521,11 +1477,6 @@ body {
   height: max-content;
 }
 
-.peer:checked ~ .peer-checked\:before\:content-\[\'Read_Less\'\]::before{
-  --tw-content: 'Read Less';
-  content: var(--tw-content);
-}
-
 .fcl\:before\:content-\[\'Read_More\'\] label::before{
   --tw-content: 'Read More';
   content: var(--tw-content);
@@ -1536,9 +1487,8 @@ body {
   content: var(--tw-content);
 }
 
-.peer:checked ~ .peer-checked\:fcl\:before\:content-\[\'Read_More\'\] label::before{
-  --tw-content: 'Read More';
-  content: var(--tw-content);
+.\[\&_div\]\:w-11\/12 div{
+  width: 91.666667%;
 }
 
 .\[\&_input\[type\=\'text\'\]\]\:w-11\/12 input[type='text']{

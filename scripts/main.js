@@ -96,6 +96,15 @@ class Render {
         targetDiv.classList.add("loading");
 
         switch (e.target.id) {
+          // TODO: Make sweet alert work on delete of the books
+          // TODO: validaton on fields
+          /* 
+           Ако администраторот избере да избрише книга треба да му се појави
+popup (користете sweetalert библиотека), во кој ќе пишува дека со
+бришење на книгата се бришат сите коментари и забелешки на
+корисниците за истата. Доколку потврди, се брише книгата заедно со сите
+коментари и забелешки. Доколку ја откаже операцијата за бришење, не
+се случува ништо. */
           case "bookBtn":
             {
               const innerDiv = elementFromHTML(`
@@ -1285,10 +1294,10 @@ class Render {
                 ) => {
                   const itemDiv = elementFromHTML(`
                   <article class="flex   items-start mb-4  justify-between w-80  text-base  shadow-inner rounded-md">
-                  <div class="p-4 ">
+                  <div class="p-4 min-w-full ">
                     
                       <div id="name" class="">
-                        <div class="flex items-center  justify-between mb-4">
+                        <div class="flex  items-center  justify-between mb-4">
                             <div class="max-w-[200px] break-all flex-initial">
                               <p class="mb-1 text-gray-500">Author:</p>
                               <div class="font-semibold  ">
@@ -1654,18 +1663,15 @@ class Render {
                   </div>
                 </div>
 
-                        <div class="commentsDiv p-4 gap-2 flex flex-wrap  border-2 border-gray-600  ">
+                        <div class="commentsDiv p-4 gap-2 flex justify-center [&_div]:w-11/12    border-2 border-gray-600  ">
                         
-                                      <div class="pending border border-yellow-500  ">
-                                        <h1 class="text-xl ">Pending Comments</h1>
+                                      <div class="pending border border-yellow-500    flex flex-wrap  justify-start  ">
                                       </div>
 
-                                      <div class="approved border border-green-500   ">
-                                          <h1 class="text-xl ">Approved Comments</h1>
+                                      <div class="approved border border-green-500    flex flex-wrap  justify-start   ">
                                       </div>
 
-                                      <div class="declined border border-red-500  ">
-                                        <h1 class="text-xl ">Declined Comments</h1>
+                                      <div class="declined border border-red-500    flex flex-wrap  justify-start  ">
                                       </div>
                                       
                         </div>
@@ -1684,7 +1690,7 @@ class Render {
                 username,
               }) {
                 const itemDiv = elementFromHTML(`
-                <div class="h-30  items-center   mb-2 p-2 justify-between w-60 rounded-sm text-base flex-auto hover:ring-violet-200 hover:ring-2">
+                <div class="h-30  w-10 flex-[0_0_33%] items-center  mb-2 p-2 justify-between  rounded-sm text-base  hover:ring-violet-200 hover:ring-2">
                 <div class="flex items-center justify-between">
                     
                 
@@ -1701,7 +1707,7 @@ class Render {
                         <iconify-icon icon="material-symbols:edit" class="peer/edit bg-red-200 cursor-pointer relative tooltip" data-tooltip="Approve"></iconify-icon>
                       </div>
                       <div id="cardDeclineBtn" class="">
-                        <iconify-icon icon="material-symbols:check" class="peer/edit bg-green-200 cursor-pointer relative tooltip" data-tooltip="Decline"></iconify-icon>
+                        <iconify-icon icon="material-symbols:check" class="peer/edit bg-green-200 cursor-pointer relative tooltip" data-tooltip="Decline">eoahutneoahuntoauhtneoau uheotnuhoa uoethanuteoha ueothnautnaoe  uthoeanuhoaent hueotanuhaoe</iconify-icon>
                       </div>
                       
                   </div>
@@ -1717,7 +1723,7 @@ class Render {
 
                   <div id="name" class="group">
                   <input class="peer hidden" type="checkbox" name="ch" id="ch${id}">
-                  <p class="p-2 bg-stone-50 line-clamp-2 peer-checked:line-clamp-none font-Source-Sans text-small " id="body">${body}</p>
+                  <p class="p-2 mb-2 bg-stone-50 line-clamp-2 peer-checked:line-clamp-none font-Source-Sans text-small " id="body">${body}</p>
 
                   <div class="mb-4
                   fcl:before:content-['Read_More'] peer-checked:fcl:before:content-['Read_Less']">
@@ -1727,11 +1733,56 @@ class Render {
                 </div>`);
                 const commentBody = itemDiv.querySelector("#body");
 
+                const cardDeclineBtn = itemDiv.querySelector("#cardDeclineBtn");
+
+                /* Post decline Comment  */
+                cardDeclineBtn.addEventListener("click", async (e) => {
+                  e.preventDefault();
+                  const response = await fetch(
+                    "/backend/controllers/Comments.php",
+                    {
+                      method: "post",
+                      body: JSON.stringify({
+                        action: "declineComment",
+                        json: "",
+                      }),
+                    },
+                  );
+                  const data = await response.json();
+                  console.log(data);
+
+                  data.error
+                    ? null
+                    : data.data.forEach((item) => {
+                        declinedDiv.prepend(itemDiv);
+                      });
+                });
+
+                /* Post accept Comment  */
+                const cardAcceptedBtn =
+                  itemDiv.querySelector("#cardAcceptedBtn");
+
+                cardAcceptedBtn.addEventListener("click", async (e) => {
+                  e.preventDefault();
+                  const response = await fetch(
+                    "/backend/controllers/Comments.php",
+                    {
+                      method: "post",
+                      body: JSON.stringify({
+                        action: "acceptComment",
+                        json: "",
+                      }),
+                    },
+                  );
+                  const data = await response.json();
+                  console.log(data);
+                });
+
                 setTimeout(() => {
                   if (commentBody.clientHeight === commentBody.scrollHeight) {
                     const readMoreOrLessBtn = itemDiv
                       .querySelector("#readBtn")
-                      .classList.add("hidden");
+                      .classList.add("invisible");
                   }
                 }, 1);
 
@@ -1750,20 +1801,6 @@ class Render {
                 innerDiv.querySelector("#renderApprovedBtn");
               const renderDeclinedBtn =
                 innerDiv.querySelector("#renderDeclinedBtn");
-
-              console.group("pendingBtns");
-              console.log(renderApprovedBtn);
-              console.log(renderPendingBtn);
-              console.log(renderDeclinedBtn);
-
-              console.groupEnd("pendingBtns");
-              console.group("commentDevs");
-
-              console.log(approvedDiv);
-              console.log(declinedDiv);
-              console.log(pendingfDiv);
-
-              console.groupEnd("commentDevs");
 
               async function renderComments() {
                 const response = await fetch(
@@ -1820,28 +1857,29 @@ class Render {
 
               renderPendingBtn.addEventListener("click", () => {
                 [pendingfDiv, approvedDiv, declinedDiv].forEach((item) =>
-                  item.classList.add("invisible"),
+                  item.classList.add("hidden"),
                 );
                 // pendingfDiv.classList.toggle("blur-lg");
-                pendingfDiv.classList.remove("invisible");
+                pendingfDiv.classList.remove("hidden");
               });
 
               renderApprovedBtn.addEventListener("click", () => {
                 [pendingfDiv, approvedDiv, declinedDiv].forEach((item) =>
-                  item.classList.add("invisible"),
+                  item.classList.add("hidden"),
                 );
                 // pendingfDiv.classList.toggle("blur-lg");
-                approvedDiv.classList.remove("invisible");
+                approvedDiv.classList.remove("hidden");
               });
 
               renderDeclinedBtn.addEventListener("click", () => {
                 [pendingfDiv, approvedDiv, declinedDiv].forEach((item) =>
-                  item.classList.add("invisible"),
+                  item.classList.add("hidden"),
                 );
                 // pendingfDiv.classList.toggle("blur-lg");
-                declinedDiv.classList.remove("invisible");
+                declinedDiv.classList.remove("hidden");
               });
               targetDiv.append(innerDiv);
+              renderPendingBtn.dispatchEvent(new Event("click"));
               targetDiv.classList.remove("loading");
             }
             return;
