@@ -115,7 +115,6 @@ class Render {
           targetDiv.classList.add("loading");
 
           switch (e.target.id) {
-            // TODO: validaton on fields
             case "bookBtn":
               {
                 const innerDiv = elementFromHTML(`
@@ -145,7 +144,7 @@ class Render {
                         <div class="">
                           <label for="title" class="text-gray-500 mb-2 underline underline-offset-1 " >Title: </label>
                           <br>
-                          <input  type="text" name="title" id="title" class="relative  p-1 rounded-md  fill-emerald-500 " data-tooltip="">
+                          <input data-validation="" type="text" name="title" id="title" class="relative  p-1 rounded-md  fill-emerald-500 " data-tooltip="">
                         </div>
 
                         <div class="">
@@ -153,7 +152,7 @@ class Render {
                               <br>
                                 <div class="selection relative w-full">
                                 <input type="text" class="hidden  " value="" name="authorId" id="authorTitle">
-                                <p  class="bg-white p-2 text-md rounded-md w-full " >&nbsp;</p>
+                                <p class="bg-white p-2 text-md rounded-md w-full " >&nbsp;</p>
                                 <div class="hidden options mt-2 absolute top-full left-1/2 -translate-x-1/2 w-full  z-10 bg-white rounded-md max-h-40 overflow-auto">
                                     <ul class="p-2 text-left break-words space-y-1">
 
@@ -185,13 +184,13 @@ class Render {
                           <div class="">
                             <label for="releaseDate" class="text-gray-500 mb-2 underline underline-offset-1 " >Release Date: </label>
                             <br>
-                            <input type="date" min="0" name="releaseDate" id="releaseDate" class="relative   p-1 rounded-md  fill-emerald-500" data-tooltip="">
+                            <input  data-validation="" type="date" min="0" name="releaseDate" id="releaseDate" class="relative   p-1 rounded-md  fill-emerald-500" data-tooltip="">
                           </div>
 
                           <div class="">
                             <label for="numberOfPages" class="text-gray-500 mb-2 underline underline-offset-1 " >Number Of Pages: </label>
                             <br>
-                            <input type="number" min="0" name="numberOfPages" id="numberOfPages" class="relative  w-20 p-1 rounded-md  fill-emerald-500" data-tooltip="">
+                            <input data-validation="" type="number" min="0" name="numberOfPages" id="numberOfPages" class="relative  w-20 p-1 rounded-md  fill-emerald-500" data-tooltip="">
                           </div>
 
 
@@ -200,7 +199,7 @@ class Render {
                           <div class="">
                             <label for="pictureUrl" class="text-gray-500 mb-2 underline underline-offset-1 " >Picture Url: </label>
                             <br>
-                            <input type="text"  name="pictureUrl" id="pictureUrl" class="relative  w-full p-1 rounded-md  fill-emerald-500" data-tooltip="">
+                            <input data-validation="" type="text"  name="pictureUrl" id="pictureUrl" class="relative  w-full p-1 rounded-md  fill-emerald-500" data-tooltip="">
                           </div>
 
 
@@ -325,7 +324,9 @@ class Render {
                         </label>
                         <br />
                         <div class="selectionCategory relative w-full">
-                                      <input type="text" class="hidden" value="${categories_id}" name="categoryId" id="categoryTitle" />
+                                      <input 
+                                    
+                                      type="text" class="hidden" value="${categories_id}" name="categoryId" id="categoryTitle" />
                                       <p class="bg-white p-2 text-md rounded-md w-full"> &nbsp; </p>
                                       <div class="hidden options mt-2 absolute top-full left-1/2 -translate-x-1/2 w-full z-10 bg-white rounded-md max-h-40 overflow-auto" >
                                         <ul class="p-2 text-left break-words space-y-1">
@@ -342,6 +343,7 @@ class Render {
                         </label>
                         <br />
                         <input
+                        data-validation=""
                         required
                           type="date"
                           min="0"
@@ -360,6 +362,7 @@ class Render {
                         </label>
                         <br />
                         <input
+                        data-validation=""
                           type="number"
                           min="0"
                           name="numberOfPages"
@@ -377,6 +380,7 @@ class Render {
                         </label>
                         <br />
                         <input
+                        data-validation=""
                           type="text"
                           name="pictureUrl"
                           id="pictureUrl"
@@ -446,10 +450,6 @@ class Render {
                 </div>
               </div>
               `);
-                  const validationElements =
-                    ItemDiv.querySelectorAll("[data-validation]");
-
-                  const validation = new Validation(validationElements, alert);
 
                   /*
                         Starting
@@ -690,7 +690,11 @@ class Render {
                   editBtn.addEventListener("click", () => {
                     ItemDiv.querySelectorAll(".content-inner").forEach(
                       (item) => item.classList.add("hidden"),
-                      // item.classList.add("invisible"),
+                      editBookForm
+                        .querySelectorAll("[data-validation]")
+                        .forEach((item) => {
+                          item.classList.add("activeEditItem");
+                        }),
                     );
                     const editPopup =
                       ItemDiv.querySelector(".editPopup").classList.remove(
@@ -724,15 +728,15 @@ class Render {
 
                     categoryTitle.value = replace_categoryId.value;
 
-                    console.group("variables");
-                    console.log(replace_author.textContent);
-                    console.log(replace_authorId.value);
-                    console.log(replace_categoryId.value);
-                    console.log(replace_category.textContent);
-                    console.log(replace_img.getAttribute("src"));
-                    console.log(replace_number_of_pages.textContent);
-                    console.log(replace_release_date.textContent);
-                    console.log(replace_title.textContent);
+                    /*   console.group("variables");
+                          console.log(replace_author.textContent);
+                          console.log(replace_authorId.value);
+                          console.log(replace_categoryId.value);
+                          console.log(replace_category.textContent);
+                          console.log(replace_img.getAttribute("src"));
+                          console.log(replace_number_of_pages.textContent);
+                          console.log(replace_release_date.textContent);
+                          console.log(replace_title.textContent);
 
                     console.groupEnd("variables");
 
@@ -742,37 +746,39 @@ class Render {
                       "replace author",
 
                       replace_authorId.value,
-                    );
+                    ); */
 
-                    console.error(
-                      "categoryTitle:",
-                      categoryTitle.value,
-                      "replace category",
-                      replace_categoryId.value,
-                    );
+                    // console.error(
+                    //   "categoryTitle:",
+                    //   categoryTitle.value,
+                    //   "replace category",
+                    //   replace_categoryId.value,
+                    // );
                   });
 
                   /* checkbtn event listener */
                   checkEditBtn.addEventListener("click", (e) => {
-                    /* swap buttons */
-                    editBtn.classList.remove("hidden");
-                    checkEditBtn.classList.add("hidden");
+                    e.preventDefault();
+                    //////// validator for editForm
 
-                    /* inverse 
-                edit button that return back the normal book card */
-                    ItemDiv.querySelectorAll(".content-inner").forEach((item) =>
-                      item.classList.remove("hidden"),
+                    const editFormValidator = new Validation(
+                      editBookForm.querySelectorAll("[data-validation]"),
                     );
-                    editBookForm.classList.add("hidden");
-                    const editPopup =
-                      ItemDiv.querySelector(".editPopup").classList.add(
-                        "hidden",
+                    if (editFormValidator.canValidate) {
+                      //   /* swap buttons */
+                      editBtn.classList.remove("hidden");
+                      checkEditBtn.classList.add("hidden");
+                      /* inverse edit button that return back the normal book card */
+                      ItemDiv.querySelectorAll(".content-inner").forEach(
+                        (item) => item.classList.remove("hidden"),
                       );
-                    editBookForm.dispatchEvent(new Event("submit"));
-
-                    /*
-
-*/
+                      editBookForm.classList.add("hidden");
+                      const editPopup =
+                        ItemDiv.querySelector(".editPopup").classList.add(
+                          "hidden",
+                        );
+                      editBookForm.dispatchEvent(new Event("submit"));
+                    }
                   });
 
                   deleteBtn.addEventListener("click", async (e) => {
@@ -850,7 +856,7 @@ class Render {
                 );
 
                 createBookFormBTN.addEventListener("click", () => {
-                  createBookForm.classList.toggle("hidden");
+                  // createBookForm.classList.toggle("hidden");
                 });
 
                 async function renderBookItems() {
@@ -876,25 +882,34 @@ class Render {
 
                 createBookForm.addEventListener("submit", async (e) => {
                   e.preventDefault();
-                  const formData = Object.fromEntries(
-                    new FormData(createBookForm),
+                  // createBookForm.classList.toggle("hidden");
+                  const createBookValidator = new Validation(
+                    innerDiv.querySelectorAll("[data-validation]"),
                   );
-                  const response = await fetch("backend/controllers/Book.php", {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      action: "addBook",
-                      json: formData,
-                    }),
-                  });
-                  const data = await response.json();
-                  if (data.error) {
-                  } else {
-                    console.log(data);
-                    const newItem = createBookDiv(data);
-                    bookDiv.append(newItem);
+                  if (createBookValidator.canValidate) {
+                    const formData = Object.fromEntries(
+                      new FormData(createBookForm),
+                    );
+                    const response = await fetch(
+                      "backend/controllers/Book.php",
+                      {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          action: "addBook",
+                          json: formData,
+                        }),
+                      },
+                    );
+                    const data = await response.json();
+                    if (data.error) {
+                    } else {
+                      console.log(data);
+                      const newItem = createBookDiv(data);
+                      bookDiv.append(newItem);
+                    }
                   }
                 });
 
@@ -1072,7 +1087,9 @@ class Render {
                     </div>
 
                     <form  class="hidden" id="editForm" >
-                        <input type="text" name="newTitle" id="newTitle">
+                        <input 
+                        data-validation=""
+                        type="text" name="newTitle" id="newTitle">
                     </form>
 
                   <div class="buttons ml-2 flex gap-4">
@@ -1110,7 +1127,8 @@ class Render {
 
                   checkEditBtn.addEventListener("click", (e) => {
                     e.preventDefault();
-                    editForm.submit();
+
+                    editForm.dispatchEvent(new Event("submit"));
                   });
 
                   editBtn.addEventListener("click", async (e) => {
@@ -1133,32 +1151,36 @@ class Render {
                  */
                   editForm.addEventListener("submit", async (e) => {
                     e.preventDefault();
-                    console.log(142421421);
-
-                    const response = await fetch(
-                      "backend/controllers/Category.php",
-                      {
-                        method: "post",
-                        body: JSON.stringify({
-                          action: "editCategory",
-                          json: {
-                            title: title,
-                            newTitle: newTitle.value,
-                          },
-                        }),
-                      },
+                    const editFormValidator = new Validation(
+                      editForm.querySelectorAll("[data-validation]"),
                     );
+                    if (editFormValidator.canValidate) {
+                      const response = await fetch(
+                        "backend/controllers/Category.php",
+                        {
+                          method: "post",
+                          body: JSON.stringify({
+                            action: "editCategory",
+                            json: {
+                              title: title,
+                              newTitle: newTitle.value,
+                            },
+                          }),
+                        },
+                      );
 
-                    const data = await response.json();
-                    if (data.error) {
-                    } else {
-                      editForm.classList.add("hidden");
-                      itemTitle.firstElementChild.textContent = newTitle.value;
-                      itemTitle.classList.remove("hidden");
+                      const data = await response.json();
+                      if (data.error) {
+                      } else {
+                        editForm.classList.add("hidden");
+                        itemTitle.firstElementChild.textContent =
+                          newTitle.value;
+                        itemTitle.classList.remove("hidden");
 
-                      editBtn.classList.remove("hidden");
-                      checkEditBtn.classList.add("hidden");
-                      editForm.classList.remove("activeEditForm");
+                        editBtn.classList.remove("hidden");
+                        checkEditBtn.classList.add("hidden");
+                        editForm.classList.remove("activeEditForm");
+                      }
                     }
                   });
 
@@ -1183,6 +1205,7 @@ class Render {
                     const data = await response.json();
                     console.log(data);
                   });
+
                   return itemDiv;
                 };
 
@@ -1216,7 +1239,7 @@ class Render {
 
                     categoryDiv.classList.toggle("blur-lg");
 
-                    categoryDiv.append(newItem);
+                    categoryDiv.prepend(newItem);
                     input.value = "";
                   }
                 });
@@ -1282,19 +1305,27 @@ class Render {
                         <div class="">
                           <label for="newFirstName" class="text-gray-500 mb-2 underline underline-offset-1 " >First Name: </label>
                           <br>
-                          <input type="text" name="newFirstName" id="newFirstName" class="relative  p-1 rounded-md  fill-emerald-500" data-tooltip="">
+                          <input
+                          data-validation=""
+                          type="text" name="newFirstName" id="newFirstName" class="relative  p-1 rounded-md  fill-emerald-500" data-tooltip="">
+
                         </div>
 
                         <div class="">
                         <label for="newLastName" class="text-gray-500 mb-2 underline underline-offset-1 " >Last Name: </label>
                         <br>
-                          <input type="text" name="newLastName" id="newLastName" class="relative  p-1 rounded-md  fill-emerald-500" data-tooltip="">
+                          <input
+                          data-validation=""
+
+                           type="text" name="newLastName" id="newLastName" class="relative  p-1 rounded-md  fill-emerald-500" data-tooltip="">
                         </div>
 
                         <div class="">
                             <label class="text-gray-500 mb-2 underline underline-offset-1 " for="newShortBio">Short Biography:</label>
                             <br>
-                            <textarea name="newShortBio" rows="3" id="newShortBio"  class="relative p-2  rounded-md  fill-emerald-500 w-full" data-tooltip=""></textarea>
+                            <textarea 
+                            data-validation=""
+                            name="newShortBio" rows="3" id="newShortBio"  class="relative p-2  rounded-md  fill-emerald-500 w-full" data-tooltip=""></textarea>
                         </div>
                     </div>
                   </div>
@@ -1355,8 +1386,14 @@ class Render {
                                     <span id="FirstName" class="ml-0.5">${first_name}</span>
                                     <span id="LastName" class="ml-0.5">${last_name}</span>
                           <form  class="" id="editForm" >
-                                    <input class="hidden" type="text" name="newTitle" id="newFirstName" data-edit="">
-                                    <input class="hidden" type="text" name="newTitle" id="newLastName" data-edit="">
+                                    <input 
+                                    data-validation=""
+                                    class="hidden" type="text" name="newTitle" id="newFirstName" data-edit="">
+
+                                    <input 
+                                    data-validation=""
+                                    class="hidden" type="text" name="newTitle" id="newLastName" data-edit="">
+
                             </form>
                     </div>
                             </div>
@@ -1380,7 +1417,9 @@ class Render {
                         <p class="mb-2 text-gray-500">Short-Bio:</p>
                         <p id="ShortBio"  class="text-sm  rounded-md   break-all line-clamp-2  peer-checked:h-max group  peer-checked:line-clamp-none whitespace-pre-line">${short_bio}</p>
 
-                        <textarea  class="hidden w-full" rows="5" type="text" name="newTitle" id="newShortBio"  data-edit=""></textarea>
+                        <div class="">
+                        <textarea data-validation=""  class="hidden w-full" rows="5" type="text" name="newTitle" id="newShortBio"  data-edit=""></textarea>
+                        </div>
                         <div class="mt-4
                         fcl:before:content-['Read_More']
                          peer-checked:fcl:before:content-['Read_Less']">
@@ -1430,6 +1469,7 @@ class Render {
                     const checkEditBtn = itemDiv.querySelector("#checkEditBtn");
 
                     editBtn.addEventListener("click", async (e) => {
+                      deleteBtn.classList.add("hidden");
                       //hidden inputs that shoud popup on edit btn
                       const newInputs = [
                         newFirstName,
@@ -1467,64 +1507,66 @@ class Render {
                     });
 
                     checkEditBtn.addEventListener("click", async (e) => {
-                      const response = await fetch(
-                        "backend/controllers/Authors.php",
-                        {
-                          method: "post",
-                          body: JSON.stringify({
-                            action: "editAuthor",
-                            json: {
-                              id: id,
-                              first_name: newFirstName.value,
-                              last_name: newLastName.value,
-                              short_bio: newShortBio.value,
-                            },
-                          }),
-                        },
+                      const editValidation = new Validation(
+                        itemDiv.querySelectorAll("[data-validation]"),
                       );
+                      if (editValidation.canValidate) {
+                        const response = await fetch(
+                          "backend/controllers/Authors.php",
+                          {
+                            method: "post",
+                            body: JSON.stringify({
+                              action: "editAuthor",
+                              json: {
+                                id: id,
+                                first_name: newFirstName.value,
+                                last_name: newLastName.value,
+                                short_bio: newShortBio.value,
+                              },
+                            }),
+                          },
+                        );
 
-                      const data = await response.json();
-                      if (data.error) {
-                      } else {
-                        // renderItem.classList.remove("hidden");
+                        const data = await response.json();
+                        if (data.error) {
+                        } else {
+                          // renderItem.classList.remove("hidden");
 
-                        editBtn.classList.remove("hidden");
-                        checkEditBtn.classList.add("hidden");
+                          editBtn.classList.remove("hidden");
+                          checkEditBtn.classList.add("hidden");
 
-                        const newInputs = [
-                          newFirstName,
-                          newLastName,
-                          newShortBio,
-                        ];
+                          const newInputs = [
+                            newFirstName,
+                            newLastName,
+                            newShortBio,
+                          ];
 
-                        const oldInputs = [FirstName, LastName, ShortBio];
+                          const oldInputs = [FirstName, LastName, ShortBio];
 
-                        renderItem
-                          .querySelector("label[for*='ch']")
-                          .classList.remove("hidden");
-                        for (let i = 0; i < newInputs.length; i++) {
-                          //new edit inputs
-                          const replaceElement = newInputs[i];
+                          renderItem
+                            .querySelector("label[for*='ch']")
+                            .classList.remove("hidden");
+                          for (let i = 0; i < newInputs.length; i++) {
+                            //new edit inputs
+                            const replaceElement = newInputs[i];
 
-                          oldInputs[i].textContent = replaceElement.value;
+                            oldInputs[i].textContent = replaceElement.value;
 
-                          oldInputs[i].classList.remove("hidden");
+                            oldInputs[i].classList.remove("hidden");
 
-                          replaceElement.classList.add("hidden");
+                            replaceElement.classList.add("hidden");
 
-                          replaceElement.classList.remove("activeEditItem");
+                            replaceElement.classList.remove("activeEditItem");
+                          }
                         }
+
+                        setTimeout(() => {
+                          if (ShortBio.clientHeight === ShortBio.scrollHeight) {
+                            console.log(true);
+                            readMoreBtn.classList.add("hidden");
+                          }
+                        }, 1);
                       }
-
-                      // async function checkItemPoz() {
-                      setTimeout(() => {
-                        if (ShortBio.clientHeight === ShortBio.scrollHeight) {
-                          console.log(true);
-                          readMoreBtn.classList.add("hidden");
-                        }
-                      }, 1);
-                      // }
-                      // checkItemPoz();
                     });
 
                     const deleteBtn = itemDiv.querySelector("#deleteBtn");
@@ -1588,47 +1630,52 @@ class Render {
 
                   createAuthorForm.addEventListener("submit", async (e) => {
                     e.preventDefault();
-                    const dataForm = new FormData(createAuthorForm);
-
-                    const result = Object.fromEntries(dataForm);
-
-                    Object.keys(result).forEach((item) => {
-                      result[item] = result[item].trim();
-                    });
-
-                    const response = await fetch(
-                      "backend/controllers/Authors.php",
-                      {
-                        method: "post",
-                        body: JSON.stringify({
-                          action: "addAuthor",
-                          json: result,
-                        }),
-                      },
+                    const createAuthorValidation = new Validation(
+                      createAuthorForm.querySelectorAll("[data-validation]"),
                     );
+                    if (createAuthorValidation.canValidate) {
+                      const dataForm = new FormData(createAuthorForm);
 
-                    const data = await response.json();
-                    if (data.error) {
-                      const errorMessage =
-                        innerDiv.querySelector("#authorError");
+                      const result = Object.fromEntries(dataForm);
 
-                      errorMessage.textContent = data.message;
-                      errorMessage.classList.remove("hidden");
-                    } else {
-                      const { id, first_name, last_name, short_bio } =
-                        data.data;
-                      const newItem = createAuthorItems(
-                        id,
-                        first_name,
-                        last_name,
-                        short_bio,
+                      Object.keys(result).forEach((item) => {
+                        result[item] = result[item].trim();
+                      });
+
+                      const response = await fetch(
+                        "backend/controllers/Authors.php",
+                        {
+                          method: "post",
+                          body: JSON.stringify({
+                            action: "addAuthor",
+                            json: result,
+                          }),
+                        },
                       );
-                      categoryDiv.append(newItem);
 
-                      createAuthorForm.reset();
+                      const data = await response.json();
+                      if (data.error) {
+                        const errorMessage =
+                          innerDiv.querySelector("#authorError");
 
-                      createNewAuthorForm.classList.toggle("hidden");
-                      categoryDiv.classList.toggle("blur-lg");
+                        errorMessage.textContent = data.message;
+                        errorMessage.classList.remove("hidden");
+                      } else {
+                        const { id, first_name, last_name, short_bio } =
+                          data.data;
+                        const newItem = createAuthorItems(
+                          id,
+                          first_name,
+                          last_name,
+                          short_bio,
+                        );
+                        categoryDiv.prepend(newItem);
+
+                        createAuthorForm.reset();
+
+                        createNewAuthorForm.classList.toggle("hidden");
+                        categoryDiv.classList.toggle("blur-lg");
+                      }
                     }
                   });
 

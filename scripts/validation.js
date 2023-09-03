@@ -1,48 +1,133 @@
 export class Validation {
   /**
    *
-   * @param {HTMLElement} item
+   * @param {HTMLElement} items
    */
-  constructor(item, cb) {
+  constructor(items, cb) {
     let errors = 0;
-    item.forEach((item) => {
-      if ("validation" in item.dataset && item !== undefined) {
-        console.count("item");
 
-        if (this.validateDivs(item)) {
+    items.forEach((item) => {
+      if ("validation" in item.dataset && item !== undefined) {
+        console.log(item);
+
+        if (this.validateDivs(item) === false) {
+          errors++;
           return;
         } else {
-          errors++;
-        }
-        if (errors === 0) {
-          this.cb;
-          return cb(uhtneao);
+          return;
         }
       }
     });
+    if (errors == 0) {
+      this.canValidate = true;
+    }
   }
+
   validateDivs(item) {
-    let itemLength = "";
+    if (item.tagName === "INPUT") {
+      let itemLength = item.value.trim().length;
+      item.parentElement
+        .querySelectorAll(".validation-error")
+        .forEach((item) => {
+          item.remove();
+        });
+      switch (item.type) {
+        case "text":
+          {
+            if (item.id === "pictureUrl" && itemLength <= 10) {
+              this.assignObject(
+                item,
+                "Input must  be longer then 10 characters",
+              );
+              return false;
+            }
+            if (itemLength <= 0) {
+              console.log(itemLength);
+              this.assignObject(item, "Input is required");
+              return false;
+            } else if (itemLength > 5000) {
+              this.assignObject(item, "Intput is too long");
+              return false;
+            } else {
+              this.clearError(item);
 
-    if (item.tagName === "input") {
-      itemLength = item.value.trim().length;
-    } else {
-      itemLength = item.textContent.trim().length;
+              return true;
+            }
+          }
+          break;
+        case "date":
+          {
+            if (item.value === "") {
+              this.assignObject(item, "Date is required");
+              return false;
+            } else {
+              this.clearError(item);
+              return true;
+            }
+          }
+          break;
+        case "number":
+          {
+            if (item.value <= 3) {
+              this.assignObject(item, "The number should be greater than 3");
+              return false;
+            } else {
+              this.clearError(item);
+              return true;
+            }
+          }
+          break;
+        case "date":
+          {
+            if (itemLength <= 3) {
+              this.assignObject(item, "Number is too small");
+              return true;
+            } else {
+              this.clearError(item);
+              return false;
+            }
+          }
+          break;
+        default:
+          {
+            console.log("default");
+          }
+          return;
+      }
     }
-
-    if (itemLength <= 1) {
-      return false;
-    } else {
-      this.assignObject(item);
-      return true;
+    if (item.tagName === "TEXTAREA") {
+      console.log("TEXTAREA");
+      let itemLength = item.value.trim().length;
+      item.parentElement
+        .querySelectorAll(".validation-error")
+        .forEach((item) => {
+          item.remove();
+        });
+      if (itemLength <= 20) {
+        console.log(itemLength);
+        this.assignObject(item, "Text should be longer then 20 letters");
+        return false;
+      } else {
+        this.clearError(item);
+        return true;
+      }
     }
   }
-  assignObject(item) {
+  clearError(item) {
+    if (item.parentElement.classList.contains("parent-validation")) {
+      item.parentElement
+        .querySelectorAll(".validation-error")
+        .forEach((item) => {
+          item.remove();
+        });
+    }
+    item.classList.remove("bg-red-200");
+  }
+  assignObject(item, message) {
     const errorMessageObject = document.createElement("div");
-    const message = item.dataset.validation;
-
-    // errorMessageObject.textContent = message;
-    errorMessageObject.textContent = "utenoauhaeotnuhoetna";
+    errorMessageObject.textContent = message;
+    item.classList.add("bg-red-200");
+    item.parentElement.classList.add("relative", "parent-validation");
     errorMessageObject.classList.add("validation-error");
     //append to parent element
     item.insertAdjacentElement("beforebegin", errorMessageObject);

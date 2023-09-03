@@ -71,11 +71,12 @@
 }
 
 .activeEditForm input {
-  @apply bg-teal-400;
-  @apply rounded-sm;
+  @apply bg-teal-200;
+  @apply rounded-lg;
 }
 .activeEditItem {
   @apply bg-teal-200;
+  @apply rounded-lg;
 }
 .error-img {
   @apply bg-gray-200;
@@ -83,4 +84,14 @@
 }
 
 .validation-error {
+  @apply absolute;
+  @apply p-1;
+  @apply rounded-lg;
+  @apply text-base;
+  @apply bottom-2/3;
+  @apply left-1/2;
+  @apply -translate-x-1/2;
+  @apply text-white;
+  @apply z-10;
+  @apply bg-red-500;
 }
