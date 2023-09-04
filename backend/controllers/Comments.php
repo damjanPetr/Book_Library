@@ -178,14 +178,18 @@ class Comments
         ';
 
         $stm = $pdo->prepare($sql);
-        $stm->execute();
-        $result = $stm->fetchAll();
 
-        if ($result) {
+        if (
+            $stm->execute()
+        ) {
+            $result = $stm->fetchAll();
             echo json_encode([
                 'error' => false,
                 "data" => $result
             ]);
+
+        } else {
+            throw new \PDOException;
         }
         ;
     }
@@ -195,10 +199,25 @@ class Comments
     {
         $conn = new Database();
         $pdo = $conn->getConnection();
-        $sql = 'SELECT * FROM comments 
+        // $sql = 'SELECT * FROM comments 
+        // where books_id = :books_id AND 
+        // deleted_at is NULL  
+        // ';
+
+        $sql = 'SELECT c.id,
+        c.body,
+        c.books_id ,
+        c.users_id,
+        c.deleted_at,
+        c.approved,
+        c.declined,
+        users.username 
+        FROM comments as c
+        inner join users ON users.id = c.users_id
         where books_id = :books_id AND 
-        deleted_at is NULL AND 
-        approved is  NULL';
+        deleted_at is NULL  
+        ;';
+
 
         $stm = $pdo->prepare($sql);
 

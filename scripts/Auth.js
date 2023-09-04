@@ -17,7 +17,6 @@ class Login {
 
   static checkAuth() {
     const user = JSON.parse(window.localStorage.getItem("user"));
-    console.log(user);
 
     if (window.localStorage.getItem("auth") == 1 && user != null) {
       Login.auth = true;
@@ -68,13 +67,11 @@ class Login {
 
       self.fields.forEach(async (field) => {
         const input = self.form.querySelector(`#${field}`);
-        console.log(input);
 
         if (self.validateFields(input) == false) {
           error++;
         }
       });
-      console.count("uhu");
       if (error === 0) {
         self.ApiCall();
       }
@@ -85,8 +82,6 @@ class Login {
       case "register":
         {
           const formData = new FormData(this.form);
-
-          console.log("success register");
 
           const response = await fetch("backend/controllers/User.php", {
             headers: { "Content-type": "application/json;charset=utf-8" },
@@ -108,16 +103,12 @@ class Login {
             popupdiv.classList.remove("hidden");
             this.form.parentElement.insertAdjacentElement("afterend", popupdiv);
           } else {
-            console.log("importtant", data);
-            // console.log(JSON.stringify(data.user));
-
             this.login(JSON.stringify(data.user));
           }
         }
         return;
       case "login": {
         const formData = new FormData(this.form);
-        console.log("success login");
         const response = await fetch("backend/controllers/User.php", {
           method: "post",
           headers: { "Content-type": "application/json;charset=utf-8" },
@@ -138,7 +129,6 @@ class Login {
           popupdiv.classList.remove("hidden");
           this.form.parentElement.insertAdjacentElement("afterend", popupdiv);
         } else {
-          console.log(data);
           this.login(JSON.stringify(data.user));
         }
 
@@ -193,7 +183,6 @@ class Login {
       Headers: "Content-type:application/json",
     });
     const data = await response.json();
-    console.log(data);
   }
 }
 export { Login };

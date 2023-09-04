@@ -69,20 +69,20 @@ class Render {
 
               
 
-                  <form class="z-40 hidden absolute flex w-96 flex-col left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20  p-4 bg-white rounded-lg shadow-inner" id="addCommentForm">
-                  <div class="w-full">
-                          <textarea data-validation='' rows="10" w-full type="text" name="body" id="body" class="ring-2 ring-gray-400 text-lg p-2"></textarea>
+                  <form class="z-40 hidden absolute  w-96 flex-col left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20  p-4 bg-white rounded-lg shadow-inner" id="addCommentForm">
+                  <div class="w-full ">
+                          <textarea data-validation='' rows="10" type="text" name="body" id="body" class="ring-2  w-full ring-gray-400 text-lg p-2"></textarea>
                           <button class="bg-blue-200 p-1">Create Comment</button>
-                          <button type="reset" class="text-black" id="cancelForm">Cancel</button>
+                          <button type="reset" class="text-black text-black p-1 bg-red-200" id="cancelForm">Cancel</button>
                   </div>
                      
                   </form>
                   
                   <form class="z-40 hidden absolute flex w-96 flex-col left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20  p-4 bg-white rounded-lg shadow-inner" id="addNotesForm">
                   <div class="w-full">
-                          <textarea data-validation='' rows="10" w-full type="text" name="body" id="body" class="ring-2 ring-gray-400 text-lg p-2"></textarea>
+                          <textarea data-validation='' rows="10" type="text" name="body" id="body" class=" w-full ring-2 ring-gray-400 text-lg p-2"></textarea>
                           <button class="bg-violet-200 p-1">Create Notes</button>
-                          <button type="reset" class="text-black" id="cancelForm">Cancel</button>
+                          <button type="reset" class="text-black p-1 bg-red-200" id="cancelForm">Cancel</button>
                   </div>
                      
                   </form>
@@ -94,8 +94,8 @@ class Render {
                   
 
                   <div class="" id="commentDiv" >
-                  <div class=" text-xl mb-2 transition-transform" id="addCommentBtn" >
-                    <div class="w-full p-1 text-center bg-green-300 rounded-lg">Create New Comment <span> <iconify-icon icon="material-symbols:comment" class="" ></iconify-icon> </span></div>
+                  <div class=" text-xl pb-2 transition-transform" id="addCommentBtn" >
+                        <div class="w-full p-1 text-center bg-green-300 rounded-lg">Create New Comment <span> <iconify-icon icon="material-symbols:comment" class="" ></iconify-icon> </span></div>
                   </div>
                   
                   </div>
@@ -103,8 +103,8 @@ class Render {
               </div>
 
 
-                <div class="w-4/12 overflow-auto h-[65vh] " id="notesDiv">
-                <div class=" text-xl mb-2 transition-transform" id="addNotesBtn" >
+                <div class="w-4/12 overflow-auto h-[65vh]  p-1" id="notesDiv">
+                <div class=" text-xl pb-2 transition-transform" id="addNotesBtn" >
                           <div class="w-full p-1 text-center bg-violet-300 rounded-lg">Create New Note <span> 
                           <iconify-icon icon="tabler:notes"></iconify-icon>
                            </span></div>
@@ -118,10 +118,11 @@ class Render {
         
         <div class="button float-right flex items-center justify-between w-4">
                         <div class="" id="deleteCommentBtn">
-                        <iconify-icon icon="mdi:remove-box" class="tooltip bg-red-300 p-0.5 rounded-lg z-auto" data-tooltip="Create New Comment"></iconify-icon>
+                        <iconify-icon icon="mdi:remove-box" class="tooltip bg-red-300 p-0.5 rounded-lg z-auto" data-tooltip="Remove Comment"></iconify-icon>
                         </div>
       </div>
-              <p class="line-clamp-3">${item.body}</p>
+              <div class="text-lg"><span class="underline ">${item.username} :</span></div>
+              <p class="line-clamp-6">${item.body}</p>
 
             
       </div>`,
@@ -198,15 +199,12 @@ class Render {
           });
 
           const data = await response.json();
-          console.log(data);
           if (data.error) {
-            console.log("error");
             return;
           } else {
             const tempElement = {
               body: addNotesBody.value,
             };
-            console.log(item);
             const newNotesElement = bookNotesInnerDiv(tempElement);
             addNotesForm.reset();
             addNotesForm.classList.toggle("hidden");
@@ -233,8 +231,6 @@ class Render {
           addCommentForm.querySelectorAll("[data-validation]"),
         );
         if (commentValidator.canValidate) {
-          console.log(Login.userId);
-
           const response = await fetch("backend/controllers/Comments.php", {
             method: "post",
             body: JSON.stringify({
@@ -248,17 +244,16 @@ class Render {
           });
 
           const data = await response.json();
-          console.log(data);
           if (data.error) {
-            console.log("error");
             return;
           } else {
             const tempElement = {
               body: addCommentBody.value,
+              username: Login.userName,
             };
-            console.log(item);
 
             const newCommentElement = bookCommentInnerDiv(tempElement);
+
             newCommentElement.classList.add("pendingComment");
             addCommentForm.reset();
             addCommentForm.classList.toggle("hidden");
@@ -282,13 +277,12 @@ class Render {
         });
         const data = await response.json();
 
-        console.log(data);
         if (data.error) {
           return;
         } else {
           if (data.data.length === 0) {
             const newReplacementElement =
-              elementFromHTML(`<div class="bg-pink-300 p-2 rounded-lg text-lg  ">
+              elementFromHTML(`<div class="mb-2 bg-pink-300 p-2 rounded-lg text-lg  ">
               <p >This Book has no Comments !</p></div>`);
             addCommentBtn.insertAdjacentElement(
               "beforebegin",
@@ -324,13 +318,10 @@ class Render {
                 addCommentBtn.remove();
               }
             }
-            //  else {
-            //   deleteCommentBtn.remove();
-            //   addCommentBtn.remove();
-            // }
+
+            console.log(data);
+
             deleteCommentBtn.addEventListener("click", async (e) => {
-              console.log("DELETE COMMENT ACTIVATED");
-              console.log(Login.auth);
               if (Login.auth) {
                 const response = await fetch(
                   "backend/controllers/Comments.php",
@@ -345,29 +336,55 @@ class Render {
                   },
                 );
                 const data = await response.json();
-                console.log(data);
                 if (data.error) {
                   return;
                 } else {
                   newCommentDiv.remove();
-                  notesDiv.remove();
+                  // notesDiv.remove();
                 }
               }
             });
 
             addCommentBtn.addEventListener("click", (e) => {});
 
-            if (Login.auth) {
-              if (
-                item.approved == null &&
-                item.approved == null &&
-                item.users_id === Login.userId
-              ) {
-                newCommentDiv.classList.add("pendingComment");
-                commentDiv.append(newCommentDiv);
-              } else {
-              }
+            // if (Login.auth) {
+            if (
+              item.approved == null &&
+              item.declined == null &&
+              item.users_id === Login.userId
+            ) {
+              newCommentDiv.classList.add("pendingComment");
+              commentDiv.append(newCommentDiv);
+            } else if (item.approved != null && Login.auth == false) {
+              deleteCommentBtn.remove();
+              commentDiv.append(newCommentDiv);
+            } else if (
+              item.approved != null &&
+              Login.auth == true &&
+              item.users_id === Login.userId
+            ) {
+              // deleteCommentBtn.remove();
+              commentDiv.append(newCommentDiv);
+            } else if (
+              item.approved != null &&
+              Login.auth == true &&
+              item.users_id !== Login.userId
+            ) {
+              deleteCommentBtn.remove();
+              commentDiv.append(newCommentDiv);
             }
+            // else if (
+            //     item.users_id === Login.userId &&
+            //     item.approved != null
+            //   ) {
+            //     deleteCommentBtn.remove();
+            //   } else {
+            //     deleteCommentBtn.remove();
+            //     addCommentBtn.remove();
+            //   }
+            // } else if (item.approved != null) {
+            //   commentDiv.append(newCommentDiv);
+            // }
           });
         }
       })();
@@ -394,13 +411,12 @@ class Render {
         });
         const data = await response.json();
 
-        console.log(data);
         if (data.error) {
           return;
         } else {
           if (data.data.length === 0) {
             const newReplacementElement =
-              elementFromHTML(`<div class="bg-fuchsia-300 p-2 rounded-lg text-lg  ">
+              elementFromHTML(`<div class="mb-2 bg-fuchsia-300 p-2 rounded-lg text-lg  ">
                                     <p >You Dont Have Any Notes For This Book</p></div>`);
             addNotesBtn.insertAdjacentElement(
               "beforebegin",
@@ -452,7 +468,6 @@ class Render {
                   );
 
                   const data = await response.json();
-                  console.log(data);
                   if (data.error) {
                     return;
                   } else {
@@ -470,7 +485,6 @@ class Render {
                 });
 
                 deleteNotesBtn.addEventListener("click", async (e) => {
-                  console.log("DELETE NOTES ACTIVATED");
                   const response = await fetch(
                     "backend/controllers/Notes.php",
                     {
@@ -484,7 +498,6 @@ class Render {
                     },
                   );
                   const data = await response.json();
-                  console.log(data);
                   if (data.error) {
                     return;
                   } else {
@@ -501,9 +514,6 @@ class Render {
             // } else {
             //   addNotesBtn.remove();
             //   deleteCommentBtn.remove();
-            //   console.group("notesBtn &&&");
-            //   console.log(addNotesBtn, deleteCommentBtn, notesDiv);
-            //   console.groupEnd("notesBtn &&&");
             // }
           }
         }
@@ -525,7 +535,6 @@ class Render {
       });
 
       const data = await response.json();
-      console.log(data);
 
       if (data.error) {
         return;
@@ -561,7 +570,6 @@ class Render {
       })
       .catch((error) => console.error(error));
 
-    console.log("name");
     if (Login.auth) {
       loginDiv.classList.add("hidden");
       logoutBtn.classList.remove("hidden");
@@ -648,8 +656,6 @@ class Render {
 
       item.addEventListener("click", (e) => {
         if (filterBooksPerCategory.includes(id)) {
-          console.log("includes");
-
           filterBooksPerCategory.splice(filterBooksPerCategory.indexOf(id), 1);
         } else {
           filterBooksPerCategory.push(id);
@@ -669,8 +675,6 @@ class Render {
           return filterBooksPerCategory.includes(item.categories_id);
         });
         BookDiv.innerHTML = "";
-        console.log("filterbook", filterBooksPerCategory);
-        // console.log("newbooksitem", newBookItems);
 
         newBookItems.forEach((item) => {
           const replaceElement = createBook(item);
@@ -718,7 +722,6 @@ class Render {
         }),
       });
       const dataCategory = await response.json();
-      console.log(dataCategory);
 
       if (dataCategory.error) {
       } else {
@@ -1193,7 +1196,7 @@ class Render {
                   Create
                   BOOK CARD
                   Section THAT POPS UP
-                 */
+                  */
 
                   const createNewBtn = ItemDiv.querySelector("#createNewBtn");
 
@@ -1307,7 +1310,6 @@ class Render {
 
                   editBookForm.addEventListener("submit", async (e) => {
                     e.preventDefault();
-                    console.log("EDITFORM ACTIVATED");
                     const formData = Object.fromEntries(
                       new FormData(editBookForm),
                     );
@@ -1330,8 +1332,6 @@ class Render {
                     if (data.error === "false") {
                       return;
                     } else {
-                      console.log(data);
-
                       // Works but replacing the element causes flicker
 
                       // ItemDiv.parentElement.replaceChild(
@@ -1404,33 +1404,6 @@ class Render {
                     authorTitle.value = replace_authorId.value;
 
                     categoryTitle.value = replace_categoryId.value;
-
-                    /*   console.group("variables");
-                          console.log(replace_author.textContent);
-                          console.log(replace_authorId.value);
-                          console.log(replace_categoryId.value);
-                          console.log(replace_category.textContent);
-                          console.log(replace_img.getAttribute("src"));
-                          console.log(replace_number_of_pages.textContent);
-                          console.log(replace_release_date.textContent);
-                          console.log(replace_title.textContent);
-
-                    console.groupEnd("variables");
-
-                    console.error(
-                      "authorTitle:",
-                      authorTitle.value,
-                      "replace author",
-
-                      replace_authorId.value,
-                    ); */
-
-                    // console.error(
-                    //   "categoryTitle:",
-                    //   categoryTitle.value,
-                    //   "replace category",
-                    //   replace_categoryId.value,
-                    // );
                   });
 
                   /* checkbtn event listener */
@@ -1561,12 +1534,9 @@ class Render {
                     innerDiv.querySelectorAll("[data-validation]"),
                   );
                   if (createBookValidator.canValidate) {
-                    console.log("huhh");
-
                     const formData = Object.fromEntries(
                       new FormData(createBookForm),
                     );
-                    console.log(formData);
                     const response = await fetch(
                       "backend/controllers/Book.php",
                       {
@@ -1581,15 +1551,8 @@ class Render {
                       },
                     );
                     const data = await response.json();
-
-                    console.log(
-                      "🚀 ✔ file: main.js:1566 ✔ Render ✔ createBookForm.addEventListener ✔ data:",
-                      data,
-                    );
-
                     if (data.error) {
                     } else {
-                      console.log(data);
                       const newItem = createBookDiv(data);
 
                       bookDiv.prepend(newItem);
@@ -1817,8 +1780,6 @@ class Render {
                   });
 
                   editBtn.addEventListener("click", async (e) => {
-                    console.log(itemTitle.firstElementChild.textContent);
-
                     //text content in p tag (Category Names)
                     editInput.value = itemTitle.firstElementChild.textContent;
 
@@ -1888,7 +1849,6 @@ class Render {
 
                     itemDiv.remove();
                     const data = await response.json();
-                    console.log(data);
                   });
 
                   return itemDiv;
@@ -2140,7 +2100,6 @@ class Render {
                     // async function checkItemPoz() {
                     setTimeout(() => {
                       if (ShortBio.clientHeight === ShortBio.scrollHeight) {
-                        console.log(true);
                         readMoreBtn.classList.add("hidden");
                       }
                     }, 1);
@@ -2247,7 +2206,6 @@ class Render {
 
                         setTimeout(() => {
                           if (ShortBio.clientHeight === ShortBio.scrollHeight) {
-                            console.log(true);
                             readMoreBtn.classList.add("hidden");
                           }
                         }, 1);
@@ -2526,10 +2484,10 @@ class Render {
 
                     <div class="buttons  ml-2 flex gap-4">
                       <div id="cardApproveBtn">
-                      <iconify-icon icon="material-symbols:check" class="peer/edit bg-green-200 p-1 cursor-pointer relative tooltip rounded-lg" data-tooltip="Decline"></iconify-icon>
+                      <iconify-icon icon="material-symbols:check" class="peer/edit bg-green-200 p-1 cursor-pointer relative tooltip rounded-lg" data-tooltip="Approve"></iconify-icon>
                       </div>
                       <div id="cardDeclineBtn" class="">
-                      <iconify-icon icon="material-symbols:edit" class="peer/edit bg-red-200 p-1 cursor-pointer relative tooltip rounded-lg" data-tooltip="Approve"></iconify-icon>
+                        <iconify-icon icon="material-symbols:edit" class="peer/edit bg-red-200 p-1 cursor-pointer relative tooltip rounded-lg" data-tooltip="Decline"></iconify-icon>
 
                       </div>
 
@@ -2584,7 +2542,6 @@ class Render {
                       },
                     );
                     const data = await response.json();
-                    console.log(data);
                     if (data.error) {
                     } else {
                       itemDiv.remove();
@@ -2613,7 +2570,6 @@ class Render {
                     );
                     const data = await response.json();
 
-                    console.log(data);
                     if (data.error) {
                     } else {
                       itemDiv.remove();
@@ -2660,7 +2616,6 @@ class Render {
                   );
 
                   const data = await response.json();
-                  console.log(data);
 
                   /*
                 * filter items to corresponding div
@@ -2675,21 +2630,18 @@ class Render {
                           item.declined === null &&
                           item.deleted_at == null:
                           {
-                            console.log("pending");
                             const element = createCommentDiv(item);
                             pendingfDiv.append(element);
                           }
                           return;
                         case item.approved !== null && item.deleted_at == null:
                           {
-                            console.log("approved");
                             const element = createCommentDiv(item);
                             approvedDiv.append(element);
                           }
                           return;
                         case item.declined !== null && item.deleted_at == null:
                           {
-                            console.log("declined");
                             const element = createCommentDiv(item);
                             declinedDiv.append(element);
                           }
@@ -2803,7 +2755,6 @@ class Render {
                       },
                     );
                     const data = await response.json();
-                    console.log(data);
 
                     if (data.error) {
                       Swal.fire({
@@ -2820,19 +2771,16 @@ class Render {
                       });
 
                       //rename the title elemnt with the text of the next element
-                      console.log(userDropdown.firstElementChild != null);
                       if (userDropdown.firstElementChild != null) {
                         useridInput.value =
                           userDropdown.firstElementChild.querySelector(
                             "input",
                           ).value;
-                        console.log(useridInput.value);
                         userTitle.textContent =
                           userDropdown.firstElementChild.querySelector(
                             "p",
                           ).textContent;
                       } else {
-                        console.log("BADDDDDDD");
                         makeAdminBtn.remove();
                         userTitle.textContent = "All Users Are Admins";
                         useridInput.value = "";
@@ -2863,7 +2811,6 @@ class Render {
                     userTitle.textContent = username;
                     useridInput.value = id;
                     userDropdown.classList.toggle("hidden");
-                    console.log(useridInput.value);
                   });
 
                   return itemDiv;
@@ -2880,7 +2827,6 @@ class Render {
 
                   const data = await response.json();
 
-                  console.log(data);
                   if (data.error) {
                     return;
                   } else {

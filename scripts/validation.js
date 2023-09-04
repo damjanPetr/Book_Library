@@ -40,7 +40,6 @@ export class Validation {
               return false;
             }
             if (itemLength < 1) {
-              console.log(itemLength);
               this.assignObject(item, "Input is required");
               return false;
             } else if (itemLength > 5000) {
@@ -88,13 +87,11 @@ export class Validation {
           break;
         default:
           {
-            console.log("default");
           }
           return;
       }
     }
     if (item.tagName === "TEXTAREA") {
-      console.log("TEXTAREA");
       let itemLength = item.value.trim().length;
       item.parentElement
         .querySelectorAll(".validation-error")
@@ -102,7 +99,6 @@ export class Validation {
           item.remove();
         });
       if (itemLength <= 20) {
-        console.log(itemLength);
         this.assignObject(item, "Text should be longer then 20 letters");
         return false;
       } else {
