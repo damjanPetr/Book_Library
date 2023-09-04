@@ -118,7 +118,7 @@ class Render {
         
         <div class="button float-right flex items-center justify-between w-4">
                         <div class="" id="deleteCommentBtn">
-                        <iconify-icon icon="mdi:remove-box" class="tooltip bg-red-300 p-0.5 rounded-lg z-auto" data-tooltip="Remove Comment"></iconify-icon>
+                        <iconify-icon icon="mdi:remove-box" class=" bg-red-300 p-0.5 rounded-lg z-auto hover:scale-125 transition-transform" ></iconify-icon>
                         </div>
       </div>
               <div class="text-lg"><span class="underline ">${item.username} :</span></div>
@@ -135,21 +135,21 @@ class Render {
           `<div class="p-3 w-full   rounded-lg flex-1 shadow-inner bg-white ">
         
         <div class="button float-right  flex items-center justify-between ">
-                        <div class="flex  hover:scale-110 items-center justify-between bg-red-300 p-0.5 rounded-lg " id="deleteNotesBtn">
+                        <div class="flex hover:transition-transform hover:scale-110 items-center justify-between bg-red-300 p-0.5 rounded-lg " id="deleteNotesBtn">
                                 <p class="">Delete</p>
                                 <iconify-icon icon="mdi:remove-box" class="ml-0.5" ></iconify-icon>
                         </div>
-                        <div class="flex  hover:scale-110 ml-1 items-center justify-between bg-violet-300 p-0.5 rounded-lg " id="editNotesBtn">
+                        <div class="flex   hover:transition-transform hover:scale-110 ml-1 items-center justify-between bg-violet-300 p-0.5 rounded-lg " id="editNotesBtn">
                               <p class="">Edit</p>
                               <iconify-icon icon="bx:edit" class="ml-0.5" ></iconify-icon>
                         </div>
-                        <div class="flex hidden hover:scale-110 ml-1 items-center justify-between bg-green-300 p-0.5 rounded-lg " id="doneNotesBtn">
+                        <div class="flex  hover:transition-transform hidden hover:scale-110 ml-1 items-center justify-between bg-green-300 p-0.5 rounded-lg " id="doneNotesBtn">
                               <p  class="">Done</p>
                               <iconify-icon class="ml-0.5" icon="ic:baseline-done-outline"></iconify-icon>
                         </div>
       </div>
               <p id="body" class="  break-words">${item.body}</p>
-              <textarea  name="replaceTextBody" id="replaceTextBody" class="p-2 w-full hidden" rows="10"></textarea>
+              <textarea  name="replaceTextBody" id="replaceTextBody" class="p-2 w-full hidden hover:scale-125 transition-transform" rows="10"></textarea>
       </div>`,
         );
         return itemDiv;
