@@ -150,12 +150,30 @@ class Setup
         $arrayBooks = [
             [
                 "title" => 'Play',
-                "release_date" => '2012-4-10',
+                "release_date" => '2012-04-10',
                 "author_id" => '1',
                 "categories_id" => '1',
                 "number_of_pages" => '193',
                 "notes_id" => '1',
                 "img" => 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSByFYCsAQEoSFRdmV7UzVFr6M6HESCGjDDNZGQptnDVKkmR5_l'
+            ],
+            [
+                "title" => 'Play',
+                "release_date" => '2018-12-05',
+                "author_id" => '3',
+                "categories_id" => '3',
+                "number_of_pages" => '393',
+                "notes_id" => '3',
+                "img" => 'https://w7.pngwing.com/pngs/920/640/png-transparent-book-lot-book-book-retro-comic-book-reading-thumbnail.png'
+            ],
+            [
+                "title" => 'The walkinnng of niagra falls',
+                "release_date" => '2017-12-28',
+                "author_id" => '2',
+                "categories_id" => '2',
+                "number_of_pages" => '493',
+                "notes_id" => '2',
+                "img" => 'https://images.unsplash.com/photo-1692678421419-eb41ae0a7aa0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1888&q=80'
             ]
         ];
 

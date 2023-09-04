@@ -28,6 +28,7 @@ class Login {
         Login.authAdmin = false;
       }
 
+      Login.userId = user.id;
       Login.userName = user.username;
     }
   }

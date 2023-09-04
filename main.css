@@ -31,6 +31,10 @@
 
 .tooltip:hover {
   transform: scale(1.2);
+  @apply transition-transform;
+}
+.tooltip {
+  z-index: 100;
 }
 
 .tooltip::before,
@@ -94,4 +98,28 @@
   @apply text-white;
   @apply z-10;
   @apply bg-red-500;
+}
+.selectCategory {
+  @apply bg-red-500;
+}
+
+.blur1 {
+  box-shadow: 0.9 0.9 40rem 15px rgba(0, 0, 0, 0.9);
+}
+.pendingComment {
+  @apply bg-orange-600;
+  @apply relative;
+}
+.pendingComment:hover::after {
+  content: "Pending";
+  position: relative;
+  transform-origin: bottom center;
+  padding: 10px;
+  /* width: 80px; */
+  color: #fff;
+  font-size: 1.1rem;
+  @apply top-full;
+  @apply left-1/3;
+  /* @apply translate-x-1/2; */
+  transition: transform 100ms;
 }

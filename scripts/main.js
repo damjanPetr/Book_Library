@@ -19,17 +19,549 @@ Login.checkAuth();
 class Render {
   static mainDiv = document.querySelector(".mainDiv");
 
+  static SingleBook(html, id) {
+    Login.checkAuth();
+
+    const element = elementFromHTML(html);
+    const bookDetails = element.querySelector("#bookDetails");
+
+    function createBookDiv({
+      id,
+      title,
+      first_name,
+      last_name,
+      img,
+      Category,
+      author_id,
+      release_date,
+    }) {
+      const item = elementFromHTML(`
+      <div class="flex  rounded-lg [&_>_div]:p-1.5 p-4 shadow-md bg-gray-50 w-full"> 
+              <div class="flex-initial w-4/12 mb-2">
+                      <div class="flex items-center justify-center rounded-lg">
+                      <img src=${img} alt="Book Image" class="bg-center bg-cover w-[280px] h-[380px] rounded-lg">
+              </div>
+              
+              <div class="content mt-2 pl-2 max-w-full break-words ">
+                        <div class="">
+                                <p class="text-gray-500   underline italic">Title:</p>
+                                <p class="text-lg font-semibold">${title}</p>
+                        </div>
+
+                        <div class="">
+                            <p class="text-gray-500   underline italic">Category :</p>
+                            <p id="title" class="" >${Category}    </p>
+                        </div>
+
+                        <div class="">
+                            <p class="text-gray-500   underline italic">Author: </p>
+                            <p>${first_name}${last_name}</p>
+                        </div>
+
+                        <div class="">
+                          <p class="">Pubilsh Date :</p>
+                          <p class="text-gray-500   underline italic">${release_date}</p>
+                        </div>
+                        
+              </div>
+
+              </div>
+
+              
+
+                  <form class="z-40 hidden absolute flex w-96 flex-col left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20  p-4 bg-white rounded-lg shadow-inner" id="addCommentForm">
+                  <div class="w-full">
+                          <textarea data-validation='' rows="10" w-full type="text" name="body" id="body" class="ring-2 ring-gray-400 text-lg p-2"></textarea>
+                          <button class="bg-blue-200 p-1">Create Comment</button>
+                          <button type="reset" class="text-black" id="cancelForm">Cancel</button>
+                  </div>
+                     
+                  </form>
+                  
+                  <form class="z-40 hidden absolute flex w-96 flex-col left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20  p-4 bg-white rounded-lg shadow-inner" id="addNotesForm">
+                  <div class="w-full">
+                          <textarea data-validation='' rows="10" w-full type="text" name="body" id="body" class="ring-2 ring-gray-400 text-lg p-2"></textarea>
+                          <button class="bg-violet-200 p-1">Create Notes</button>
+                          <button type="reset" class="text-black" id="cancelForm">Cancel</button>
+                  </div>
+                     
+                  </form>
+
+              <div class="w-4/12 overflow-auto  h-[65vh]  flex-auto  z-10">
+
+                  
+
+                  
+
+                  <div class="" id="commentDiv" >
+                  <div class=" text-xl mb-2 transition-transform" id="addCommentBtn" >
+                    <div class="w-full p-1 text-center bg-green-300 rounded-lg">Create New Comment <span> <iconify-icon icon="material-symbols:comment" class="" ></iconify-icon> </span></div>
+                  </div>
+                  
+                  </div>
+
+              </div>
+
+
+                <div class="w-4/12 overflow-auto h-[65vh] " id="notesDiv">
+                <div class=" text-xl mb-2 transition-transform" id="addNotesBtn" >
+                          <div class="w-full p-1 text-center bg-violet-300 rounded-lg">Create New Note <span> 
+                          <iconify-icon icon="tabler:notes"></iconify-icon>
+                           </span></div>
+                  </div>
+                </div>
+      </div>`);
+
+      const bookCommentInnerDiv = (item) => {
+        const itemDiv = elementFromHTML(
+          `<div class="p-2 w-full   rounded-lg flex-1 shadow-inner bg-white   ">
+        
+        <div class="button float-right flex items-center justify-between w-4">
+                        <div class="" id="deleteCommentBtn">
+                        <iconify-icon icon="mdi:remove-box" class="tooltip bg-red-300 p-0.5 rounded-lg z-auto" data-tooltip="Create New Comment"></iconify-icon>
+                        </div>
+      </div>
+              <p class="line-clamp-3">${item.body}</p>
+
+            
+      </div>`,
+        );
+        return itemDiv;
+      };
+
+      const bookNotesInnerDiv = (item) => {
+        const itemDiv = elementFromHTML(
+          `<div class="p-3 w-full   rounded-lg flex-1 shadow-inner bg-white ">
+        
+        <div class="button float-right  flex items-center justify-between ">
+                        <div class="flex  hover:scale-110 items-center justify-between bg-red-300 p-0.5 rounded-lg " id="deleteNotesBtn">
+                                <p class="">Delete</p>
+                                <iconify-icon icon="mdi:remove-box" class="ml-0.5" ></iconify-icon>
+                        </div>
+                        <div class="flex  hover:scale-110 ml-1 items-center justify-between bg-violet-300 p-0.5 rounded-lg " id="editNotesBtn">
+                              <p class="">Edit</p>
+                              <iconify-icon icon="bx:edit" class="ml-0.5" ></iconify-icon>
+                        </div>
+                        <div class="flex hidden hover:scale-110 ml-1 items-center justify-between bg-green-300 p-0.5 rounded-lg " id="doneNotesBtn">
+                              <p  class="">Done</p>
+                              <iconify-icon class="ml-0.5" icon="ic:baseline-done-outline"></iconify-icon>
+                        </div>
+      </div>
+              <p id="body" class="  break-words">${item.body}</p>
+              <textarea  name="replaceTextBody" id="replaceTextBody" class="p-2 w-full hidden" rows="10"></textarea>
+      </div>`,
+        );
+        return itemDiv;
+      };
+
+      const commentDiv = item.querySelector("#commentDiv");
+      const notesDiv = item.querySelector("#notesDiv");
+
+      const addCommentForm = item.querySelector("#addCommentForm");
+      const addCommentBtn = item.querySelector("#addCommentBtn");
+      const addCommentBody = addCommentForm.querySelector("#body");
+      const cancelCommentForm = addCommentForm.querySelector("#cancelForm");
+
+      const addNotesForm = item.querySelector("#addNotesForm");
+      const addNotesBtn = item.querySelector("#addNotesBtn");
+      const addNotesBody = addNotesForm.querySelector("#body");
+      const cancelNotesForm = addNotesForm.querySelector("#cancelForm");
+
+      //notes
+      cancelNotesForm.addEventListener("click", (e) => {
+        e.preventDefault();
+        addNotesForm.reset();
+        addNotesForm.classList.add("hidden");
+      });
+
+      addNotesBtn.addEventListener("click", (e) => {
+        // element.classList.toggle("blur-lg");
+        e.preventDefault();
+        addNotesForm.classList.toggle("hidden");
+      });
+      addNotesForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const notesValidator = new Validation(
+          addNotesForm.querySelectorAll("[data-validation]"),
+        );
+        if (notesValidator.canValidate) {
+          const response = await fetch("backend/controllers/Notes.php", {
+            method: "post",
+            body: JSON.stringify({
+              action: "addNote",
+              json: {
+                books_id: id,
+                body: addNotesBody.value,
+                users_id: Login.userId,
+              },
+            }),
+          });
+
+          const data = await response.json();
+          console.log(data);
+          if (data.error) {
+            console.log("error");
+            return;
+          } else {
+            const tempElement = {
+              body: addNotesBody.value,
+            };
+            console.log(item);
+            const newNotesElement = bookNotesInnerDiv(tempElement);
+            addNotesForm.reset();
+            addNotesForm.classList.toggle("hidden");
+            addNotesBtn.insertAdjacentElement("afterend", newNotesElement);
+          }
+        }
+      });
+      // comments
+      cancelCommentForm.addEventListener("click", (e) => {
+        e.preventDefault();
+        addCommentForm.reset();
+        addCommentForm.classList.add("hidden");
+      });
+
+      addCommentBtn.addEventListener("click", (e) => {
+        // element.classList.toggle("blur-lg");
+        e.preventDefault();
+        addCommentForm.classList.toggle("hidden");
+      });
+
+      addCommentForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const commentValidator = new Validation(
+          addCommentForm.querySelectorAll("[data-validation]"),
+        );
+        if (commentValidator.canValidate) {
+          console.log(Login.userId);
+
+          const response = await fetch("backend/controllers/Comments.php", {
+            method: "post",
+            body: JSON.stringify({
+              action: "addComment",
+              json: {
+                books_id: id,
+                body: addCommentBody.value,
+                users_id: Login.userId,
+              },
+            }),
+          });
+
+          const data = await response.json();
+          console.log(data);
+          if (data.error) {
+            console.log("error");
+            return;
+          } else {
+            const tempElement = {
+              body: addCommentBody.value,
+            };
+            console.log(item);
+
+            const newCommentElement = bookCommentInnerDiv(tempElement);
+            newCommentElement.classList.add("pendingComment");
+            addCommentForm.reset();
+            addCommentForm.classList.toggle("hidden");
+
+            addCommentBtn.insertAdjacentElement("afterend", newCommentElement);
+          }
+        }
+      });
+
+      //for rending comments
+
+      (async () => {
+        const response = await fetch("backend/controllers/Comments.php", {
+          method: "post",
+          body: JSON.stringify({
+            action: "getAllBookComments",
+            json: {
+              id: id,
+            },
+          }),
+        });
+        const data = await response.json();
+
+        console.log(data);
+        if (data.error) {
+          return;
+        } else {
+          if (data.data.length === 0) {
+            const newReplacementElement =
+              elementFromHTML(`<div class="bg-pink-300 p-2 rounded-lg text-lg  ">
+              <p >This Book has no Comments !</p></div>`);
+            addCommentBtn.insertAdjacentElement(
+              "beforebegin",
+              newReplacementElement,
+            );
+            // addCommentBtn.remove();
+          }
+          if (Login.auth) {
+            //delete  and add btn should be visileb
+          } else {
+            addCommentBtn.remove();
+            notesDiv.remove();
+          }
+          // true ------------------------------------------------
+          data.data.forEach((item) => {
+            const newCommentDiv = bookCommentInnerDiv(item);
+            const deleteCommentBtn =
+              newCommentDiv.querySelector("#deleteCommentBtn");
+
+            if (Login.auth) {
+              if (
+                item.users_id == Login.userId &&
+                item.approved == null &&
+                item.declined == null
+              ) {
+                const newReplacementElement =
+                  elementFromHTML(`<div class="bg-pink-300 p-2 rounded-lg text-lg  ">
+              <p >You can only leave 1 comment Per Book !</p></div>`);
+                addCommentBtn.insertAdjacentElement(
+                  "beforebegin",
+                  newReplacementElement,
+                );
+                addCommentBtn.remove();
+              }
+            }
+            //  else {
+            //   deleteCommentBtn.remove();
+            //   addCommentBtn.remove();
+            // }
+            deleteCommentBtn.addEventListener("click", async (e) => {
+              console.log("DELETE COMMENT ACTIVATED");
+              console.log(Login.auth);
+              if (Login.auth) {
+                const response = await fetch(
+                  "backend/controllers/Comments.php",
+                  {
+                    method: "post",
+                    body: JSON.stringify({
+                      action: "deleteComment",
+                      json: {
+                        id: item.id,
+                      },
+                    }),
+                  },
+                );
+                const data = await response.json();
+                console.log(data);
+                if (data.error) {
+                  return;
+                } else {
+                  newCommentDiv.remove();
+                  notesDiv.remove();
+                }
+              }
+            });
+
+            addCommentBtn.addEventListener("click", (e) => {});
+
+            if (Login.auth) {
+              if (
+                item.approved == null &&
+                item.approved == null &&
+                item.users_id === Login.userId
+              ) {
+                newCommentDiv.classList.add("pendingComment");
+                commentDiv.append(newCommentDiv);
+              } else {
+              }
+            }
+          });
+        }
+      })();
+
+      //for rending notes
+
+      if (Login.auth) {
+      } else {
+        addNotesBtn.remove();
+      }
+
+      (async () => {
+        if (Login.auth) {
+        }
+        const response = await fetch("backend/controllers/Notes.php", {
+          method: "post",
+          body: JSON.stringify({
+            action: "getAllBookNotes",
+            json: {
+              books_id: id,
+              users_id: Login.userId,
+            },
+          }),
+        });
+        const data = await response.json();
+
+        console.log(data);
+        if (data.error) {
+          return;
+        } else {
+          if (data.data.length === 0) {
+            const newReplacementElement =
+              elementFromHTML(`<div class="bg-fuchsia-300 p-2 rounded-lg text-lg  ">
+                                    <p >You Dont Have Any Notes For This Book</p></div>`);
+            addNotesBtn.insertAdjacentElement(
+              "beforebegin",
+              newReplacementElement,
+            );
+            // addNotesBtn.remove();
+          }
+
+          // if user is logged in only
+
+          if (Login.auth) {
+            data.data
+              .filter((item) => {
+                return item.users_id == Login.userId;
+              })
+              .forEach((item) => {
+                const newNotesDiv = bookNotesInnerDiv(item);
+                const notesElementBody = newNotesDiv.querySelector("#body");
+
+                const deleteNotesBtn =
+                  newNotesDiv.querySelector("#deleteNotesBtn");
+                const editNotesBtn = newNotesDiv.querySelector("#editNotesBtn");
+
+                const replaceTextBody =
+                  newNotesDiv.querySelector("#replaceTextBody");
+
+                const doneNotesBtn = newNotesDiv.querySelector("#doneNotesBtn");
+                doneNotesBtn.addEventListener("click", async (e) => {
+                  replaceTextBody.classList.add("hidden");
+                  doneNotesBtn.classList.add("hidden");
+                  editNotesBtn.classList.remove("hidden");
+                  deleteNotesBtn.classList.remove("hidden");
+                  notesElementBody.classList.remove("hidden");
+
+                  replaceTextBody;
+                  const response = await fetch(
+                    "backend/controllers/Notes.php",
+
+                    {
+                      method: "post",
+                      body: JSON.stringify({
+                        action: "editNote",
+                        json: {
+                          id: item.id,
+                          body: replaceTextBody.value,
+                        },
+                      }),
+                    },
+                  );
+
+                  const data = await response.json();
+                  console.log(data);
+                  if (data.error) {
+                    return;
+                  } else {
+                    notesElementBody.textContent = replaceTextBody.value;
+                  }
+                });
+
+                editNotesBtn.addEventListener("click", (e) => {
+                  editNotesBtn.classList.add("hidden");
+                  deleteNotesBtn.classList.add("hidden");
+                  doneNotesBtn.classList.remove("hidden");
+                  replaceTextBody.classList.remove("hidden");
+                  replaceTextBody.value = notesElementBody.textContent;
+                  notesElementBody.classList.add("hidden");
+                });
+
+                deleteNotesBtn.addEventListener("click", async (e) => {
+                  console.log("DELETE NOTES ACTIVATED");
+                  const response = await fetch(
+                    "backend/controllers/Notes.php",
+                    {
+                      method: "post",
+                      body: JSON.stringify({
+                        action: "deleteNote",
+                        json: {
+                          id: item.id,
+                        },
+                      }),
+                    },
+                  );
+                  const data = await response.json();
+                  console.log(data);
+                  if (data.error) {
+                    return;
+                  } else {
+                    newNotesDiv.remove();
+                  }
+                });
+
+                // addNotesBtn.addEventListener("click", (e) => {});
+
+                notesDiv.append(newNotesDiv);
+              });
+
+            // if (item.users_id == Login.userId) {
+            // } else {
+            //   addNotesBtn.remove();
+            //   deleteCommentBtn.remove();
+            //   console.group("notesBtn &&&");
+            //   console.log(addNotesBtn, deleteCommentBtn, notesDiv);
+            //   console.groupEnd("notesBtn &&&");
+            // }
+          }
+        }
+      })();
+
+      return item;
+    }
+
+    //getBook data
+    (async () => {
+      const response = await fetch("backend/controllers/Book.php", {
+        method: "post",
+        body: JSON.stringify({
+          action: "getBook",
+          json: {
+            id: id,
+          },
+        }),
+      });
+
+      const data = await response.json();
+      console.log(data);
+
+      if (data.error) {
+        return;
+      } else {
+        const book = data.data;
+        bookDetails.append(createBookDiv(book));
+      }
+    })();
+
+    this.mainDiv.innerHTML = "";
+    this.mainDiv.append(element);
+  }
+
   static changeRouteDefault() {
     const loginDiv = document.querySelector("header  #loginBtn");
     const logoutBtn = document.querySelector("header  #logoutBtn");
     const dashboardDiv = document.querySelector("header  #dashboardBtn ");
 
     //login btn
-
     logoutBtn.addEventListener("click", () => {
       Login.logout();
     });
 
+    // const footer = document.querySelector("footer");
+    const quote = document.querySelector("#quote");
+    const quoteAuthor = document.querySelector("#quoteAuthor");
+
+    fetch("http://api.quotable.io/random")
+      .then((response) => response.json())
+      .then((data) => {
+        quote.textContent = data.content;
+        quoteAuthor.textContent = data.author;
+      })
+      .catch((error) => console.error(error));
+
+    console.log("name");
     if (Login.auth) {
       loginDiv.classList.add("hidden");
       logoutBtn.classList.remove("hidden");
@@ -54,6 +586,151 @@ class Render {
 
   static homePageBooks(html) {
     const element = elementFromHTML(html);
+    const categoryDiv = element.querySelector("#categoryDiv");
+    const BookDiv = element.querySelector("#bookDiv");
+    const filterBooksPerCategory = [];
+
+    //Array of cache books
+    let cacheBooks = [];
+
+    // Books elements
+
+    function createBook({
+      id,
+      title,
+      Category,
+      first_name,
+      last_name,
+      number_of_pages,
+      release_date,
+      img,
+    }) {
+      const item = elementFromHTML(
+        `<div class="p-2 w-40 rounded-lg  hover:scale-105 flex-initial">
+              <a href='#book/${id}' class="">
+                  <div class="rounded-lg flex items-center justify-center">
+                      <img src=${img} alt="" class="w-[180px] h-[280px] bg-contain rounded-lg ">
+                  </div>
+                          <div class="content p-1 w-full">
+                                <h2 class="text-lg italic break-words line-clamp-1">${title}</h2>
+                                <p class="text-gray-500 line-clamp-1">${first_name} ${last_name}</p>
+                                <span class="underline text-neutral-500 text-sm font-bold">${Category}</span>
+        
+                          </div>
+                </a>
+          </div>`,
+      );
+      const bookImage = item.querySelector("img");
+
+      //fix Book Image if soure is not working
+      bookImage.addEventListener("error", (e) => {
+        bookImage.src = "assets/book-sharp.svg";
+      });
+      return item;
+    }
+
+    // Category elements
+    function createCategories({ id, title }) {
+      const item = elementFromHTML(
+        `<div class="p-2 bg-stone-100 h-10 flex justify-between hover:ring-2 ">
+        <div class="content">
+                    <input type="hidden" value="${id}">
+                    <div class=""><p>${title}</p></div>
+      </div>
+
+                <div class="buttons">
+                      <iconify-icon icon="mdi:show"></iconify-icon>
+                      <iconify-icon class='hidden' icon="mdi:hide"></iconify-icon>
+                </div>
+
+        </div>`,
+      );
+
+      item.addEventListener("click", (e) => {
+        if (filterBooksPerCategory.includes(id)) {
+          console.log("includes");
+
+          filterBooksPerCategory.splice(filterBooksPerCategory.indexOf(id), 1);
+        } else {
+          filterBooksPerCategory.push(id);
+        }
+        if (filterBooksPerCategory.length === 0) {
+          renderBooks();
+        } else {
+        }
+
+        item.classList.toggle("selectCategory");
+
+        item.querySelectorAll("[icon]").forEach((icon) => {
+          icon.classList.toggle("hidden");
+        });
+
+        const newBookItems = cacheBooks.filter((item) => {
+          return filterBooksPerCategory.includes(item.categories_id);
+        });
+        BookDiv.innerHTML = "";
+        console.log("filterbook", filterBooksPerCategory);
+        // console.log("newbooksitem", newBookItems);
+
+        newBookItems.forEach((item) => {
+          const replaceElement = createBook(item);
+
+          BookDiv.append(replaceElement);
+        });
+      });
+      return item;
+    }
+    //For books
+
+    async function renderBooks() {
+      BookDiv.innerHTML = "";
+      const responseBooks = await fetch("backend/controllers/Book.php", {
+        method: "post",
+        body: JSON.stringify({
+          action: "getAllBooks",
+          json: "",
+        }),
+      });
+      const dataBook = await responseBooks.json();
+
+      if (dataBook.error) {
+        return;
+      } else {
+        cacheBooks = [...dataBook.data];
+        dataBook.data
+          // .filter((item) => {
+          // return filterBooksPerCategory.includes(item.categories_id);
+          // })
+          .forEach((item) => {
+            const div = createBook(item);
+            BookDiv.append(div);
+          });
+      }
+    }
+
+    //For categories
+    async function renderCategories() {
+      const response = await fetch("backend/controllers/Category.php", {
+        method: "post",
+        body: JSON.stringify({
+          action: "getAll",
+          json: "",
+        }),
+      });
+      const dataCategory = await response.json();
+      console.log(dataCategory);
+
+      if (dataCategory.error) {
+      } else {
+        dataCategory.forEach((item) => {
+          const div = createCategories(item);
+          categoryDiv.append(div);
+        });
+      }
+    }
+    renderCategories();
+    renderBooks();
+
     this.mainDiv.innerHTML = "";
     this.mainDiv.append(element);
   }
@@ -210,7 +887,7 @@ class Render {
 
               </div>
                 </div>
-                  <div class=" grid grid-cols-2 justify-items-center pt-4 " id="BookDiv">
+                  <div class="max-[800px]:grid-cols-1 grid grid-cols-2 justify-items-center pt-4 " id="BookDiv">
 
             </div>
 
@@ -233,7 +910,7 @@ class Render {
                 }) => {
                   const changeDate = changeDateFormat(release_date);
                   const ItemDiv =
-                    elementFromHTML(`<div class="toppper mb-4 w-80 relative max-h-full">
+                    elementFromHTML(`<div class="toppper mb-4 w-80 relative max-h-full rounded-t-xl">
                 <div class="absolute top-0 z-10 right-0">
                   <div
                     class="buttons p-1.5 rounded-b-lg flex gap-4 text-white ml-auto bg-black/40 z-20 items-center"
@@ -392,7 +1069,7 @@ class Render {
                   </div>
                 </form>
 
-                <div class="content bg-blue-100">
+                <div class="content bg-blue-100 ">
                   <div class="w-full relative rounded-t-xl  h-96 ">
                     <div class="editPopup hidden "></div>
                     <img
@@ -855,9 +1532,7 @@ class Render {
                   "#createBookForm button",
                 );
 
-                createBookFormBTN.addEventListener("click", () => {
-                  // createBookForm.classList.toggle("hidden");
-                });
+                createBookFormBTN.addEventListener("click", () => {});
 
                 async function renderBookItems() {
                   const response = await fetch("backend/controllers/Book.php", {
@@ -882,14 +1557,16 @@ class Render {
 
                 createBookForm.addEventListener("submit", async (e) => {
                   e.preventDefault();
-                  // createBookForm.classList.toggle("hidden");
                   const createBookValidator = new Validation(
                     innerDiv.querySelectorAll("[data-validation]"),
                   );
                   if (createBookValidator.canValidate) {
+                    console.log("huhh");
+
                     const formData = Object.fromEntries(
                       new FormData(createBookForm),
                     );
+                    console.log(formData);
                     const response = await fetch(
                       "backend/controllers/Book.php",
                       {
@@ -904,11 +1581,19 @@ class Render {
                       },
                     );
                     const data = await response.json();
+
+                    console.log(
+                      "🚀 ✔ file: main.js:1566 ✔ Render ✔ createBookForm.addEventListener ✔ data:",
+                      data,
+                    );
+
                     if (data.error) {
                     } else {
                       console.log(data);
                       const newItem = createBookDiv(data);
-                      bookDiv.append(newItem);
+
+                      bookDiv.prepend(newItem);
+                      createBookForm.classList.toggle("hidden");
                     }
                   }
                 });
@@ -1335,7 +2020,7 @@ class Render {
 
               </div>
                 </div>
-                  <div class="categoryDiv grid grid-cols-2 justify-items-center pt-4 ">
+                  <div class="categoryDiv  grid-cols-2 max-[800px]:grid-cols-1 grid justify-items-center pt-4 ">
 
 
             </div>
@@ -1401,13 +2086,13 @@ class Render {
                                         <div class="flex items-center gap-2 justify-around w-full p-1">
 
                                         <div id="editBtn">
-                                          <iconify-icon icon="material-symbols:edit" class="peer/edit bg-red-200 cursor-pointer relative tooltip rounded-md p-1" data-tooltip="Edit Category"></iconify-icon>
+                                          <iconify-icon icon="material-symbols:edit" class="peer/edit bg-red-200 cursor-pointer relative tooltip rounded-md p-1" data-tooltip="Edit Author"></iconify-icon>
                                         </div>
                                         <div id="checkEditBtn" class="hidden">
                                           <iconify-icon icon="material-symbols:check" class="peer/edit bg-green-200 cursor-pointer relative tooltip rounded-md p-1" data-tooltip="Confirm Edit"></iconify-icon>
                                         </div>
                                         <div id="deleteBtn">
-                                          <iconify-icon icon="ph:x" class="bg-yellow-200 cursor-pointer tooltip relative p-1" data-tooltip="Delete Category"></iconify-icon>
+                                          <iconify-icon icon="ph:x" class="bg-yellow-200 cursor-pointer tooltip relative p-1" data-tooltip="Delete Author"></iconify-icon>
                                         </div>
 
                                               </div></div>
@@ -1800,7 +2485,7 @@ class Render {
                   </div>
                 </div>
 
-                        <div class="commentsDiv p-4 gap-2 flex justify-center [&_div]:w-11/12    border-2 border-gray-600  ">
+                        <div class="commentsDiv p-4 gap-2 flex justify-center [&_div]:w-11/12   ">
 
                                       <div class="pending border border-yellow-500    flex flex-wrap  justify-start  ">
                                       </div>
@@ -1827,24 +2512,25 @@ class Render {
                   username,
                 }) {
                   const itemDiv = elementFromHTML(`
-                <div class="h-30  w-10 flex-[0_0_33%] items-center  mb-2 p-2 justify-between  rounded-sm text-base  hover:ring-violet-200 hover:ring-2">
+                <div class="h-30  max-[800px]:flex-auto w-10 flex-[0_0_33%] items-stretch  mb-2  justify-between  rounded-sm text-base  ">
+                <div class="p-4 hover:ring-violet-200 hover:ring-2 shadow-sm">
+                
+                
                 <div class="flex items-center justify-between">
 
 
                     <div class="flex items-center justify-between gap-2 p-1">
-                    <div class=" h-4 rounded-full">
-                      <iconify-icon class="text-xl bg-blue-500 " icon="codicon:account"></iconify-icon>
-                    </div>
                       <p>By :  <span class="underline underline-offset-2 font-semibold">${username}</span> </p>
                     </div>
 
 
-                    <div class="buttons ml-2 flex gap-4">
+                    <div class="buttons  ml-2 flex gap-4">
                       <div id="cardApproveBtn">
-                        <iconify-icon icon="material-symbols:edit" class="peer/edit bg-red-200 cursor-pointer relative tooltip" data-tooltip="Approve"></iconify-icon>
+                      <iconify-icon icon="material-symbols:check" class="peer/edit bg-green-200 p-1 cursor-pointer relative tooltip rounded-lg" data-tooltip="Decline"></iconify-icon>
                       </div>
                       <div id="cardDeclineBtn" class="">
-                        <iconify-icon icon="material-symbols:check" class="peer/edit bg-green-200 cursor-pointer relative tooltip" data-tooltip="Decline">eoahutneoahuntoauhtneoau uheotnuhoa uoethanuteoha ueothnautnaoe  uthoeanuhoaent hueotanuhaoe</iconify-icon>
+                      <iconify-icon icon="material-symbols:edit" class="peer/edit bg-red-200 p-1 cursor-pointer relative tooltip rounded-lg" data-tooltip="Approve"></iconify-icon>
+
                       </div>
 
                   </div>
@@ -1860,13 +2546,14 @@ class Render {
 
                   <div id="name" class="group">
                   <input class="peer hidden" type="checkbox" name="ch" id="ch${id}">
-                  <p class="p-2 mb-2 bg-stone-50 line-clamp-2 peer-checked:line-clamp-none font-Source-Sans text-small " id="body">${body}</p>
+                  <p class=" w-full break-all p-2 mb-2  line-clamp-2 peer-checked:line-clamp-none font-Source-Sans text-small " id="body">${body}</p>
 
                   <div class="mb-4
                   fcl:before:content-['Read_More'] peer-checked:fcl:before:content-['Read_Less']">
                         <label id="readBtn" for="ch${id}" class="before:bg-blue-500 before:px-2 before:py-1 text-white before:rounded-lg before:mb-4 "></label>
                     </div>
                   </div>
+                </div>
                 </div>`);
                   const commentBody = itemDiv.querySelector("#body");
 
@@ -1898,12 +2585,14 @@ class Render {
                     );
                     const data = await response.json();
                     console.log(data);
+                    if (data.error) {
+                    } else {
+                      itemDiv.remove();
+                      cardApproveBtn.classList.remove("hidden");
+                      cardDeclineBtn.classList.add("hidden");
 
-                    data.error ? null : itemDiv.remove();
-                    cardApproveBtn.classList.remove("hidden");
-                    cardDeclineBtn.classList.add("hidden");
-
-                    declinedDiv.prepend(itemDiv);
+                      declinedDiv.prepend(itemDiv);
+                    }
                   });
 
                   /* Post accept Comment  */

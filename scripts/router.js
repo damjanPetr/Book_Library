@@ -1,58 +1,56 @@
 import { Login } from "./Auth.js";
 import { Render } from "./main.js";
 
-const routes = {
-  "/": {
-    path: "views/homepage.html",
-    title: "Library",
-    discription: "",
-  },
-  404: {
-    path: "views/404.html",
-    title: "Page Not Found",
-    discription: "Error Page",
-  },
-  login: {
-    path: "views/login.html",
-    title: "Index",
-    discription: "Index page",
-  },
-  register: {
-    path: "views/register.html",
-    title: "Register",
-    discription: "Register Page",
-  },
-  dashboard: {
-    path: "views/dashboard.html",
-    title: "User Dashboard",
-    discription: "User Dashboard",
-  },
-};
-
 const route = (event) => {
-  // event.preventDefault();
   window.history.pushState({}, "", event.target.href);
   urlLocationHandler();
 };
 
 const urlLocationHandler = async (event) => {
-  // let location = window.location.pathname;
   let location = window.location.hash.replace("#", "");
 
   if (location.length === 0) {
     location = "/";
   }
 
-  console.log(
-    "🚀 ✔ file: router.js:34 ✔ urlLocationHandler ✔ location:",
-    location,
-  );
+  const routes = {
+    "/": {
+      path: "views/homepage.html",
+      title: "Library",
+      discription: "",
+    },
+    404: {
+      path: "views/404.html",
+      title: "Page Not Found",
+      discription: "Error Page",
+    },
+    login: {
+      path: "views/login.html",
+      title: "Index",
+      discription: "Index page",
+    },
+    register: {
+      path: "views/register.html",
+      title: "Register",
+      discription: "Register Page",
+    },
+    dashboard: {
+      path: "views/dashboard.html",
+      title: "User Dashboard",
+      discription: "User Dashboard",
+    },
+    book: {
+      path: "views/book.html",
+      title: "Book Details",
+      discription: "Detailed View of a Book",
+    },
+  };
 
-  const route = routes[location] || routes[404];
+  let route = routes[location] || routes[404];
+
   const response = await fetch(route.path);
-  const html = await response.text();
-  document.title = route.title;
 
+  const html = await response.text();
   Render.changeRouteDefault();
 
   switch (location) {
@@ -62,7 +60,6 @@ const urlLocationHandler = async (event) => {
     }
     case "/": {
       Render.homePageBooks(html);
-
       return;
     }
     case "register": {
@@ -71,10 +68,22 @@ const urlLocationHandler = async (event) => {
     }
     case "dashboard": {
       Render.DashboardPage(html);
-
       return;
     }
+
     default:
+      {
+        if (location.split("/")[0] === "book") {
+          const res = await fetch(routes["book"].path);
+
+          const html = await res.text();
+          Render.SingleBook(html, location.split("/")[1]);
+
+          // document.title = routes.book.title;
+        } else {
+        }
+      }
+
       return;
   }
 };

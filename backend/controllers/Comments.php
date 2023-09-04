@@ -22,6 +22,7 @@ if (isset($data)) {
     switch ($data['action']) {
         case 'addComment': {
                 try {
+                    Comments::addComment($json['body'], $json['books_id'], $json['users_id']);
                 } catch (\PDOException $e) {
                     echo json_encode(
                         array(
@@ -35,7 +36,9 @@ if (isset($data)) {
 
         case 'deleteComment': {
                 try {
+                    Comments::deleteComment($json['id']);
                 } catch (\PDOException $e) {
+                    Comments::declineComment($json['id']);
                     echo json_encode(
                         array(
                             'error' => true,
@@ -85,6 +88,7 @@ if (isset($data)) {
         case 'approveComment': {
 
                 try {
+
                     Comments::approveComment($json['id']);
                 } catch (\PDOException $e) {
                     echo json_encode(
@@ -99,6 +103,21 @@ if (isset($data)) {
         case 'declineComment': {
                 Comments::declineComment($json['id']);
                 try {
+                } catch (\PDOException $e) {
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
+                }
+            }
+
+            break;
+
+        case 'getAllBookComments': {
+                try {
+                    Comments::getAllBookComments($json['id']);
                 } catch (\PDOException $e) {
                     echo json_encode(
                         array(
@@ -155,7 +174,7 @@ class Comments
         $sql = 'SELECT c.*, u.username
         FROM 
         comments as c
-        INNER JOIN users as u ON c.users_id = u.id;  
+        INNER JOIN users as u ON c.users_id = u.id WHERE c.deleted_at IS NULL;
         ';
 
         $stm = $pdo->prepare($sql);
@@ -176,25 +195,46 @@ class Comments
     {
         $conn = new Database();
         $pdo = $conn->getConnection();
-        $sql = 'SELECT * FROM comments where book_id=:bookid';
+        $sql = 'SELECT * FROM comments 
+        where books_id = :books_id AND 
+        deleted_at is NULL AND 
+        approved is  NULL';
 
         $stm = $pdo->prepare($sql);
-        $stm->execute(['bookid' => $bookid]);
-        $result = $stm->fetchAll();
-        return $result;
+
+        if (
+            $stm->execute(
+                ['books_id' => $bookid]
+            )
+        ) {
+            $result = $stm->fetchAll();
+
+            echo json_encode([
+                'error' => false,
+                'data' => $result
+            ]);
+        } else {
+            throw new \PDOException;
+        }
     }
 
 
-    static function addComment(string $title)
+    static function editComment(string $body, $books_id, $users_id)
     {
         $conn = new Database();
         $pdo = $conn->getConnection();
 
-        $sql = "SELECT * FROM categories where title=:title AND deleted_at IS NULL";
+        $sql = "UPDATE comments  SET body=:body,users_id =:users_id WHERE books_id = :books_id AND deleted_at IS NULL";
 
         $stm = $pdo->prepare($sql);
 
-        $stm->execute(['title' => $title]);
+        $stm->execute(
+            [
+                'body' => $body,
+                'books_id' => $books_id,
+                'users_id' => $users_id
+            ]
+        );
 
         $result = $stm->fetchAll();
 
@@ -203,23 +243,38 @@ class Comments
                 'error' => true,
                 'message' => 'Category Already Exits'
             ]);
-        } else {
+        }
+    }
 
-            $sql2 = "INSERT INTO categories (title) 
-            VALUES(:title)";
+    static function addComment(string $body, $books_id, $users_id)
+    {
+        $conn = new Database();
+        $pdo = $conn->getConnection();
 
-            $result2 = $pdo->prepare($sql2)->execute(['title' => $title]);
-            if ($result2) {
-                echo json_encode([
-                    'error' => false,
-                    "data" => $result2
-                ]);
-            }
+        $sql = "INSERT INTO comments (body,books_id,users_id)
+        VALUES
+        (:body,:books_id,:users_id)";
+
+        $stm = $pdo->prepare($sql);
+
+
+        if (
+            $stm->execute(
+                [
+                    'body' => $body,
+                    'books_id' => $books_id,
+                    'users_id' => $users_id
+                ]
+            )
+        ) {
+            echo json_encode([
+                'error' => false,
+            ]);
         }
     }
 
 
-    static function deleteComment(string $title)
+    static function deleteComment($id)
     {
 
         $conn = new Database();
@@ -227,39 +282,31 @@ class Comments
         $pdo = $conn->getConnection();
         $date = date('Y-m-d');
 
-        $sql = "UPDATE categories SET deleted_at=:date WHERE title=:title";
+        $sql = "UPDATE comments SET deleted_at=:date WHERE id=:id";
 
 
         $stm = $pdo->prepare($sql);
 
-        $stm->execute(
-            [
-                'date' => $date,
-                'title' => $title
-            ]
-        );
 
-        $result = $stm->fetchAll();
-        echo json_encode($result);
+        if (
+            $stm->execute(
+                [
+                    'id' => $id,
+                    'date' => $date
+                ]
+            )
+        ) {
+
+            echo json_encode(
+                [
+                    'error' => false,
+
+                ]
+            );
+        }
+
     }
 
-    static function editComment(string $title, string $newtitle)
-    {
-
-        $conn = new Database();
-        $pdo = $conn->getConnection();
-        $sql = "UPDATE categories SET title=:newtitle WHERE title=:title and deleted_at IS NULL";
-        $stm = $pdo->prepare($sql);
-        $stm->execute(
-            [
-                'title' => $title,
-                'newtitle' => $newtitle
-            ]
-        );
-
-        $result = $stm->fetchAll();
-        echo json_encode(['error' => false]);
-    }
 
 
 
@@ -272,7 +319,6 @@ class Comments
         SET declined = :date,approved = null WHERE id = :id';
 
         $stm = $pdo->prepare($sql);
-
 
         if (
             $stm->execute(
@@ -288,4 +334,5 @@ class Comments
         }
         ;
     }
+
 }

@@ -8,8 +8,6 @@ export class Validation {
 
     items.forEach((item) => {
       if ("validation" in item.dataset && item !== undefined) {
-        console.log(item);
-
         if (this.validateDivs(item) === false) {
           errors++;
           return;
@@ -41,7 +39,7 @@ export class Validation {
               );
               return false;
             }
-            if (itemLength <= 0) {
+            if (itemLength < 1) {
               console.log(itemLength);
               this.assignObject(item, "Input is required");
               return false;

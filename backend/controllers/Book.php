@@ -24,10 +24,12 @@ if (isset($data)) {
                         $json['pictureUrl']
                     );
                 } catch (\PDOException $e) {
-                    echo json_encode(array(
-                        'error' => true,
-                        'message' => $e->getMessage()
-                    ));
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
                 }
             }
             break;
@@ -38,10 +40,12 @@ if (isset($data)) {
                         $json['id']
                     );
                 } catch (\PDOException $e) {
-                    echo json_encode(array(
-                        'error' => true,
-                        'message' => $e->getMessage()
-                    ));
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
                 }
             }
             break;
@@ -52,10 +56,12 @@ if (isset($data)) {
                 try {
                     Book::deleteBook($json['id']);
                 } catch (\PDOException $e) {
-                    echo json_encode(array(
-                        'error' => true,
-                        'message' => $e->getMessage()
-                    ));
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
                 }
             }
             break;
@@ -71,10 +77,12 @@ if (isset($data)) {
                         $json['authorId'],
                     );
                 } catch (\PDOException $e) {
-                    echo json_encode(array(
-                        'error' => true,
-                        'message' => $e->getMessage()
-                    ));
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
                 }
             }
             break;
@@ -127,7 +135,7 @@ class Book
         $stm = $pdo->prepare($sql);
         $stm->execute();
 
-        $result  = $stm->fetchAll();
+        $result = $stm->fetchAll();
         echo json_encode([
             'error' => false,
             'data' => $result
@@ -161,7 +169,7 @@ class Book
         $stm = $pdo->prepare($sql);
         $stm->execute(['bookId' => $bookid]);
 
-        $result  = $stm->fetch();
+        $result = $stm->fetch();
         echo json_encode([
             'error' => false,
             'data' => $result
@@ -174,7 +182,7 @@ class Book
         string $author,
         string $category,
         int $number_of_pages,
-        string  $img
+        string $img
     ) {
         $conn = new Database();
         $pdo = $conn->getConnection();
@@ -195,16 +203,18 @@ class Book
         $stm = $pdo->prepare($sql);
 
 
-        if ($stm->execute(
-            [
-                'title' => $title,
-                'release_date' => $release_date,
-                'author_id' => $author,
-                'categories_id' => $category,
-                'number_of_pages' => $number_of_pages,
-                'img' => $img
-            ]
-        )) {
+        if (
+            $stm->execute(
+                [
+                    'title' => $title,
+                    'release_date' => $release_date,
+                    'author_id' => $author,
+                    'categories_id' => $category,
+                    'number_of_pages' => $number_of_pages,
+                    'img' => $img
+                ]
+            )
+        ) {
             $lastId = $pdo->lastInsertId();
 
             $stm2 = $pdo->prepare('SELECT * FROM books WHERE id=:id;');
@@ -239,15 +249,17 @@ class Book
 
         $stm = $pdo->prepare($sql);
 
-        if ($stm->execute([
-            'bookid' => $bookid,
-            'title' => $title,
-            'release_date' => $release_date,
-            'number_of_pages' => $number_of_pages,
-            'author_id' => $author_id,
-            'categories_id' => $category_id,
-            'img' => $img,
-        ])) {
+        if (
+            $stm->execute([
+                'bookid' => $bookid,
+                'title' => $title,
+                'release_date' => $release_date,
+                'number_of_pages' => $number_of_pages,
+                'author_id' => $author_id,
+                'categories_id' => $category_id,
+                'img' => $img,
+            ])
+        ) {
             Book::getBook($bookid);
             // echo json_encode([
             // 'error' => false,
@@ -259,6 +271,7 @@ class Book
 
     static function deleteBook($bookid)
     {
+
 
         $date = date('Y-m-d');
 
@@ -275,20 +288,24 @@ class Book
             'delete_date' => $date
         ]);
 
-        if ($stm->execute([
-            'bookid' => $bookid,
-            'delete_date' => $date
-        ])) {
+        if (
+            $stm->execute([
+                'bookid' => $bookid,
+                'delete_date' => $date
+            ])
+        ) {
             $sql = "UPDATE notes SET deleted_at=:delete_date WHERE books_id = :bookid;
             UPDATE comments SET deleted_at=:delete_date WHERE books_id = :bookid;
             ";
 
             $stm = $pdo->prepare($sql);
 
-            if ($stm->execute([
-                'bookid' => $bookid,
-                'delete_date' => $date
-            ])) {
+            if (
+                $stm->execute([
+                    'bookid' => $bookid,
+                    'delete_date' => $date
+                ])
+            ) {
 
 
                 echo json_encode([

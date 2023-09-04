@@ -1,55 +1,117 @@
 <?php
 
-namespace Category;
+namespace Comments;
 
 require_once __DIR__ . '/../autoloader.php';
 
+
+
 use Database\Database;
+
 
 $jsondata = file_get_contents('php://input');
 $data = json_decode($jsondata, true);
 
 
+
 if (isset($data)) {
+
     $json = $data['json'];
     switch ($data['action']) {
-        case 'addCategory': {
+        case 'addNote': {
                 try {
-                    Category::addCategory($json);
+                    Notes::addNote($json['body'], $json['books_id'], $json['users_id']);
                 } catch (\PDOException $e) {
-                    echo json_encode(array(
-                        'error' => true,
-                        'message' => $e->getMessage()
-                    ));
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
                 }
             }
             break;
 
-        case 'deleteCategory': {
+        case 'deleteNote': {
                 try {
-                    Category::deleteCategory($data['json']['title']);
+                    Notes::deleteNote($json['id']);
                 } catch (\PDOException $e) {
-                    echo json_encode(array(
-                        'error' => true,
-                        'message' => $e->getMessage()
-                    ));
+                    Comments::declineComment($json['id']);
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
                 }
             }
             break;
-        case 'editCategory': {
+        case 'editNote': {
                 try {
-                    Category::editCategory($json['title'], $json['newTitle']);
+                    Notes::editNote($json['body'], $json['id']);
                 } catch (\PDOException $e) {
-                    echo json_encode(array(
-                        'error' => true,
-                        'message' => $e->getMessage()
-                    ));
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
                 }
             }
             break;
         case 'getAll': {
                 try {
-                    Category::getAllCategories();
+                } catch (\PDOException $e) {
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
+                }
+            }
+            break;
+        case 'getSingle': {
+                try {
+                } catch (\PDOException $e) {
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
+                }
+            }
+            break;
+        case 'approveComment': {
+
+                try {
+                } catch (\PDOException $e) {
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
+                }
+            }
+            break;
+        case 'declineComment': {
+                try {
+                } catch (\PDOException $e) {
+                    echo json_encode(
+                        array(
+                            'error' => true,
+                            'message' => $e->getMessage()
+                        )
+                    );
+                }
+            }
+
+
+        case 'getAllBookNotes': {
+                try {
+                    Notes::getAllBookNotes($json['books_id'], $json['users_id']);
                 } catch (\PDOException $e) {
                     echo json_encode(
                         array(
@@ -67,100 +129,214 @@ if (isset($data)) {
 }
 
 
-class Category
+
+
+
+class Notes
 {
 
-    static function addCategory(string $title)
+    //static funciton to approve comment
+    static function approveComment($id)
     {
+        $date = date('Y-m-d');
         $conn = new Database();
-        $pdo =  $conn->getConnection();
-
-        $sql = "SELECT * FROM categories where title=:title AND deleted_at IS NULL";
+        $pdo = $conn->getConnection();
+        $sql = 'UPDATE comments
+        SET approved =:date ,declined = null  where id = :id';
 
         $stm = $pdo->prepare($sql);
 
-        $stm->execute(['title' => $title]);
 
+        if (
+            $stm->execute(
+                [
+                    'date' => $date,
+                    'id' => $id,
+                ]
+            )
+        ) {
+            echo json_encode([
+                'error' => false,
+            ]);
+        }
+        ;
+    }
+    static function getAllComments()
+    {
+        $conn = new Database();
+        $pdo = $conn->getConnection();
+        $sql = 'SELECT c.*, u.username
+        FROM 
+        comments as c
+        INNER JOIN users as u ON c.users_id = u.id WHERE c.deleted_at IS NULL;
+        ';
+
+        $stm = $pdo->prepare($sql);
+        $stm->execute();
         $result = $stm->fetchAll();
 
         if ($result) {
             echo json_encode([
-                'error' => true,
-                'message' => 'Category Already Exits'
+                'error' => false,
+                "data" => $result
+            ]);
+        }
+        ;
+    }
+
+
+    static function getAllBookNotes($bookid, $users_id)
+    {
+        $conn = new Database();
+        $pdo = $conn->getConnection();
+        $sql = 'SELECT * FROM notes 
+        where 
+        books_id = :books_id AND 
+        users_id = :users_id AND 
+        deleted_at is NULL';
+
+        $stm = $pdo->prepare($sql);
+
+        if (
+            $stm->execute(
+                [
+                    'books_id' => $bookid,
+                    'users_id' => $users_id
+                ]
+            )
+        ) {
+            $result = $stm->fetchAll();
+            echo json_encode([
+                'error' => false,
+                'data' => $result
             ]);
         } else {
+            throw new \PDOException;
+        }
+        ;
+    }
 
-            $sql2 = "INSERT INTO categories (title) 
-            VALUES(:title)";
 
-            $result2 = $pdo->prepare($sql2)->execute(['title' => $title]);
-            if ($result2) {
-                echo json_encode([
-                    'error' => false,
-                    "data" => $result2
-                ]);
-            }
+    static function editNote(string $body, $id)
+    {
+        $conn = new Database();
+        $pdo = $conn->getConnection();
+
+        $sql = "UPDATE notes SET 
+        body=:body
+         WHERE id=:id ;
+         ";
+
+        $stm = $pdo->prepare($sql);
+
+
+        if (
+            $stm->execute(
+                [
+                    'body' => $body,
+                    'id' => $id,
+                ]
+            )
+        ) {
+            echo json_encode([
+                'error' => false,
+            ]);
+        } else {
+            throw new \PharException;
         }
     }
 
-    static function getAllCategories()
+    static function addNote(string $body, $books_id, $users_id)
     {
         $conn = new Database();
+        $pdo = $conn->getConnection();
 
-        $pdo =  $conn->getConnection();
-
-        $sql =   "SELECT * FROM categories WHERE deleted_at IS NULL";
+        $sql = "INSERT INTO notes (body,books_id,users_id)
+        VALUES
+        (:body,:books_id,:users_id)";
 
         $stm = $pdo->prepare($sql);
 
-        $stm->execute();
 
-        $result = $stm->fetchAll();
-        echo json_encode($result);
+        if (
+            $stm->execute(
+                [
+                    'body' => $body,
+                    'books_id' => $books_id,
+                    'users_id' => $users_id
+                ]
+            )
+        ) {
+            echo json_encode([
+                'error' => false,
+            ]);
+        } else {
+            throw new \PDOException;
+        }
     }
 
-    static function deleteCategory(string  $title)
 
+    static function deleteNote($id)
     {
-
-
 
         $conn = new Database();
 
-        $pdo =  $conn->getConnection();
+        $pdo = $conn->getConnection();
         $date = date('Y-m-d');
 
-        $sql = "UPDATE categories SET deleted_at=:date WHERE title=:title";
+        $sql = "UPDATE notes SET deleted_at=:date WHERE id=:id";
 
 
         $stm = $pdo->prepare($sql);
 
-        $stm->execute(
-            [
-                'date' => $date,
-                'title' => $title
-            ]
-        );
 
-        $result = $stm->fetchAll();
-        echo json_encode($result);
+        if (
+            $stm->execute(
+                [
+                    'id' => $id,
+                    'date' => $date
+                ]
+            )
+        ) {
+            echo json_encode(
+                [
+                    'error' => false,
+
+                ]
+            );
+        } else {
+            throw new \PDOException;
+        }
+
     }
 
-    static function editCategory(string $title, string $newtitle)
+
+
+
+    static function declineComment($id)
     {
-
+        $date = date('Y-m-d');
         $conn = new Database();
-        $pdo =  $conn->getConnection();
-        $sql =   "UPDATE categories SET title=:newtitle WHERE title=:title and deleted_at IS NULL";
-        $stm = $pdo->prepare($sql);
-        $stm->execute(
-            [
-                'title' => $title,
-                'newtitle' => $newtitle
-            ]
-        );
+        $pdo = $conn->getConnection();
+        $sql = 'UPDATE comments
+        SET declined = :date,approved = null WHERE id = :id';
 
-        $result = $stm->fetchAll();
-        echo json_encode(['error' => false]);
+        $stm = $pdo->prepare($sql);
+
+
+        if (
+            $stm->execute(
+                [
+                    'date' => $date,
+                    'id' => $id,
+                ]
+            )
+        ) {
+            echo json_encode([
+                'error' => false,
+            ]);
+        }
+        ;
     }
+
 }

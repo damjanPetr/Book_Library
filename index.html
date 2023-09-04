@@ -2,18 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
     <title>Challenge 2</title>
-    <link rel="stylesheet" href="./style.css" />
+    <link
+      rel="stylesheet"
+      href="./style.css"
+    />
   </head>
 
   <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-  <body class="min-h-screen">
+  <body class="min-h-[calc(100vh - 80px)]">
     <header
       class="flex justify-between bg-gradient-to-r from-slate-500 via-teal-400 to-slate-600 p-4"
     >
       <div class="text-xl text-neutral-400">
-        <a href="#/" id="homeBtn"
+        <a
+          href="#/"
+          id="homeBtn"
           ><span class="bg-teal-500 text-purple-400">Book</span>Library</a
         >
       </div>
@@ -53,15 +61,26 @@
       </nav>
     </header>
     <main class="mx-auto max-w-screen-xl px-6">
-      <div class="mainDiv h-full"></div>
+      <div class="mainDiv"></div>
     </main>
-    <footer class="sticky top-full bg-blue-400 p-4">
-      <div class="h-full bg-teal-200 p-2">
-        <p>Created by &copy; Damjan Petrevski | 2023</p>
+    <footer class="sticky bottom-0 z-[1000] w-full bg-neutral-100">
+      <div class="h-full p-2">
+        <!-- <p>Created by &copy; Damjan Petrevski | 2023</p> -->
+        <p
+          class="italic"
+          id="quote"
+        ></p>
+        <p
+          class="text-lg italic underline"
+          id="quoteAuthor"
+        ></p>
       </div>
     </footer>
     <script src="./node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
 
-    <script type="module" src="./scripts/main.js"></script>
+    <script
+      type="module"
+      src="./scripts/main.js"
+    ></script>
   </body>
 </html>
