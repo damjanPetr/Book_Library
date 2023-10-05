@@ -16,7 +16,7 @@ class Database
             $port = '3006';
 
             $dbname = 'library';
-            $pass = 'aoeu';
+            $pass = '';
             $dsn = "mysql:host=$host;dbname=$dbname;";
 
             $this->connection = new \PDO($dsn, $user, $pass, [
