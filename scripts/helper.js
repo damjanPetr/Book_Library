@@ -6,6 +6,5 @@ export default function elementFromHTML(html) {
 
 export function changeDateFormat(dateString) {
   const date = new Date(dateString).toISOString().split("T")[0];
-
   return date;
 }

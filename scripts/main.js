@@ -116,6 +116,7 @@ class Render {
         const itemDiv = elementFromHTML(
           `<div class="p-2 w-full   rounded-lg flex-1 shadow-inner bg-white   ">
         
+          
         <div class="button float-right flex items-center justify-between w-4">
                         <div class="" id="deleteCommentBtn">
                         <iconify-icon icon="mdi:remove-box" class=" bg-red-300 p-0.5 rounded-lg z-auto hover:scale-125 transition-transform" ></iconify-icon>
@@ -613,21 +614,35 @@ class Render {
       release_date,
       img,
     }) {
+      // const item = elementFromHTML(
+      //   `<div class="p-2 w-40 rounded-lg  hover:scale-105 flex-initial">
+      //         <a href='#book/${id}' class="">
+      //             <div class="rounded-lg flex items-center justify-center">
+      //                 <img src=${img} alt="" class="w-[180px] h-[280px] bg-contain rounded-lg ">
+      //             </div>
+      //                     <div class="content p-1 w-full">
+      //                           <h2 class="text-lg italic break-words line-clamp-1">${title}</h2>
+      //                           <p class="text-gray-500 line-clamp-1">${first_name} ${last_name}</p>
+      //                           <span class="underline text-neutral-500 text-sm font-bold">${Category}</span>
+      //                     </div>
+      //           </a>
+      //     </div>`,
+      // );
       const item = elementFromHTML(
         `<div class="p-2 w-40 rounded-lg  hover:scale-105 flex-initial">
               <a href='#book/${id}' class="">
                   <div class="rounded-lg flex items-center justify-center">
                       <img src=${img} alt="" class="w-[180px] h-[280px] bg-contain rounded-lg ">
                   </div>
-                          <div class="content p-1 w-full">
-                                <h2 class="text-lg italic break-words line-clamp-1">${title}</h2>
-                                <p class="text-gray-500 line-clamp-1">${first_name} ${last_name}</p>
-                                <span class="underline text-neutral-500 text-sm font-bold">${Category}</span>
-        
-                          </div>
+                    <div class="content p-1 w-full ">
+                          <h2 class="text-lg italic break-words line-clamp-1">${title}</h2>
+                          <p class="text-gray-500 line-clamp-1">${first_name} ${last_name}</p>
+                          <span class="underline text-neutral-500 text-sm font-bold">${Category}</span>
+                    </div>
                 </a>
           </div>`,
       );
+
       const bookImage = item.querySelector("img");
 
       //fix Book Image if soure is not working
@@ -645,7 +660,7 @@ class Render {
                     <input type="hidden" value="${id}">
                     <div class=""><p>${title}</p></div>
       </div>
-
+      
                 <div class="buttons">
                       <iconify-icon icon="mdi:show"></iconify-icon>
                       <iconify-icon class='hidden' icon="mdi:hide"></iconify-icon>
