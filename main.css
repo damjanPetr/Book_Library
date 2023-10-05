@@ -7,7 +7,7 @@
   body {
     font-family: "Source Sans 3";
     background: url("https://images.unsplash.com/photo-1526243741027-444d633d7365?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80")
-      rgba(0, 0, 0, 0.3);
+      rgba(0, 0, 0, 0.4);
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -44,9 +44,7 @@
 }
 
 .tabActive {
-  @apply bg-red-500;
-  @apply no-underline;
-  @apply hover:bg-red-500;
+  @apply bg-red-500 no-underline hover:bg-red-600;
 }
 
 .loading {
@@ -106,23 +104,23 @@
 }
 
 .activeEditForm input {
-  @apply bg-teal-200;
-  @apply rounded-lg;
+  @apply rounded-lg bg-teal-200;
 }
 .activeEditItem {
-  @apply bg-teal-200;
-  @apply rounded-lg;
+  @apply rounded-lg bg-teal-200;
 }
 .error-img {
-  @apply bg-gray-200;
-  @apply rounded-lg;
+  @apply rounded-lg bg-gray-200;
 }
 
 .validation-error {
   @apply absolute bottom-2/3 left-1/2 z-10 -translate-x-1/2 rounded-lg bg-red-500 p-1 text-base text-white;
 }
 .selectCategory {
-  @apply bg-red-500;
+  background-color: #ef4444 !important;
+}
+.selectCategory:hover {
+  background-color: #dc2626 !important;
 }
 
 .blur1 {

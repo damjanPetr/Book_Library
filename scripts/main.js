@@ -36,7 +36,7 @@ class Render {
       release_date,
     }) {
       const item = elementFromHTML(`
-      <div class="flex  rounded-lg [&_>_div]:p-1.5 p-4 shadow-md bg-gray-50 w-full"> 
+      <div class="flex  rounded-lg [&_>_div]:p-1.5 p-4 shadow-md bg-gray-50 w-full da-card"> 
               <div class="flex-initial w-4/12 mb-2">
                       <div class="flex items-center justify-center rounded-lg">
                       <img src=${img} alt="Book Image" class="bg-center bg-cover w-[280px] h-[380px] rounded-lg">
@@ -115,8 +115,6 @@ class Render {
       const bookCommentInnerDiv = (item) => {
         const itemDiv = elementFromHTML(
           `<div class="p-2 w-full   rounded-lg flex-1 shadow-inner bg-white   ">
-        
-          
         <div class="button float-right flex items-center justify-between w-4">
                         <div class="" id="deleteCommentBtn">
                         <iconify-icon icon="mdi:remove-box" class=" bg-red-300 p-0.5 rounded-lg z-auto hover:scale-125 transition-transform" ></iconify-icon>
@@ -614,38 +612,21 @@ class Render {
       release_date,
       img,
     }) {
-      // const item = elementFromHTML(
-      //   `<div class="p-2 w-40 rounded-lg  hover:scale-105 flex-initial">
-      //         <a href='#book/${id}' class="">
-      //             <div class="rounded-lg flex items-center justify-center">
-      //                 <img src=${img} alt="" class="w-[180px] h-[280px] bg-contain rounded-lg ">
-      //             </div>
-      //                     <div class="content p-1 w-full">
-      //                           <h2 class="text-lg italic break-words line-clamp-1">${title}</h2>
-      //                           <p class="text-gray-500 line-clamp-1">${first_name} ${last_name}</p>
-      //                           <span class="underline text-neutral-500 text-sm font-bold">${Category}</span>
-      //                     </div>
-      //           </a>
-      //     </div>`,
-      // );
       const item = elementFromHTML(
-        `<div class="p-2 w-40 rounded-lg  hover:scale-105 flex-initial">
-              <a href='#book/${id}' class="">
-                  <div class="rounded-lg flex items-center justify-center">
-                      <img src=${img} alt="" class="w-[180px] h-[280px] bg-contain rounded-lg ">
-                  </div>
-                    <div class="content p-1 w-full ">
-                          <h2 class="text-lg italic break-words line-clamp-1">${title}</h2>
-                          <p class="text-gray-500 line-clamp-1">${first_name} ${last_name}</p>
-                          <span class="underline text-neutral-500 text-sm font-bold">${Category}</span>
+        `<a href='#book/${id}' class="w-[200px] flex-none hover:scale-105  da-card da transition-transform  mb-4 ">
+            <img src=${img} alt="" class="rounded-t-xl h-[220px]">
+              <div  class="da-card-body p-0 ">
+                    <div class="content  bg-base-200 rounded-b-xl p-1">
+                          <h3 class="text-xl font-medium break-words line-clamp-1 ">${title}</h3>
+                          <p class=" line-clamp-1">${first_name} ${last_name}</p>
+                          <span class="text-sm font-bold">${Category}</span>
                     </div>
-                </a>
-          </div>`,
+                </div>
+          </a>`,
       );
 
       const bookImage = item.querySelector("img");
 
-      //fix Book Image if soure is not working
       bookImage.addEventListener("error", (e) => {
         bookImage.src = "assets/book-sharp.svg";
       });
@@ -655,13 +636,13 @@ class Render {
     // Category elements
     function createCategories({ id, title }) {
       const item = elementFromHTML(
-        `<div class="p-2 bg-stone-100 h-10 flex justify-between hover:ring-2 ">
-        <div class="content">
+        `<div class="p-2 bg-stone-100 h-10 flex justify-between hover:ring-2 hover:bg-neutral-300  ">
+        <div class="content ">
                     <input type="hidden" value="${id}">
                     <div class=""><p>${title}</p></div>
       </div>
       
-                <div class="buttons">
+                <div class="buttons relative">
                       <iconify-icon icon="mdi:show"></iconify-icon>
                       <iconify-icon class='hidden' icon="mdi:hide"></iconify-icon>
                 </div>
@@ -699,8 +680,8 @@ class Render {
       });
       return item;
     }
-    //For books
 
+    //For books
     async function renderBooks() {
       BookDiv.innerHTML = "";
       const responseBooks = await fetch("backend/controllers/Book.php", {
@@ -715,6 +696,8 @@ class Render {
       if (dataBook.error) {
         return;
       } else {
+        const emptyDiv = document.createElement("div");
+        emptyDiv.className = "flex-1";
         cacheBooks = [...dataBook.data];
         dataBook.data
           // .filter((item) => {
@@ -722,7 +705,7 @@ class Render {
           // })
           .forEach((item) => {
             const div = createBook(item);
-            BookDiv.append(div);
+            BookDiv.append(div, emptyDiv);
           });
       }
     }
