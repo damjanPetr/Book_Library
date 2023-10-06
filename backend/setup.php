@@ -6,6 +6,8 @@ require __DIR__ . '/controllers/User.php';
 
 
 require __DIR__.'/../vendor/autoload.php';
+// require __DIR__.'/fakerphp/faker/src/autoload.php';
+
 class Setup
 {
 

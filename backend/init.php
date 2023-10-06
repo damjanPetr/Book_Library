@@ -16,6 +16,7 @@ if (isset($_GET['setup']) && isset($_GET['setup']) === true) {
 
 
 
+
 if (isset($_GET['input']) && $_GET['input'] === 'true') {
     $setup = new Setup($db);
     $setup->reset();

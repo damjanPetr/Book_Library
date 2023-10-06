@@ -36,31 +36,35 @@ class Render {
       release_date,
     }) {
       const item = elementFromHTML(`
-      <div class="flex  rounded-lg [&_>_div]:p-1.5 p-4 shadow-md bg-gray-50 w-full da-card"> 
+      <div class="flex rounded-lg [&_>_div]:p-1.5 p-4 shadow-md bg-base-100/80 w-full mb-10"> 
               <div class="flex-initial w-4/12 mb-2">
                       <div class="flex items-center justify-center rounded-lg">
                       <img src=${img} alt="Book Image" class="bg-center bg-cover w-[280px] h-[380px] rounded-lg">
               </div>
               
-              <div class="content mt-2 pl-2 max-w-full break-words ">
+              <div class="content mt-2 p-2  max-w-full break-words bg-base-100/70 rounded-md ">
                         <div class="">
-                                <p class="text-gray-500   underline italic">Title:</p>
-                                <p class="text-lg font-semibold">${title}</p>
+                                <h2 class="text-base  font-medium text-gray-400   ">Title</h2>
+                                <p class=" font-semibold  ">${title}</p>
+                        </div>
+
+                        
+
+                        <div class="">
+                            <p class="text-base  font-medium text-gray-400">Author</p>
+                            <p class=" font-semibold  ">${
+                              first_name + " "
+                            }${last_name}</p>
                         </div>
 
                         <div class="">
-                            <p class="text-gray-500   underline italic">Category :</p>
-                            <p id="title" class="" >${Category}    </p>
+                          <p class="text-base  font-medium text-gray-400">Publish Date</p>
+                          <p class="   ">${release_date}</p>
                         </div>
 
                         <div class="">
-                            <p class="text-gray-500   underline italic">Author: </p>
-                            <p>${first_name}${last_name}</p>
-                        </div>
-
-                        <div class="">
-                          <p class="">Pubilsh Date :</p>
-                          <p class="text-gray-500   underline italic">${release_date}</p>
+                            <p class="text-base  font-medium text-gray-400   ">Category</p>
+                            <p id="title" class=" font-semibold  da-badge da-badge-neutral" >${Category}  </p>
                         </div>
                         
               </div>
@@ -87,15 +91,20 @@ class Render {
                      
                   </form>
 
-              <div class="w-4/12 overflow-auto  h-[65vh]  flex-auto  z-10">
-
+              <div class="w-4/12 overflow-auto  h-[65vh]  flex-auto  z-10 ">
                   
 
                   
 
-                  <div class="" id="commentDiv" >
-                  <div class=" text-xl pb-2 transition-transform" id="addCommentBtn" >
-                        <div class="w-full p-1 text-center bg-green-300 rounded-lg">Create New Comment <span> <iconify-icon icon="material-symbols:comment" class="" ></iconify-icon> </span></div>
+                  <div class="space-y-2" id="commentDiv" >
+                  <div class="  text-xl pb-2 transition-transform" id="addCommentBtn" >
+                        <div class="w-full p-1 text-center bg-green-300 rounded-lg fcen   ">
+                        <p> Create New Comment</p>
+                         
+                        <span class="fcen ml-2"> 
+                            <iconify-icon icon="material-symbols:comment" class="" ></iconify-icon> 
+                        </span>
+                        </div>
                   </div>
                   
                   </div>
@@ -103,7 +112,7 @@ class Render {
               </div>
 
 
-                <div class="w-4/12 overflow-auto h-[65vh]  p-1" id="notesDiv">
+                <div class="w-4/12 overflow-auto h-[65vh] space-y-2 p-1" id="notesDiv">
                 <div class=" text-xl pb-2 transition-transform" id="addNotesBtn" >
                           <div class="w-full p-1 text-center bg-violet-300 rounded-lg">Create New Note <span> 
                           <iconify-icon icon="tabler:notes"></iconify-icon>
@@ -888,7 +897,7 @@ class Render {
 
               </div>
                 </div>
-                  <div class="max-[800px]:grid-cols-1 grid grid-cols-2 justify-items-center pt-4 " id="BookDiv">
+                  <div class="max-[800px]:grid-cols-1  grid grid-cols-2 justify-items-center pt-4 " id="BookDiv">
 
             </div>
 
@@ -911,7 +920,7 @@ class Render {
                 }) => {
                   const changeDate = changeDateFormat(release_date);
                   const ItemDiv =
-                    elementFromHTML(`<div class="toppper mb-4 w-80 relative max-h-full rounded-t-xl">
+                    elementFromHTML(`<div class="toppper mb-4 w-72 relative max-h-full rounded-t-xl">
                 <div class="absolute top-0 z-10 right-0">
                   <div
                     class="buttons p-1.5 rounded-b-lg flex gap-4 text-white ml-auto bg-black/40 z-20 items-center"
@@ -942,7 +951,7 @@ class Render {
                   </div>
                 </div>
 
-                <form id="editBookForm" class="border-red-500 border hidden bg-violet-50 h-full" >
+                <form id="editBookForm" class="border-red-500 border hidden bg-violet-50 " >
                   <div
                     class="hidden w-full p-2 absolute top-4 bg-red-200 rounded-md"
                     id="authorError"
@@ -1371,10 +1380,11 @@ class Render {
                           item.classList.add("activeEditItem");
                         }),
                     );
-                    const editPopup =
-                      ItemDiv.querySelector(".editPopup").classList.remove(
-                        "hidden",
-                      );
+
+                    ItemDiv.querySelector(".content").classList.add("hidden");
+                    ItemDiv.querySelector(".editPopup").classList.remove(
+                      "hidden",
+                    );
 
                     editBookForm.classList.remove("hidden");
 
@@ -1421,6 +1431,9 @@ class Render {
                         (item) => item.classList.remove("hidden"),
                       );
                       editBookForm.classList.add("hidden");
+                      ItemDiv.querySelector(".content").classList.remove(
+                        "hidden",
+                      );
                       const editPopup =
                         ItemDiv.querySelector(".editPopup").classList.add(
                           "hidden",
@@ -2445,13 +2458,13 @@ class Render {
 
                         <div class="commentsDiv p-4 gap-2 flex justify-center [&_div]:w-11/12   ">
 
-                                      <div class="pending border border-yellow-500    flex flex-wrap  justify-start gap-2  ">
+                                      <div class="pending     flex flex-wrap  justify-start gap-2  ">
                                       </div>
 
-                                      <div class="approved border border-green-500    flex flex-wrap  justify-start gap-2   ">
+                                      <div class="approved     flex flex-wrap  justify-start gap-2   ">
                                       </div>
 
-                                      <div class="declined border border-red-500    flex flex-wrap  justify-start gap-2  ">
+                                      <div class="declined     flex flex-wrap  justify-start gap-2  ">
                                       </div>
 
                         </div>
