@@ -636,7 +636,7 @@ class Render {
     // Category elements
     function createCategories({ id, title }) {
       const item = elementFromHTML(
-        `<div class="p-2 bg-stone-100 h-10 flex justify-between hover:ring-2 hover:bg-neutral-300  ">
+        `<div class="p-2 bg-stone-100 h-10 flex justify-between hover:ring-2 hover:bg-neutral-300 transition-colors  ">
         <div class="content ">
                     <input type="hidden" value="${id}">
                     <div class=""><p>${title}</p></div>
@@ -799,7 +799,7 @@ class Render {
               <div class="w-full relative">
 
               <div class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black">
-                  <h1 class="text-xl ">Books</h1>
+                  <h1 class="text-xl font-semibold">Books</h1>
                   <div class="flex items-center cursor-pointer rounded-md bg-blue-500 text-white p-2" id="createNewBtn" >
                         <p class="">Create New</p>
                         <iconify-icon icon="gridicons:create" class=" ml-1 self-center" ></iconify-icon>
@@ -1644,7 +1644,7 @@ class Render {
               <div
                 class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black"
               >
-                <h1 class="text-xl">Categories</h1>
+                <h1 class="text-xl font-semibold ">Categories</h1>
                 <div
                   class="flex items-center cursor-pointer rounded-md bg-blue-500 text-white p-2"
                   id="createNewBtn"
@@ -1693,8 +1693,9 @@ class Render {
                   </div>
                 </div>
 
-                <div class="categoryDiv p-4 gap-2 flex flex-wrap  border-2 border-gray-600  ">
+                <div class="categoryDiv p-4 gap-2 flex flex-wrap  border-2 border-gray-600  justify-between">
 
+                 
                 </div>
 
                 </div>
@@ -1726,7 +1727,8 @@ class Render {
                  */
                 const createcategoryItems = (title) => {
                   const itemDiv = elementFromHTML(`
-                <div class="flex  items-center  bg-stone-100 mb-2 p-2 justify-between w-60 rounded-sm text-base flex-auto">
+                <div class="flex  items-center  bg-stone-100 mb-2 p-2 justify-between w-60 rounded-sm text-base flex-auto hover:bg-base-300">
+                
 
                     <div id="name">
                       <p>${title}</p>
@@ -1910,7 +1912,9 @@ class Render {
                     categoryDiv.append(itemDiv);
                   });
 
-                  targetDiv.append(innerDiv);
+                  const createEmptyDiv = document.createElement("div");
+                  createEmptyDiv.className = "flex-1";
+                  targetDiv.append(innerDiv, createEmptyDiv);
 
                   targetDiv.classList.remove("loading");
                 }
@@ -1923,7 +1927,7 @@ class Render {
                   const innerDiv = elementFromHTML(`
               <div class="w-full relative ">
               <div class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black">
-                  <h1 class="text-xl ">Authors</h1>
+                  <h1 class="text-xl font-semibold">Authors</h1>
                   <div class="flex items-center cursor-pointer rounded-md bg-blue-500 text-white p-2" id="createAuthor" >
                         <p class="">Create New</p>
                         <iconify-icon icon="gridicons:create" class=" ml-1 self-center" ></iconify-icon>
@@ -2018,7 +2022,7 @@ class Render {
                     short_bio,
                   ) => {
                     const itemDiv = elementFromHTML(`
-                  <article class="flex   items-start mb-4  justify-between w-80  text-base  shadow-inner rounded-md">
+                  <article class="flex   items-start mb-4  justify-between w-80  text-base  shadow-inner rounded-md bg-base-200">
                   <div class="p-4 min-w-full ">
 
                       <div id="name" class="">
@@ -2063,9 +2067,7 @@ class Render {
                         <div class="">
                         <textarea data-validation=""  class="hidden w-full" rows="5" type="text" name="newTitle" id="newShortBio"  data-edit=""></textarea>
                         </div>
-                        <div class="mt-4
-                        fcl:before:content-['Read_More']
-                         peer-checked:fcl:before:content-['Read_Less']">
+                        <div class="mt-4 fcl:before:content-['Read_More'] peer-checked:fcl:before:content-['Read_Less']">
                             <label for="ch${id}" class="  before:rounded-md before:bg-blue-400 before:p-2 before:text-white"></label>
                         </div>
 
@@ -2360,7 +2362,7 @@ class Render {
               <div
                 class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black"
               >
-                <h1 class="text-xl">Comments</h1>
+                <h1 class="text-xl font-semibold">Comments</h1>
 
 
               <div class=" flex items-center gap-3">
@@ -2443,13 +2445,13 @@ class Render {
 
                         <div class="commentsDiv p-4 gap-2 flex justify-center [&_div]:w-11/12   ">
 
-                                      <div class="pending border border-yellow-500    flex flex-wrap  justify-start  ">
+                                      <div class="pending border border-yellow-500    flex flex-wrap  justify-start gap-2  ">
                                       </div>
 
-                                      <div class="approved border border-green-500    flex flex-wrap  justify-start   ">
+                                      <div class="approved border border-green-500    flex flex-wrap  justify-start gap-2   ">
                                       </div>
 
-                                      <div class="declined border border-red-500    flex flex-wrap  justify-start  ">
+                                      <div class="declined border border-red-500    flex flex-wrap  justify-start gap-2  ">
                                       </div>
 
                         </div>
@@ -2468,8 +2470,7 @@ class Render {
                   username,
                 }) {
                   const itemDiv = elementFromHTML(`
-                <div class="h-30  max-[800px]:flex-auto w-10 flex-[0_0_33%] items-stretch  mb-2  justify-between  rounded-sm text-base  ">
-                <div class="p-4 hover:ring-violet-200 hover:ring-2 shadow-sm">
+                <div class="h-30  max-[600px]:flex-auto w-10 flex-[0_0_30%] items-stretch  justify-between  rounded-sm text-base bg-base-200  ">
                 
                 
                 <div class="flex items-center justify-between">
@@ -2480,13 +2481,12 @@ class Render {
                     </div>
 
 
-                    <div class="buttons  ml-2 flex gap-4">
+                    <div class="buttons  ml-2 flex gap-4 justify-end">
                       <div id="cardApproveBtn">
                       <iconify-icon icon="material-symbols:check" class="peer/edit bg-green-200 p-1 cursor-pointer relative tooltip rounded-lg" data-tooltip="Approve"></iconify-icon>
                       </div>
                       <div id="cardDeclineBtn" class="">
-                        <iconify-icon icon="material-symbols:edit" class="peer/edit bg-red-200 p-1 cursor-pointer relative tooltip rounded-lg" data-tooltip="Decline"></iconify-icon>
-
+                        <iconify-icon icon="material-symbols:cancel-outline-rounded" class="peer/edit bg-red-200 p-1 cursor-pointer relative tooltip rounded-lg" data-tooltip="Decline"></iconify-icon>
                       </div>
 
                   </div>
@@ -2497,15 +2497,11 @@ class Render {
                             <input type="text" name="newTitle" id="newTitle">
                         </form>
 
-
-
-
                   <div id="name" class="group">
                   <input class="peer hidden" type="checkbox" name="ch" id="ch${id}">
-                  <p class=" w-full break-all p-2 mb-2  line-clamp-2 peer-checked:line-clamp-none font-Source-Sans text-small " id="body">${body}</p>
 
-                  <div class="mb-4
-                  fcl:before:content-['Read_More'] peer-checked:fcl:before:content-['Read_Less']">
+                  <p class=" w-full break-all p-2 mb-2  line-clamp-3 peer-checked:line-clamp-none font-Source-Sans text-small " id="body">${body}</p>
+                  <div class="mb-4 fcl:before:content-['Read_More'] peer-checked:fcl:before:content-['Read_Less'] ml-2">
                         <label id="readBtn" for="ch${id}" class="before:bg-blue-500 before:px-2 before:py-1 text-white before:rounded-lg before:mb-4 "></label>
                     </div>
                   </div>
@@ -2578,7 +2574,7 @@ class Render {
                   });
 
                   setTimeout(() => {
-                    if (commentBody.clientHeight === commentBody.scrollHeight) {
+                    if (commentBody.clientHeight !== commentBody.scrollHeight) {
                       const readMoreOrLessBtn = itemDiv
                         .querySelector("#readBtn")
                         .classList.add("invisible");
@@ -2684,26 +2680,23 @@ class Render {
             case "userBtn":
               {
                 const innerDiv = elementFromHTML(`<div class="w-full">
-              <div
-                class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black"
+              <div class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black min-h-[57px] "
               >
-                <h1 class="text-xl">Users:</h1>
+                <h1 class="text-xl font-semibold">Users</h1>
 
               </div>
 
 
 
-                <div class="relative">
+                <div class="">
                         <div class="usersDiv p-4 gap-2 flex items-center     ">
-                        <div class=" relative w-80 p-2 " id="userItemsDiv">
-                        <input type="hidden" name="user" id="user" value="">
-                        <p class="userTitle p-2 text-lg bg-neutral-300 rounded-md">&nbsp;</p>
-                          <div class="absolute top-[calc(100% + 1rem)] w-full  bg-stone-50">
-                          <ul class="dropdown hidden space-y-1  list-none h-80  overflow-auto">
 
-                          </ul>
-                          </div>
+                        <div class="relative w-80 " id="userItemsDiv" >
+                          <input type="hidden" name="user" id="user" value="">
+                          <p class="userTitle p-2 text-lg bg-base-200 rounded-md w-full">&nbsp;</p>
+                          <ul class= "rounded-b-lg absolute top-[calc(100% + 1rem)] w-full  bg-stone-50 w-full dropdown absolute hidden space-y-1 list-none h-80  overflow-auto"></ul>
                         </div>
+
                         <div class="flex justify-between items-center cursor-pointer rounded-md bg-emerald-400 text-white p-2" id="makeAdmin">
                 <p class="">Make Admin</p>
                 <iconify-icon icon=pajamas:admin " class="ml-1 self-center"></iconify-icon>
@@ -2798,7 +2791,7 @@ class Render {
 
                 function createUsersDiv({ username, id }) {
                   const itemDiv = elementFromHTML(`
-                  <li class=" w-full items-center  mb-2 p-2 justify-between  rounded-sm text-base  hover:ring-violet-200 hover:ring-2 hover:bg-slate-200">
+                  <li class="w-full items-center  mb-2 p-2 justify-between  rounded-sm text-base  hover:ring-violet-200 hover:ring-2 hover:bg-slate-200">
                   <div class="">
                         <input type="hidden" name="${id}" value="${id}"> 
                       <p>${username}</p>

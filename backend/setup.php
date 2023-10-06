@@ -223,9 +223,9 @@ class Setup
 
 
         User::createUser('admin', 'admin');
-        User::createUser('hans', 'hans');
-        User::createUser('mans', 'mans');
-        User::createUser('aoeu', 'aoeu');
+        User::createUser('Jonh Doe', 'hans');
+        User::createUser('Marcelo Askupani', 'mans');
+        User::createUser('Joseph Statam', 'aoeu');
         User::createUserAdmin(1);
 
 
@@ -542,7 +542,7 @@ class Setup
 
             for ($i = 0; $i < 100; $i++) {
                 $commentArray[] = [
-                    'body' => $this->faker->sentence(6, true),
+                    'body' => $this->faker->sentence(16, true),
                     'books_id' => $this->faker->numberBetween(1, 18),
                     'user_id' => $this->faker->numberBetween(1, 4),
                     'approved' => $this->faker->date()

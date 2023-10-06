@@ -28,7 +28,7 @@ module.exports = {
         },
       });
       addVariant("optional", "&:optional");
-
+      addVariant("fcl", "& label");
       addVariant("hocus", ["&:hover", "&:focus"]);
       addVariant("dirChildren", ["& > *"]);
       addVariant("group-open", [":merge(.group).open &"]);
