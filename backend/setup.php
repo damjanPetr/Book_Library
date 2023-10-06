@@ -5,18 +5,27 @@ use User\User;
 require __DIR__ . '/controllers/User.php';
 
 
+require __DIR__.'/../vendor/autoload.php';
+// require __DIR__.'/fakerphp/faker/src/autoload.php';
 
 class Setup
 {
 
     private $conn;
+    private $faker;
 
     public function __construct($db)
     {
         $this->conn = $db;
+        $this->faker =    Faker\Factory::create();
     }
+
     public function reset()
     {
+
+
+        $faker =    Faker\Factory::create();
+
         $hostDB = 'library';
 
         $sql = "-- MySQL Workbench Forward Engineering
@@ -216,9 +225,9 @@ class Setup
 
 
         User::createUser('admin', 'admin');
-        User::createUser('hans', 'hans');
-        User::createUser('mans', 'mans');
-        User::createUser('aoeu', 'aoeu');
+        User::createUser('Jonh Doe', 'hans');
+        User::createUser('Marcelo Askupani', 'mans');
+        User::createUser('Joseph Statam', 'aoeu');
         User::createUserAdmin(1);
 
 
@@ -498,34 +507,21 @@ class Setup
         /* Notes */
         $noteArray =
             [
-                [
-                    'body' => 'player is the best ',
-                    'books_id' => '1',
-                    'user_id' => '1'
-                ],
-                [
-                    'body' => ' anata no tame ni ',
-                    'books_id' => '1',
-                    'user_id' => '1'
-                ],
-                [
-                    'body' => 'nandeyo mihary rukuban best',
-                    'books_id' => '1',
-                    'user_id' => '1'
-                ],
-                [
-                    'body' => 'iplic is the riverz ',
-                    'books_id' => '1',
-                    'user_id' => '1'
-                ],
-                [
-                    'body' => 'is teh ebst is alber best ',
-                    'books_id' => '1',
-                    'user_id' => '1'
-                ]
+                // [
+                //     'body' => 'player is the best ',
+                //     'books_id' => '1',
+                //     'user_id' => '1'
+                // ],
             ];
 
-
+            for ($i = 0; $i < 100; $i++) {
+                $noteArray[] = [
+                    'body' => $this->faker->sentence(6, true),
+                    'books_id' => $this->faker->numberBetween(1, 18),
+                    'user_id' => $this->faker->numberBetween(1, 4),
+                ];
+                
+            }
         $inputNotesSql = 'INSERT INTO notes (body,books_id,users_id) VALUES(:body,:books_id,:users_id)';
 
         $stmNotes = $this->conn->prepare($inputNotesSql);
@@ -544,52 +540,18 @@ class Setup
 
         /* Comments */
 
-        $commentArray =
-            [
-                [
-                    'body' => 'Comment 1 ',
-                    'books_id' => '1',
-                    'user_id' => '2'
-                ],
-                [
-                    'body' => 'Comment 2 
-                    Comment 2 Comment 2 Comment 2 Comment 2 Comment 2 Comment 2 Comment 2 Comment 2 Comment 2 Comment 2 Comment 2 ',
-                    'books_id' => '1',
-                    'user_id' => '3'
-                ],
-                [
-                    'body' => 'Comment 3 Comment 3 Comment 3 Comment 3 Comment 3 Comment 3 Comment 3 Comment 3 Comment 3 Comment 3 Comment 3 ',
-                    'books_id' => '1',
-                    'user_id' => '2'
-                ],
-                [
-                    'body' => 'Comment 4 ',
-                    'books_id' => '1',
-                    'user_id' => '4'
-                ],
-                [
-                    'body' => 'Comment 5 ',
-                    'books_id' => '1',
-                    'user_id' => '4'
-                ],
-                [
-                    'body' => 'Comment 6 ',
-                    'books_id' => '1',
-                    'user_id' => '4'
-                ],
-                [
-                    'body' => 'Comment 7 ',
-                    'books_id' => '1',
-                    'user_id' => '4'
-                ],
-                [
-                    'body' => 'Comment 8 ',
-                    'books_id' => '1',
-                    'user_id' => '4'
-                ],
-            ];
+        $commentArray = [];
 
-        $inputCommentsSql = 'INSERT INTO comments (body,books_id,users_id) VALUES(:body,:books_id,:users_id)';
+            for ($i = 0; $i < 100; $i++) {
+                $commentArray[] = [
+                    'body' => $this->faker->sentence(16, true),
+                    'books_id' => $this->faker->numberBetween(1, 18),
+                    'user_id' => $this->faker->numberBetween(1, 4),
+                    'approved' => $this->faker->date()
+                ];
+                
+            }
+        $inputCommentsSql = 'INSERT INTO comments (body,books_id,users_id,approved) VALUES(:body,:books_id,:users_id,:approved)';
 
         $stmComments = $this->conn->prepare($inputCommentsSql);
 
@@ -600,6 +562,7 @@ class Setup
                     'body' => $item['body'],
                     'books_id' => $item['books_id'],
                     'users_id' => $item['user_id'],
+                    'approved' => $item['approved'],
                 ]
             );
         }

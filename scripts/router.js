@@ -1,4 +1,3 @@
-import { Login } from "./Auth.js";
 import { Render } from "./main.js";
 
 const route = (event) => {

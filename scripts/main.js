@@ -36,31 +36,35 @@ class Render {
       release_date,
     }) {
       const item = elementFromHTML(`
-      <div class="flex  rounded-lg [&_>_div]:p-1.5 p-4 shadow-md bg-gray-50 w-full"> 
+      <div class="flex rounded-lg [&_>_div]:p-1.5 p-4 shadow-md bg-base-100/80 w-full mb-10"> 
               <div class="flex-initial w-4/12 mb-2">
                       <div class="flex items-center justify-center rounded-lg">
                       <img src=${img} alt="Book Image" class="bg-center bg-cover w-[280px] h-[380px] rounded-lg">
               </div>
               
-              <div class="content mt-2 pl-2 max-w-full break-words ">
+              <div class="content mt-2 p-2  max-w-full break-words bg-base-100/70 rounded-md ">
                         <div class="">
-                                <p class="text-gray-500   underline italic">Title:</p>
-                                <p class="text-lg font-semibold">${title}</p>
+                                <h2 class="text-base  font-medium text-gray-400   ">Title</h2>
+                                <p class=" font-semibold  ">${title}</p>
+                        </div>
+
+                        
+
+                        <div class="">
+                            <p class="text-base  font-medium text-gray-400">Author</p>
+                            <p class=" font-semibold  ">${
+                              first_name + " "
+                            }${last_name}</p>
                         </div>
 
                         <div class="">
-                            <p class="text-gray-500   underline italic">Category :</p>
-                            <p id="title" class="" >${Category}    </p>
+                          <p class="text-base  font-medium text-gray-400">Publish Date</p>
+                          <p class="   ">${release_date}</p>
                         </div>
 
                         <div class="">
-                            <p class="text-gray-500   underline italic">Author: </p>
-                            <p>${first_name}${last_name}</p>
-                        </div>
-
-                        <div class="">
-                          <p class="">Pubilsh Date :</p>
-                          <p class="text-gray-500   underline italic">${release_date}</p>
+                            <p class="text-base  font-medium text-gray-400   ">Category</p>
+                            <p id="title" class=" font-semibold  da-badge da-badge-neutral" >${Category}  </p>
                         </div>
                         
               </div>
@@ -87,15 +91,20 @@ class Render {
                      
                   </form>
 
-              <div class="w-4/12 overflow-auto  h-[65vh]  flex-auto  z-10">
-
+              <div class="w-4/12 overflow-auto  h-[65vh]  flex-auto  z-10 ">
                   
 
                   
 
-                  <div class="" id="commentDiv" >
-                  <div class=" text-xl pb-2 transition-transform" id="addCommentBtn" >
-                        <div class="w-full p-1 text-center bg-green-300 rounded-lg">Create New Comment <span> <iconify-icon icon="material-symbols:comment" class="" ></iconify-icon> </span></div>
+                  <div class="space-y-2" id="commentDiv" >
+                  <div class="  text-xl pb-2 transition-transform" id="addCommentBtn" >
+                        <div class="w-full p-1 text-center bg-green-300 rounded-lg fcen   ">
+                        <p> Create New Comment</p>
+                         
+                        <span class="fcen ml-2"> 
+                            <iconify-icon icon="material-symbols:comment" class="" ></iconify-icon> 
+                        </span>
+                        </div>
                   </div>
                   
                   </div>
@@ -103,7 +112,7 @@ class Render {
               </div>
 
 
-                <div class="w-4/12 overflow-auto h-[65vh]  p-1" id="notesDiv">
+                <div class="w-4/12 overflow-auto h-[65vh] space-y-2 p-1" id="notesDiv">
                 <div class=" text-xl pb-2 transition-transform" id="addNotesBtn" >
                           <div class="w-full p-1 text-center bg-violet-300 rounded-lg">Create New Note <span> 
                           <iconify-icon icon="tabler:notes"></iconify-icon>
@@ -115,7 +124,6 @@ class Render {
       const bookCommentInnerDiv = (item) => {
         const itemDiv = elementFromHTML(
           `<div class="p-2 w-full   rounded-lg flex-1 shadow-inner bg-white   ">
-        
         <div class="button float-right flex items-center justify-between w-4">
                         <div class="" id="deleteCommentBtn">
                         <iconify-icon icon="mdi:remove-box" class=" bg-red-300 p-0.5 rounded-lg z-auto hover:scale-125 transition-transform" ></iconify-icon>
@@ -614,23 +622,20 @@ class Render {
       img,
     }) {
       const item = elementFromHTML(
-        `<div class="p-2 w-40 rounded-lg  hover:scale-105 flex-initial">
-              <a href='#book/${id}' class="">
-                  <div class="rounded-lg flex items-center justify-center">
-                      <img src=${img} alt="" class="w-[180px] h-[280px] bg-contain rounded-lg ">
-                  </div>
-                          <div class="content p-1 w-full">
-                                <h2 class="text-lg italic break-words line-clamp-1">${title}</h2>
-                                <p class="text-gray-500 line-clamp-1">${first_name} ${last_name}</p>
-                                <span class="underline text-neutral-500 text-sm font-bold">${Category}</span>
-        
-                          </div>
-                </a>
-          </div>`,
+        `<a href='#book/${id}' class="w-[200px] flex-none hover:scale-105  da-card da transition-transform  mb-4 ">
+            <img src=${img} alt="" class="rounded-t-xl h-[220px]">
+              <div  class="da-card-body p-0 ">
+                    <div class="content  bg-base-200 rounded-b-xl p-1">
+                          <h3 class="text-xl font-medium break-words line-clamp-1 ">${title}</h3>
+                          <p class=" line-clamp-1">${first_name} ${last_name}</p>
+                          <span class="text-sm font-bold">${Category}</span>
+                    </div>
+                </div>
+          </a>`,
       );
+
       const bookImage = item.querySelector("img");
 
-      //fix Book Image if soure is not working
       bookImage.addEventListener("error", (e) => {
         bookImage.src = "assets/book-sharp.svg";
       });
@@ -640,13 +645,13 @@ class Render {
     // Category elements
     function createCategories({ id, title }) {
       const item = elementFromHTML(
-        `<div class="p-2 bg-stone-100 h-10 flex justify-between hover:ring-2 ">
-        <div class="content">
+        `<div class="p-2 bg-stone-100 h-10 flex justify-between hover:ring-2 hover:bg-neutral-300 transition-colors  ">
+        <div class="content ">
                     <input type="hidden" value="${id}">
                     <div class=""><p>${title}</p></div>
       </div>
-
-                <div class="buttons">
+      
+                <div class="buttons relative">
                       <iconify-icon icon="mdi:show"></iconify-icon>
                       <iconify-icon class='hidden' icon="mdi:hide"></iconify-icon>
                 </div>
@@ -684,8 +689,8 @@ class Render {
       });
       return item;
     }
-    //For books
 
+    //For books
     async function renderBooks() {
       BookDiv.innerHTML = "";
       const responseBooks = await fetch("backend/controllers/Book.php", {
@@ -700,6 +705,8 @@ class Render {
       if (dataBook.error) {
         return;
       } else {
+        const emptyDiv = document.createElement("div");
+        emptyDiv.className = "flex-1";
         cacheBooks = [...dataBook.data];
         dataBook.data
           // .filter((item) => {
@@ -707,7 +714,7 @@ class Render {
           // })
           .forEach((item) => {
             const div = createBook(item);
-            BookDiv.append(div);
+            BookDiv.append(div, emptyDiv);
           });
       }
     }
@@ -801,7 +808,7 @@ class Render {
               <div class="w-full relative">
 
               <div class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black">
-                  <h1 class="text-xl ">Books</h1>
+                  <h1 class="text-xl font-semibold">Books</h1>
                   <div class="flex items-center cursor-pointer rounded-md bg-blue-500 text-white p-2" id="createNewBtn" >
                         <p class="">Create New</p>
                         <iconify-icon icon="gridicons:create" class=" ml-1 self-center" ></iconify-icon>
@@ -890,7 +897,7 @@ class Render {
 
               </div>
                 </div>
-                  <div class="max-[800px]:grid-cols-1 grid grid-cols-2 justify-items-center pt-4 " id="BookDiv">
+                  <div class="max-[800px]:grid-cols-1  grid grid-cols-2 justify-items-center pt-4 " id="BookDiv">
 
             </div>
 
@@ -913,7 +920,7 @@ class Render {
                 }) => {
                   const changeDate = changeDateFormat(release_date);
                   const ItemDiv =
-                    elementFromHTML(`<div class="toppper mb-4 w-80 relative max-h-full rounded-t-xl">
+                    elementFromHTML(`<div class="toppper mb-4 w-72 relative max-h-full rounded-t-xl">
                 <div class="absolute top-0 z-10 right-0">
                   <div
                     class="buttons p-1.5 rounded-b-lg flex gap-4 text-white ml-auto bg-black/40 z-20 items-center"
@@ -944,7 +951,7 @@ class Render {
                   </div>
                 </div>
 
-                <form id="editBookForm" class="border-red-500 border hidden bg-violet-50 h-full" >
+                <form id="editBookForm" class="border-red-500 border hidden bg-violet-50 " >
                   <div
                     class="hidden w-full p-2 absolute top-4 bg-red-200 rounded-md"
                     id="authorError"
@@ -1373,10 +1380,11 @@ class Render {
                           item.classList.add("activeEditItem");
                         }),
                     );
-                    const editPopup =
-                      ItemDiv.querySelector(".editPopup").classList.remove(
-                        "hidden",
-                      );
+
+                    ItemDiv.querySelector(".content").classList.add("hidden");
+                    ItemDiv.querySelector(".editPopup").classList.remove(
+                      "hidden",
+                    );
 
                     editBookForm.classList.remove("hidden");
 
@@ -1423,6 +1431,9 @@ class Render {
                         (item) => item.classList.remove("hidden"),
                       );
                       editBookForm.classList.add("hidden");
+                      ItemDiv.querySelector(".content").classList.remove(
+                        "hidden",
+                      );
                       const editPopup =
                         ItemDiv.querySelector(".editPopup").classList.add(
                           "hidden",
@@ -1646,7 +1657,7 @@ class Render {
               <div
                 class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black"
               >
-                <h1 class="text-xl">Categories</h1>
+                <h1 class="text-xl font-semibold ">Categories</h1>
                 <div
                   class="flex items-center cursor-pointer rounded-md bg-blue-500 text-white p-2"
                   id="createNewBtn"
@@ -1695,8 +1706,9 @@ class Render {
                   </div>
                 </div>
 
-                <div class="categoryDiv p-4 gap-2 flex flex-wrap  border-2 border-gray-600  ">
+                <div class="categoryDiv p-4 gap-2 flex flex-wrap  border-2 border-gray-600  justify-between">
 
+                 
                 </div>
 
                 </div>
@@ -1728,7 +1740,8 @@ class Render {
                  */
                 const createcategoryItems = (title) => {
                   const itemDiv = elementFromHTML(`
-                <div class="flex  items-center  bg-stone-100 mb-2 p-2 justify-between w-60 rounded-sm text-base flex-auto">
+                <div class="flex  items-center  bg-stone-100 mb-2 p-2 justify-between w-60 rounded-sm text-base flex-auto hover:bg-base-300">
+                
 
                     <div id="name">
                       <p>${title}</p>
@@ -1912,7 +1925,9 @@ class Render {
                     categoryDiv.append(itemDiv);
                   });
 
-                  targetDiv.append(innerDiv);
+                  const createEmptyDiv = document.createElement("div");
+                  createEmptyDiv.className = "flex-1";
+                  targetDiv.append(innerDiv, createEmptyDiv);
 
                   targetDiv.classList.remove("loading");
                 }
@@ -1925,7 +1940,7 @@ class Render {
                   const innerDiv = elementFromHTML(`
               <div class="w-full relative ">
               <div class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black">
-                  <h1 class="text-xl ">Authors</h1>
+                  <h1 class="text-xl font-semibold">Authors</h1>
                   <div class="flex items-center cursor-pointer rounded-md bg-blue-500 text-white p-2" id="createAuthor" >
                         <p class="">Create New</p>
                         <iconify-icon icon="gridicons:create" class=" ml-1 self-center" ></iconify-icon>
@@ -2020,7 +2035,7 @@ class Render {
                     short_bio,
                   ) => {
                     const itemDiv = elementFromHTML(`
-                  <article class="flex   items-start mb-4  justify-between w-80  text-base  shadow-inner rounded-md">
+                  <article class="flex   items-start mb-4  justify-between w-80  text-base  shadow-inner rounded-md bg-base-200">
                   <div class="p-4 min-w-full ">
 
                       <div id="name" class="">
@@ -2065,9 +2080,7 @@ class Render {
                         <div class="">
                         <textarea data-validation=""  class="hidden w-full" rows="5" type="text" name="newTitle" id="newShortBio"  data-edit=""></textarea>
                         </div>
-                        <div class="mt-4
-                        fcl:before:content-['Read_More']
-                         peer-checked:fcl:before:content-['Read_Less']">
+                        <div class="mt-4 fcl:before:content-['Read_More'] peer-checked:fcl:before:content-['Read_Less']">
                             <label for="ch${id}" class="  before:rounded-md before:bg-blue-400 before:p-2 before:text-white"></label>
                         </div>
 
@@ -2362,7 +2375,7 @@ class Render {
               <div
                 class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black"
               >
-                <h1 class="text-xl">Comments</h1>
+                <h1 class="text-xl font-semibold">Comments</h1>
 
 
               <div class=" flex items-center gap-3">
@@ -2445,13 +2458,13 @@ class Render {
 
                         <div class="commentsDiv p-4 gap-2 flex justify-center [&_div]:w-11/12   ">
 
-                                      <div class="pending border border-yellow-500    flex flex-wrap  justify-start  ">
+                                      <div class="pending     flex flex-wrap  justify-start gap-2  ">
                                       </div>
 
-                                      <div class="approved border border-green-500    flex flex-wrap  justify-start   ">
+                                      <div class="approved     flex flex-wrap  justify-start gap-2   ">
                                       </div>
 
-                                      <div class="declined border border-red-500    flex flex-wrap  justify-start  ">
+                                      <div class="declined     flex flex-wrap  justify-start gap-2  ">
                                       </div>
 
                         </div>
@@ -2470,8 +2483,7 @@ class Render {
                   username,
                 }) {
                   const itemDiv = elementFromHTML(`
-                <div class="h-30  max-[800px]:flex-auto w-10 flex-[0_0_33%] items-stretch  mb-2  justify-between  rounded-sm text-base  ">
-                <div class="p-4 hover:ring-violet-200 hover:ring-2 shadow-sm">
+                <div class="h-30  max-[600px]:flex-auto w-10 flex-[0_0_30%] items-stretch  justify-between  rounded-sm text-base bg-base-200  ">
                 
                 
                 <div class="flex items-center justify-between">
@@ -2482,13 +2494,12 @@ class Render {
                     </div>
 
 
-                    <div class="buttons  ml-2 flex gap-4">
+                    <div class="buttons  ml-2 flex gap-4 justify-end">
                       <div id="cardApproveBtn">
                       <iconify-icon icon="material-symbols:check" class="peer/edit bg-green-200 p-1 cursor-pointer relative tooltip rounded-lg" data-tooltip="Approve"></iconify-icon>
                       </div>
                       <div id="cardDeclineBtn" class="">
-                        <iconify-icon icon="material-symbols:edit" class="peer/edit bg-red-200 p-1 cursor-pointer relative tooltip rounded-lg" data-tooltip="Decline"></iconify-icon>
-
+                        <iconify-icon icon="material-symbols:cancel-outline-rounded" class="peer/edit bg-red-200 p-1 cursor-pointer relative tooltip rounded-lg" data-tooltip="Decline"></iconify-icon>
                       </div>
 
                   </div>
@@ -2499,15 +2510,11 @@ class Render {
                             <input type="text" name="newTitle" id="newTitle">
                         </form>
 
-
-
-
                   <div id="name" class="group">
                   <input class="peer hidden" type="checkbox" name="ch" id="ch${id}">
-                  <p class=" w-full break-all p-2 mb-2  line-clamp-2 peer-checked:line-clamp-none font-Source-Sans text-small " id="body">${body}</p>
 
-                  <div class="mb-4
-                  fcl:before:content-['Read_More'] peer-checked:fcl:before:content-['Read_Less']">
+                  <p class=" w-full break-all p-2 mb-2  line-clamp-3 peer-checked:line-clamp-none font-Source-Sans text-small " id="body">${body}</p>
+                  <div class="mb-4 fcl:before:content-['Read_More'] peer-checked:fcl:before:content-['Read_Less'] ml-2">
                         <label id="readBtn" for="ch${id}" class="before:bg-blue-500 before:px-2 before:py-1 text-white before:rounded-lg before:mb-4 "></label>
                     </div>
                   </div>
@@ -2580,7 +2587,7 @@ class Render {
                   });
 
                   setTimeout(() => {
-                    if (commentBody.clientHeight === commentBody.scrollHeight) {
+                    if (commentBody.clientHeight !== commentBody.scrollHeight) {
                       const readMoreOrLessBtn = itemDiv
                         .querySelector("#readBtn")
                         .classList.add("invisible");
@@ -2686,26 +2693,23 @@ class Render {
             case "userBtn":
               {
                 const innerDiv = elementFromHTML(`<div class="w-full">
-              <div
-                class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black"
+              <div class="flex items-center justify-between px-8 py-2 border-b-2 border-b-black min-h-[57px] "
               >
-                <h1 class="text-xl">Users:</h1>
+                <h1 class="text-xl font-semibold">Users</h1>
 
               </div>
 
 
 
-                <div class="relative">
+                <div class="">
                         <div class="usersDiv p-4 gap-2 flex items-center     ">
-                        <div class=" relative w-80 p-2 " id="userItemsDiv">
-                        <input type="hidden" name="user" id="user" value="">
-                        <p class="userTitle p-2 text-lg bg-neutral-300 rounded-md">&nbsp;</p>
-                          <div class="absolute top-[calc(100% + 1rem)] w-full  bg-stone-50">
-                          <ul class="dropdown hidden space-y-1  list-none h-80  overflow-auto">
 
-                          </ul>
-                          </div>
+                        <div class="relative w-80 " id="userItemsDiv" >
+                          <input type="hidden" name="user" id="user" value="">
+                          <p class="userTitle p-2 text-lg bg-base-200 rounded-md w-full">&nbsp;</p>
+                          <ul class= "rounded-b-lg absolute top-[calc(100% + 1rem)] w-full  bg-stone-50 w-full dropdown absolute hidden space-y-1 list-none h-80  overflow-auto"></ul>
                         </div>
+
                         <div class="flex justify-between items-center cursor-pointer rounded-md bg-emerald-400 text-white p-2" id="makeAdmin">
                 <p class="">Make Admin</p>
                 <iconify-icon icon=pajamas:admin " class="ml-1 self-center"></iconify-icon>
@@ -2800,7 +2804,7 @@ class Render {
 
                 function createUsersDiv({ username, id }) {
                   const itemDiv = elementFromHTML(`
-                  <li class=" w-full items-center  mb-2 p-2 justify-between  rounded-sm text-base  hover:ring-violet-200 hover:ring-2 hover:bg-slate-200">
+                  <li class="w-full items-center  mb-2 p-2 justify-between  rounded-sm text-base  hover:ring-violet-200 hover:ring-2 hover:bg-slate-200">
                   <div class="">
                         <input type="hidden" name="${id}" value="${id}"> 
                       <p>${username}</p>
